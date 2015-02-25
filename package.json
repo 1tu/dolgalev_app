@@ -1,0 +1,22 @@
+{
+  "name": "dev-carcass",
+  "private": true,
+  "version": "0.1.1",
+  "description": "riot.js",
+  "keywords": [],
+  "dependencies": {
+    "gulp": "latest",
+    "gulp-concat": "latest",
+    "gulp-connect": "latest",
+    "gulp-csso": "latest",
+    "gulp-jade": "latest",
+    "gulp-riot": "latest",
+    "gulp-stylus": "^2.0.0",
+    "gulp-uglify": "latest"
+  },
+  "scripts": {
+    "dev": "gulp watch"
+  },
+  "main": "app.js",
+  "author": "itu"
+}

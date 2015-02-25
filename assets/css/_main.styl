@@ -1,0 +1,42 @@
+html, body
+  width: 100%
+  height: 100%
+
+body
+  background: $Cb
+  font-family: 'Open Sans', sans-serif
+
+.VA:before
+  content: ''
+  height: 100%
+  display: inline-block
+  vertical-align: middle
+
+
+.button
+  transition: transform .3s ease
+  transform: scale(1) translatez(0)
+  &:active
+    transform: scale(0.95) 
+
+.hidden
+  display: none
+  
+
+.cf:after
+  content: ''
+  display: table
+  clear: both
+
+
+.isle
+  display: block
+  position: relative
+  box-sizing: border-box
+  margin: 10px 20px
+  padding: 10px
+  background: white
+
+a.isle
+  text-decoration: none
+  color: black

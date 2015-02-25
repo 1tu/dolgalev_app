@@ -1,0 +1,51 @@
+$dm = 12px
+
+index
+  margin: 0 auto
+  
+  h2
+    display: block
+    margin: 15px 0 10px
+    font-size: 20px
+    font-weight: bold
+    text-align: center
+
+  .isle
+    min-height: 70px
+
+  .confirmed, .not_confirmed
+    &:before
+      content: ''
+      position: absolute
+      left: -($dm/2)
+      top: -($dm/2)
+      width: $dm
+      height: $dm
+      border-radius: 50%
+
+  .confirmed:before
+    background: green
+
+  .not_confirmed:before
+    background: red
+
+  date
+    float: right
+
+  time
+    position: absolute
+    bottom: 0
+    right: 0
+    padding: 6px 10px
+    background: $Cm
+    color: white
+    border-top-left-radius: 7px
+    font-size: 20px
+    font-weight: bold
+    margin-top: 10px
+
+  p
+    margin-bottom: 10px
+
+
+

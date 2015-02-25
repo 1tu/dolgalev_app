@@ -1,0 +1,69 @@
+_h = 7vh
+_fs = 3.5vh
+
+header
+  background: $Cm
+  display: block
+  height: _h
+  text-align: center
+
+  createrequest
+    padding: 1vh 5vw
+    background-color: $Cb
+    color: $Cm
+    font-weight: bold
+    border-radius: 5px
+
+  nav-item, createrequest, title
+    display: inline-block
+    font-size: _fs
+
+  title, createrequest, back
+    vertical-align: middle
+
+  back, title
+    color: white
+
+  back
+    left: 0
+    box-sizing: border-box
+    background: lighten($Cm, 40%)
+
+  nav-toggler, nav, back
+    position: absolute
+
+  nav-toggler, nav
+    right: 0
+  
+  nav-toggler, back
+    height: _h
+    width: _h
+
+  nav-toggler
+    top: 0
+    background: black
+
+  nav
+    text-align: left
+    z-index: 100
+    top: _h 
+    left: 2vw   
+    right: 2vw   
+    min-width: 45vw
+    padding: 2vh 5vw
+    background: darken($Cb, 20%)
+    font-size: _fs
+
+  nav-item
+    width: 100%
+    padding: 2vh 0
+    margin: 5px 0
+
+
+  // MEDIA QUERIES
+  @media (min-width: 400px)
+    nav
+      text-align: center
+
+    nav-item
+      width: 49%
