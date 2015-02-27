@@ -1,3 +1,6 @@
+var $id = document.getElementById.bind(document)
+  , $ = document.querySelectorAll.bind(document)
+
 ;(function(f, rc, s) {
 
   f.data = {
@@ -10,19 +13,19 @@
   }
 
 
-  f.goBack = function () {
-    var path = s.router.current
-    if (path[0] === 'index') return false
-    else if (path.length === 1) riot.route('index')
-    else riot.route( f.reducePath(path) )
-  }
+  f.toQuery = function (obj) {
+    var query = ''
+      , is_start = true
 
-  f.reducePath = function (path) {
-    if (path.length === 1) return 'index'
-    var tmp = path.slice(0, -1)
-    return (s.router.exceptions.indexOf( tmp[ tmp.length-1 ] ) === -1)
-      ? tmp.join('/')
-      : f.reducePath(tmp)
+    for (var key in obj) {
+      if (is_start) {
+        is_start = false
+        query += '?'
+      } else query += '&'
+
+      query += key+'='+obj[key];
+    }
+    return query
   }
 
 

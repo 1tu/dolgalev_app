@@ -1,5 +1,5 @@
 <doctors>
-  <a href={ '#doctors/'+id } class={ 'isle' } each={ data }>
+  <a href={ '#/doctors/'+id } class={ 'isle' } each={ data }>
     <p>{ last_name }</p>
     <p>{ first_name }</p>
     <p>{ second_name }</p>

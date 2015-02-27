@@ -1,7 +1,7 @@
 <index>
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Ваши текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
-    <a href={ '#receptions/'+id } class={ 'isle cf '+ state }  each={ receptions }>
+    <a href={ '#/receptions/'+id } class={ 'isle cf '+ state }  each={ receptions }>
       <date>{ fn.parseDate(datetime) }</date>
       <time>{ fn.parseTime(datetime) }</time>
       <p>{ fn.data.rec_types[ type ] }</p>
@@ -11,7 +11,7 @@
 
   <h2 if={ requests[0] } onclick={ toggleState.bind(this, 'is_req_visible') }>Ваши текущие заявки</h2>
   <tab if={ requests[0] && is_req_visible }>
-    <a href={ '#requests/'+id } class={ 'isle cf '+ state } each={ requests }>
+    <a href={ '#/requests/'+id } class={ 'isle cf '+ state } each={ requests }>
       <date>{ fn.parseDate(date) }</date>
       <time>{ time_begin } - { time_end }</time>
       <p>{ fn.data.rec_types[ type ] }</p>

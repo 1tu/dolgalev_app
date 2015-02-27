@@ -16,7 +16,6 @@
   t.on('mount', function() {
     tags.add(t)
     t.update({data: s.doctors.getCurrent()})
-    console.log(s.doctors.getCurrent());
   });
   
 </doctor>

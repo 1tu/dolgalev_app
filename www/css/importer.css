@@ -40,58 +40,58 @@ a.isle {
   text-decoration: none;
   color: #000;
 }
-header {
+#header {
   background: #21447a;
   display: block;
   height: 7vh;
   text-align: center;
 }
-header createrequest {
+#header createrequest {
   padding: 1vh 5vw;
   background-color: #e4e4e4;
   color: #21447a;
   font-weight: bold;
   border-radius: 5px;
 }
-header nav-item,
-header createrequest,
-header title {
+#header nav-item,
+#header createrequest,
+#header title {
   display: inline-block;
   font-size: 3.5vh;
 }
-header title,
-header createrequest,
-header back {
+#header title,
+#header createrequest,
+#header back {
   vertical-align: middle;
 }
-header back,
-header title {
+#header back,
+#header title {
   color: #fff;
 }
-header back {
+#header back {
   left: 0;
   box-sizing: border-box;
   background: #5787d2;
 }
-header nav-toggler,
-header nav,
-header back {
+#header nav-toggler,
+#header nav,
+#header back {
   position: absolute;
 }
-header nav-toggler,
-header nav {
+#header nav-toggler,
+#header nav {
   right: 0;
 }
-header nav-toggler,
-header back {
+#header nav-toggler,
+#header back {
   height: 7vh;
   width: 7vh;
 }
-header nav-toggler {
+#header nav-toggler {
   top: 0;
   background: #000;
 }
-header nav {
+#header nav {
   text-align: left;
   z-index: 100;
   top: 7vh;
@@ -102,34 +102,34 @@ header nav {
   background: #b6b6b6;
   font-size: 3.5vh;
 }
-header nav-item {
+#header nav-item {
   width: 100%;
   padding: 2vh 0;
   margin: 5px 0;
 }
 @media (min-width: 400px) {
-  header nav {
+  #header nav {
     text-align: center;
   }
-  header nav-item {
+  #header nav-item {
     width: 49%;
   }
 }
-index {
+#index {
   margin: 0 auto;
 }
-index h2 {
+#index h2 {
   display: block;
   margin: 15px 0 10px;
   font-size: 20px;
   font-weight: bold;
   text-align: center;
 }
-index .isle {
+#index .isle {
   min-height: 70px;
 }
-index .confirmed:before,
-index .not_confirmed:before {
+#index .confirmed:before,
+#index .not_confirmed:before {
   content: '';
   position: absolute;
   left: -6px;
@@ -138,16 +138,16 @@ index .not_confirmed:before {
   height: 12px;
   border-radius: 50%;
 }
-index .confirmed:before {
+#index .confirmed:before {
   background: #008000;
 }
-index .not_confirmed:before {
+#index .not_confirmed:before {
   background: #f00;
 }
-index date {
+#index date {
   float: right;
 }
-index time {
+#index time {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -159,6 +159,6 @@ index time {
   font-weight: bold;
   margin-top: 10px;
 }
-index p {
+#index p {
   margin-bottom: 10px;
 }

@@ -9,13 +9,7 @@ for (var key in stores) {
 
 
 // MOUNT TAGS
-riot.mount(['header, index'])
-
-
-// tags.changeViewTo('index')
-
-// setTimeout(function () {
-//   tags.changeViewTo('index')
-// }, 0);
+riot.mount( $id('header'), 'header')
+riot.mount( $id('index'), 'index')
 
 })()

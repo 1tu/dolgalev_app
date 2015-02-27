@@ -28,22 +28,24 @@ s.app = new (function () {
   rt.observable(this)
   var t = this
 
-  t.lastDataUpdate = ( ls.lastDataUpdate && JSON.parse(ls.lastDataUpdate) ) || {
+  t.mod = ( ls.mod && JSON.parse(ls.mod) ) || {
       doctors: new Date(0),
       request: new Date(0),
       receptions: new Date(0)
     }
 
+  t.server = 'localhost:1337'
   t.is_synced = false
+  t.is_auth = false
 
   t._init = function () {
-    // t.checkUpdates()
+    t.checkUpdates()
   }
 
   t.checkUpdates = function () {
     var xhr = new XMLHttpRequest()
       , data
-    xhr.open('GET', 'localhost:8080/check_updates', true)
+    xhr.open('GET', t.server+'/check_updates'+ fn.toQuery(t.mod), true)
     xhr.timeout = 3000
     xhr.onreadystatechange = function () {
       alert('changed')
@@ -52,15 +54,15 @@ s.app = new (function () {
         data = (typeof xhr.responseText == 'string')? JSON.parse(xhr.responseText) : xhr.responseText
         if (data.doctors) {
           s.doctors.setData(data.doctors)
-          t.dataUpdate('doctors', data.syncedAt)
+          t.updateMod('doctors', data.mod_doctors)
         }
         if (data.requests) {
           s.requests.setData(data.requests)
-          t.dataUpdate('requests', data.syncedAt)
+          t.updateMod('requests', data.mod_requests)
         }
         if (data.receptions) {
           s.receptions.setData(data.receptions)
-          t.dataUpdate('receptions', data.syncedAt)
+          t.updateMod('receptions', data.mod_receptions)
         }
 
         t.is_synced = true
@@ -68,9 +70,9 @@ s.app = new (function () {
     }
   }
 
-  t.dataUpdate = function (entity, data) {
-    t.lastDataUpdate[entity] = data[entity]
-    ls.lastDataUpdate = JSON.stringify(t.lastDataUpdate)
+  t.updateMod = function (entity, data) {
+    t.mod[entity] = data
+    ls.mod = JSON.stringify(t.mod)
   }
 
 })

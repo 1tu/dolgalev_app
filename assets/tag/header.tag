@@ -22,7 +22,7 @@
 
   goBack() {
     t.is_nav_opened = false
-    fn.goBack()
+    s.router.goBack()
   }
 
   navFilter(test) {
@@ -35,8 +35,8 @@
 
   changeRoute(e) {
     t.is_nav_opened = false
-    if (e.target.tagName == 'CREATEREQUEST') return riot.route( 'createRequest' )
-    riot.route( e.item.key )
+    if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/createRequest' )
+    riot.route( '/'+e.item.key )
   }
 
   rc.on('title_changed', function (data) {

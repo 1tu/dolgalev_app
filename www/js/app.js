@@ -1,3 +1,6 @@
+var $id = document.getElementById.bind(document)
+  , $ = document.querySelectorAll.bind(document)
+
 ;(function(f, rc, s) {
 
   f.data = {
@@ -10,19 +13,19 @@
   }
 
 
-  f.goBack = function () {
-    var path = s.router.current
-    if (path[0] === 'index') return false
-    else if (path.length === 1) riot.route('index')
-    else riot.route( f.reducePath(path) )
-  }
+  f.toQuery = function (obj) {
+    var query = ''
+      , is_start = true
 
-  f.reducePath = function (path) {
-    if (path.length === 1) return 'index'
-    var tmp = path.slice(0, -1)
-    return (s.router.exceptions.indexOf( tmp[ tmp.length-1 ] ) === -1)
-      ? tmp.join('/')
-      : f.reducePath(tmp)
+    for (var key in obj) {
+      if (is_start) {
+        is_start = false
+        query += '?'
+      } else query += '&'
+
+      query += key+'='+obj[key];
+    }
+    return query
   }
 
 
@@ -119,22 +122,24 @@ s.app = new (function () {
   rt.observable(this)
   var t = this
 
-  t.lastDataUpdate = ( ls.lastDataUpdate && JSON.parse(ls.lastDataUpdate) ) || {
+  t.mod = ( ls.mod && JSON.parse(ls.mod) ) || {
       doctors: new Date(0),
       request: new Date(0),
       receptions: new Date(0)
     }
 
+  t.server = 'localhost:1337'
   t.is_synced = false
+  t.is_auth = false
 
   t._init = function () {
-    // t.checkUpdates()
+    t.checkUpdates()
   }
 
   t.checkUpdates = function () {
     var xhr = new XMLHttpRequest()
       , data
-    xhr.open('GET', 'localhost:8080/check_updates', true)
+    xhr.open('GET', t.server+'/check_updates'+ fn.toQuery(t.mod), true)
     xhr.timeout = 3000
     xhr.onreadystatechange = function () {
       alert('changed')
@@ -143,15 +148,15 @@ s.app = new (function () {
         data = (typeof xhr.responseText == 'string')? JSON.parse(xhr.responseText) : xhr.responseText
         if (data.doctors) {
           s.doctors.setData(data.doctors)
-          t.dataUpdate('doctors', data.syncedAt)
+          t.updateMod('doctors', data.mod_doctors)
         }
         if (data.requests) {
           s.requests.setData(data.requests)
-          t.dataUpdate('requests', data.syncedAt)
+          t.updateMod('requests', data.mod_requests)
         }
         if (data.receptions) {
           s.receptions.setData(data.receptions)
-          t.dataUpdate('receptions', data.syncedAt)
+          t.updateMod('receptions', data.mod_receptions)
         }
 
         t.is_synced = true
@@ -159,9 +164,9 @@ s.app = new (function () {
     }
   }
 
-  t.dataUpdate = function (entity, data) {
-    t.lastDataUpdate[entity] = data[entity]
-    ls.lastDataUpdate = JSON.stringify(t.lastDataUpdate)
+  t.updateMod = function (entity, data) {
+    t.mod[entity] = data
+    ls.mod = JSON.stringify(t.mod)
   }
 
 })
@@ -271,34 +276,30 @@ s.requests = new (function () {
   t._all = [
       {
         name: 'header',
-        parent: 'body',
         is_static: true
       }, {
         name: 'index',
-        parent: 'main',
       }, {
         name: 'doctors',
-        parent: 'main',
       }, {
         name: 'doctor',
         className: 'isle',
-        parent: 'main',
       }, {
         name: 'reception',
         className: 'isle',
-        parent: 'main',
       }, {
         name: 'request',
         className: 'isle',
-        parent: 'main',
+      }, {
+        name: 'settings'
       }
     ]
 
   t.Tag = function (obj) {
     this.is_static = obj.is_static || false
-    this.className = obj.className || null
+    this.className = obj.className || ''
     this.is_mounted = false
-    this.parent = document.getElementById( obj.parent )
+    this.tag = null
   }
 
   t.data = {}
@@ -306,18 +307,11 @@ s.requests = new (function () {
   t._init = function () {
     t._all.forEach(function (item) {
       t.data[item.name] = new t.Tag(item)
-      // t.data[item.name] = { 
-      //   is_static: item.is_static || false,
-      //   id: item.id || null,
-      //   className: item.className || null,
-      //   is_mounted: false,
-      //   parent: document.getElementById( item.parent )
-      // } 
     })
   }
 
   t.add = function (tag) {
-    var name = tag.root.tagName.toLowerCase()
+    var name = tag.root.id.toLowerCase()
     if ( t.data[name] ) {
       t.data[name].is_mounted = true
       t.data[name].tag = tag
@@ -333,27 +327,18 @@ s.requests = new (function () {
   t.unmount = function (name) {
     var z = t.data[name]
     if (!z.is_mounted) return
+    z.tag.root.className = ''
     z.tag.unmount()
-    delete z.tag
+    z.tag = null 
     z.is_mounted = false
   }
 
   t.mount = function (name) {
     var z = t.data[name]
-      , el
     if (z.is_mounted) return
-    el = document.createElement(name)
-    el.id = name
+    var el = document.getElementById(name)
     z.className && (el.className = z.className)
-    z.parent.appendChild( el )
-    rt.mountTo(el, name)
-  }
-
-  t.changeViewTo = function (names) {
-    for (var key in t.data) {
-      if ( names.indexOf(key) === -1 && !t.data[key].is_static ) t.unmount(key)
-      else if (names.indexOf(key) !== -1) t.mount(key)
-    }
+    riot.mount(el, name)
   }
 
 
@@ -362,7 +347,7 @@ s.requests = new (function () {
 // ____ROUTER STORE
 s.router = new (function () {
 
-  rt.observable(this)
+  riot.observable(this)
   var t = this
 
   t.is_index = true
@@ -377,28 +362,48 @@ s.router = new (function () {
     }
   }
 
+  t.changeViewTo = function (names) {
+    for (var key in tags.data) {
+      if ( names.indexOf(key) === -1 && !tags.data[key].is_static ) tags.unmount(key)
+      else if (names.indexOf(key) !== -1) tags.mount(key)
+    }
+  }
+
+  t.goBack = function () {
+    if (t.current[0] === 'index') return false
+    else riot.route( '/'+t.reducePath(t.current) )
+  }
+
+  t.reducePath = function (path) {
+    if (path.length === 1) return 'index'
+    path = path.slice(0, -1)
+    return (t.exceptions.indexOf( path[ path.length-1 ] ) === -1)
+      ? path.join('/')
+      : t.reducePath(path)
+  }
+
 
   t.on('route_changed', function(path) {
     t.current = path
-    rc.trigger('set_title', s.header.nav[ path[0] ] ) 
+    RiotControl.trigger('set_title', stores.header.nav[ path[0] ] ) 
     t.checkIndexUpdate()
 
     if (path[1] && !isNaN(parseInt( path[1] ))) {
       fn.setActiveId()
-      tags.changeViewTo( path[0].slice(0, -1) )
+      t.changeViewTo( [path[0].slice(0, -1)] )
     } else 
-      tags.changeViewTo( path[0] )
+      t.changeViewTo( [path[0]] )
   })
 
 })
 
 
 // ____ROUTER INIT
-rt.route(function () {
-  rc.trigger('route_changed', [].slice.call(arguments) )
+riot.route(function () {
+  RiotControl.trigger('route_changed', [].slice.call(arguments, 1) )
 })
 
-rt.route('index')
+riot.route('/index')
 
 
 })(stores, riot, fn, RiotControl)
@@ -415,14 +420,8 @@ for (var key in stores) {
 
 
 // MOUNT TAGS
-riot.mount(['header, index'])
-
-
-// tags.changeViewTo('index')
-
-// setTimeout(function () {
-//   tags.changeViewTo('index')
-// }, 0);
+riot.mount( $id('header'), 'header')
+riot.mount( $id('index'), 'index')
 
 })()
 

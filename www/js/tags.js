@@ -1,4 +1,4 @@
-riot.tag('doctors', '<a href="{ \'#doctors/\'+id }" class="{ \'isle\' }" each="{ data }"><p>{ last_name }</p><p>{ first_name }</p><p>{ second_name }</p></a>', function(opts) {
+riot.tag('doctors', '<a href="{ \'#/doctors/\'+id }" class="{ \'isle\' }" each="{ data }"><p>{ last_name }</p><p>{ first_name }</p><p>{ second_name }</p></a>', function(opts) {
 
 
   var t = this
@@ -26,7 +26,6 @@ riot.tag('doctor', '<p>{ data.last_name }</p><p>{ data.first_name }</p><p>{ data
   t.on('mount', function() {
     tags.add(t)
     t.update({data: s.doctors.getCurrent()})
-    console.log(s.doctors.getCurrent());
   });
   
 
@@ -43,7 +42,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 
   this.goBack = function() {
     t.is_nav_opened = false
-    fn.goBack()
+    s.router.goBack()
     this.update()
   }.bind(this);
 
@@ -59,8 +58,8 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 
   this.changeRoute = function(e) {
     t.is_nav_opened = false
-    if (e.target.tagName == 'CREATEREQUEST') return riot.route( 'createRequest' )
-    riot.route( e.item.key )
+    if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/createRequest' )
+    riot.route( '/'+e.item.key )
     this.update()
   }.bind(this);
 
@@ -80,7 +79,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 });
 
 
-riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Ваши текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#receptions/\'+id }" class="{ \'isle cf \'+ state }" each="{ receptions }"><date>{ fn.parseDate(datetime) }</date><time>{ fn.parseTime(datetime) }</time><p>{ fn.data.rec_types[ type ] }</p><span>Ваш врач: { stores.doctors.getFullname(doctor_id) }</span></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Ваши текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#requests/\'+id }" class="{ \'isle cf \'+ state }" each="{ requests }"><date>{ fn.parseDate(date) }</date><time>{ time_begin } - { time_end }</time><p>{ fn.data.rec_types[ type ] }</p><span>К врачу: { stores.doctors.getFullname(doctor_id) }</span></a></tab>', function(opts) {
+riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Ваши текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf \'+ state }" each="{ receptions }"><date>{ fn.parseDate(datetime) }</date><time>{ fn.parseTime(datetime) }</time><p>{ fn.data.rec_types[ type ] }</p><span>Ваш врач: { stores.doctors.getFullname(doctor_id) }</span></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Ваши текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \'+ state }" each="{ requests }"><date>{ fn.parseDate(date) }</date><time>{ time_begin } - { time_end }</time><p>{ fn.data.rec_types[ type ] }</p><span>К врачу: { stores.doctors.getFullname(doctor_id) }</span></a></tab>', function(opts) {
 
   var t = this
     , rc = RiotControl
