@@ -3,6 +3,7 @@ var obs = new (function() {
   var callbacks = {}
     , list = []
     , _id = 0
+    , test = []
 
   function Obj () {
     list.push(this)
@@ -68,7 +69,9 @@ var obs = new (function() {
     return this.on(name, fn)
   }
 
-  Obj.prototype.trigger = function(name) {
+  
+
+  function trigger (name) {
     var args = [].slice.call(arguments, 1)
       , fns = callbacks[name] || []
 
@@ -84,25 +87,25 @@ var obs = new (function() {
           else fn.one.splice( fn.one.indexOf(owner), 1 )
         }
       })
-
-      // else if (fns[i] !== fn) { i-- } // Makes self-removal possible during iteration
-
     }
-
-    return this
   }
+
+
+  Obj.prototype.trigger = trigger
 
   return {
     Obj: Obj,
-    cb: callbacks,
-    id: _id
+    trigger: trigger
   }
 
 })
 
+var start = (new Date()).getTime()
+
 var z = new obs.Obj()
   , x = new obs.Obj()
   , y = new obs.Obj()
+  , b = new obs.Obj()
 
 
 function ss (data) {
@@ -117,3 +120,5 @@ x.trigger('test', '1')
 z.off('test')
 
 x.trigger('test', '2')
+
+console.log((new Date()).getTime() - start);
