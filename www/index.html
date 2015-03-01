@@ -14,10 +14,11 @@
   <header class="VA" id="header"></header>
   <main>
     <div id="index"></div>
-    <div id="doctor"></div>
+    <div id="doctors-item"></div>
     <div id="doctors"></div>
-    <div id="request"></div>
-    <div id="reception"></div>
+    <div id="requests-item"></div>
+    <div id="receptions-item"></div>
+    <div id="requests-new"></div>
     <div id="about"></div>
     <div id="settings"></div>
 
@@ -28,7 +29,8 @@
     var fn = {}
       , stores = {}
       , tags = {}
-      , app = {}
+      , app
+      , socket
   </script>
   <!-- LIBS -->
   <script src="/js/fakeData.js"></script>

@@ -32,7 +32,7 @@ body {
   display: block;
   position: relative;
   box-sizing: border-box;
-  margin: 10px 20px;
+  margin: 20px 20px;
   padding: 10px;
   background: #fff;
 }
@@ -126,7 +126,15 @@ a.isle {
   text-align: center;
 }
 #index .isle {
-  min-height: 70px;
+  padding: 0;
+}
+#index .inner {
+  padding: 10px;
+}
+#index .name {
+  font-weight: bold;
+  text-align: right;
+  line-height: 1.1;
 }
 #index .confirmed:before,
 #index .not_confirmed:before {
@@ -144,21 +152,24 @@ a.isle {
 #index .not_confirmed:before {
   background: #f00;
 }
+#index .datetime {
+  min-width: 70px;
+  height: 100%;
+  padding: 5px 10px;
+  margin-right: 10px;
+  font-size: 14px;
+  text-align: center;
+  background: #21447a;
+  float: left;
+  color: #fff;
+}
+#index .datetime p {
+  margin: 3px 0;
+}
+#index .time {
+  font-size: 24px;
+  margin-bottom: 8px !important;
+}
 #index date {
   float: right;
-}
-#index time {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: 6px 10px;
-  background: #21447a;
-  color: #fff;
-  border-top-left-radius: 7px;
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 10px;
-}
-#index p {
-  margin-bottom: 10px;
 }

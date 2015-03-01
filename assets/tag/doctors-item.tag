@@ -1,4 +1,4 @@
-<doctor>
+<doctors-item>
   <p>{ data.last_name }</p>
   <p>{ data.first_name }</p>
   <p>{ data.second_name }</p>
@@ -18,4 +18,4 @@
     t.update({data: s.doctors.getCurrent()})
   });
   
-</doctor>
+</doctors-item>

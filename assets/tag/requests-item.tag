@@ -1,4 +1,4 @@
-<request>
+<requests-item>
   <p>request</p>
 
   var t = this
@@ -10,5 +10,5 @@
     t.update({data: s.requests.getCurrent()})
   });
   
-</request>
+</requests-item>
 

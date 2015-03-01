@@ -77,25 +77,13 @@ var fake = {
 
   requests: [
     {"id":1,"doctor_id":1,"date":"2015/02/14","time_begin":"11:36","time_end":"18:04"},
-    {"id":2,"doctor_id":1,"date":"2015/05/05","time_begin":"9:39","time_end":"15:19"},
-    {"id":3,"doctor_id":3,"date":"2015/05/16","time_begin":"10:37","time_end":"18:29"},
-    {"id":4,"doctor_id":1,"date":"2015/02/25","time_begin":"9:52","time_end":"15:32"},
-    {"id":5,"doctor_id":3,"date":"2015/04/03","time_begin":"10:52","time_end":"15:39"},
-    {"id":6,"doctor_id":3,"date":"2015/05/17","time_begin":"11:05","time_end":"19:57"},
-    {"id":7,"doctor_id":2,"date":"2015/02/21","time_begin":"9:40","time_end":"16:42"},
-    {"id":8,"doctor_id":2,"date":"2015/02/17","time_begin":"10:42","time_end":"15:31"},
-    {"id":9,"doctor_id":2,"date":"2015/02/24","time_begin":"11:20","time_end":"15:34"},
-    {"id":10,"doctor_id":2,"date":"2015/03/26","time_begin":"11:51","time_end":"15:49"}
+    {"id":2,"doctor_id":1,"date":"2015/05/05","time_begin":"9:39","time_end":"15:19"}
   ],
 
   receptions: [
     {"id":1,"doctor_id":3,"state":"confirmed","type":"pull_tooth","datetime":"2015-03-05T09:47:56Z"},
     {"id":2,"doctor_id":2,"state":"not_confirmed","type":"reception","datetime":"2015-03-26T10:30:43Z"},
-    {"id":3,"doctor_id":1,"state":"confirmed","type":"reception","datetime":"2015-03-26T08:55:00Z"},
-    {"id":4,"doctor_id":3,"state":"confirmed","type":"reception","datetime":"2015-04-22T00:47:36Z"},
-    {"id":5,"doctor_id":2,"state":"confirmed","type":"pull_tooth","datetime":"2015-03-03T13:23:12Z"},
-    {"id":6,"doctor_id":1,"state":"confirmed","type":"pull_tooth","datetime":"2015-03-04T00:23:28Z"},
-    {"id":7,"doctor_id":3,"state":"not_confirmed","type":"reception","datetime":"2015-03-30T20:27:04Z"}
+    {"id":3,"doctor_id":1,"state":"confirmed","type":"reception","datetime":"2015-03-26T08:55:00Z"}
   ]
 
 }

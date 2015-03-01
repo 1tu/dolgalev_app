@@ -1,5 +1,15 @@
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
+  , on = function (eventName, fn, bool) {
+      return this.addEventListener
+        ? this.addEventListener(eventName, fn, bool || false) 
+        : this.attachEvent('on' + eventName, fn)
+    }
+  , off = function (eventName, fn, bool) {
+      return this.removeEventListener
+        ? this.removeEventListener(eventName, fn, bool || false) 
+        : this.detachEvent ('on' + eventName, fn)
+    }
 
 ;(function(f, rc, s) {
 
@@ -64,7 +74,8 @@ var $id = document.getElementById.bind(document)
 
       for (var key in newTmp) {
         if (oldTmp[key] && 
-              (oldTmp[key]['updatedAt'] != newTmp[key]['updatedAt']) ) newTmp[key]['_status'] = 'updated'
+          (oldTmp[key]['updatedAt'] != newTmp[key]['updatedAt']) ) 
+            newTmp[key]['_status'] = 'updated'
         else if ( !oldTmp[key] )
           newTmp[key]['_status'] = 'new'
 
@@ -80,13 +91,24 @@ var $id = document.getElementById.bind(document)
 
   f.parseDate = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
-    return f.data.days[ z.getDay() ]+', '+z.getDate()+' '+f.data.month[ z.getMonth() ]
+    return z.getDate()+' '+f.data.month[ z.getMonth() ]
+  }
+
+  f.parseDay = function (date) {
+    var z = (date instanceof Date)? date : new Date(date)
+    return f.data.days[ z.getDay() ]
   }
 
   f.parseTime = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
-    return z.getHours()+':'+z.getMinutes()
+      , h = z.getHours()+''
+      , m = z.getMinutes()+''
+    return (h.length ===1? '0'+h : h)+':'+(m.length ===1? '0'+m : m)
   }
+
+  // f.isNetwork = function () {
+  //   return navigator.connection.type === Connection.NONE? false : true
+  // }
 
 
 })(fn, RiotControl, stores)
@@ -115,77 +137,6 @@ s.header = new (function () {
 
 })
 
-// ______________
-
-s.app = new (function () {
-  
-  rt.observable(this)
-  var t = this
-
-  t.mod = ( ls.mod && JSON.parse(ls.mod) ) || {
-      doctors: new Date(0),
-      request: new Date(0),
-      receptions: new Date(0)
-    }
-
-  t.server = 'localhost:1337'
-  t.is_synced = false
-  t.is_auth = false
-
-  t._init = function () {
-    t.checkUpdates()
-  }
-
-  t.checkUpdates = function () {
-    var xhr = new XMLHttpRequest()
-      , data
-    xhr.open('GET', t.server+'/check_updates'+ fn.toQuery(t.mod), true)
-    xhr.timeout = 3000
-    xhr.onreadystatechange = function () {
-      alert('changed')
-      if (xhr.readyState == 4 && xhr.status == 200) {
-
-        data = (typeof xhr.responseText == 'string')? JSON.parse(xhr.responseText) : xhr.responseText
-        if (data.doctors) {
-          s.doctors.setData(data.doctors)
-          t.updateMod('doctors', data.mod_doctors)
-        }
-        if (data.requests) {
-          s.requests.setData(data.requests)
-          t.updateMod('requests', data.mod_requests)
-        }
-        if (data.receptions) {
-          s.receptions.setData(data.receptions)
-          t.updateMod('receptions', data.mod_receptions)
-        }
-
-        t.is_synced = true
-      }
-    }
-  }
-
-  t.updateMod = function (entity, data) {
-    t.mod[entity] = data
-    ls.mod = JSON.stringify(t.mod)
-  }
-
-})
-
-// ______________
-
-s.user = new (function () {
-  
-  rt.observable(this)
-  var t = this
-
-  t.data = ( ls.user && JSON.parse(ls.user) ) || {}
-
-  t.setData = function (newData) {
-    t.data = newData
-    ls.user = JSON.stringify(t.data)
-  }
-  
-})
 
 // ______________
 
@@ -282,13 +233,13 @@ s.requests = new (function () {
       }, {
         name: 'doctors',
       }, {
-        name: 'doctor',
+        name: 'doctors-item', 
         className: 'isle',
       }, {
-        name: 'reception',
+        name: 'receptions-item',
         className: 'isle',
       }, {
-        name: 'request',
+        name: 'requests-item',
         className: 'isle',
       }, {
         name: 'settings'
@@ -388,10 +339,16 @@ s.router = new (function () {
     RiotControl.trigger('set_title', stores.header.nav[ path[0] ] ) 
     t.checkIndexUpdate()
 
-    if (path[1] && !isNaN(parseInt( path[1] ))) {
-      fn.setActiveId()
-      t.changeViewTo( [path[0].slice(0, -1)] )
-    } else 
+    if (path[2]) {
+      fn.setActiveId();
+      t.changeViewTo( [path[0]+'-item-'+path[2]] )
+    }else if (path[1]) {
+      if ( !isNaN(parseInt( path[1] )) ) {
+        fn.setActiveId();
+        t.changeViewTo( [path[0]+'-item'] )
+      }else
+        t.changeViewTo( [path[0]+'-'+path[1]] )
+    }else 
       t.changeViewTo( [path[0]] )
   })
 
@@ -409,6 +366,166 @@ riot.route('/index')
 })(stores, riot, fn, RiotControl)
 
 
+// ERROR TYPES:
+// 1 = not logined
+// 2 = validate error
+
+
+;(function(s, rt, fn, ls) {
+
+on('deviceready', function () {
+
+  // INITIATE ALL STORES
+  for (var key in stores) {
+    if (stores[key]._init) stores[key]._init();
+    RiotControl.addStore( stores[key] )
+  }
+
+
+})
+
+
+// ______________
+
+
+s.user = new (function () {
+  
+  rt.observable(this)
+  var t = this
+
+  t.email = ls.email || null
+  t.password = ls.password || null
+  t.data = ( ls.user && JSON.parse(ls.user) ) || {}
+  t.settings = ( ls.settings && JSON.parse(ls.settings) ) || {}
+
+  t.setData = function (newData) {
+    t.data = newData
+    ls.user = JSON.stringify(t.data)
+  }
+
+  t.setSettings = function (newSettings) {
+    t.settings = newSettings
+    ls.settings = JSON.stringify(t.settings)
+  }
+
+  t.on('need_login_with', function (data) {
+    t.email = ls.email = data.email
+    t.password = ls.password = data.password
+    t.trigger('login')
+  })
+
+
+  
+})
+
+
+// ______________
+
+
+s.app = new (function () {
+  
+  rt.observable(this)
+  var t = this
+
+  t.mod = ( ls.mod && JSON.parse(ls.mod) ) || {
+      doctors: null,
+      requests: null,
+      receptions: null
+    }
+
+  t.server = 'localhost:1337'
+  t.is_auth = false
+
+  t._init = function () {
+    t.connect()
+
+    // on('online', t.connect)
+  }
+
+  t.isOnline = function () {
+    return (socket && socket.isConnected())? true : false
+  }
+
+  t.connect = function () {
+    if (socket) 
+      socket._raw.connect()
+    else 
+      socket = io.sails.connect()
+
+    socket.on('connect', t.checkUpdates)
+    off('online', t.connect)
+    on('offline', t.disconnect)
+  }
+
+  t.disconnect = function () {
+    socket.disconnect()
+    off('offline', t.disconnect)
+    on('online', t.connect)
+  }
+
+  t.login = function () {
+    if (!s.user.email || !s.user.password) 
+      return r.route('/auth/login')
+
+    if (!t.isOnline()) return
+
+    socket.post('/auth/login', {
+      email: s.user.email,
+      password: s.user.password
+    }, function (data) {
+      if (data.errorType) {
+        console.log('Авторизация не удалась по причине '+data.error)
+        return 
+      }
+
+      t.is_auth = true
+      t.chechUpdates()
+      rt.route('/index')
+    })
+
+  }
+
+  t.checkUpdates = function () {
+    if (!t.isOnline()) return
+
+    socket.off('connect', t.checkUpdates)
+    socket.get('/api/check_updates', t.mod, function (data) {
+
+      if (data.doctors) {
+        s.doctors.setData(data.doctors)
+        t.updateMod('doctors', data.mod_doctors)
+      }
+      if (data.requests) {
+        s.requests.setData(data.requests)
+        t.updateMod('requests', data.mod_requests)
+      }
+      if (data.receptions) {
+        s.receptions.setData(data.receptions)
+        t.updateMod('receptions', data.mod_receptions)
+      }
+
+      t.is_synced = true
+
+    })
+  }
+
+  t.updateMod = function (entity, data) {
+    t.mod[entity] = data
+    ls.mod = JSON.stringify(t.mod)
+  }
+
+  t.on('login', t.login)
+
+})
+
+
+})(stores, riot, fn, localStorage)
+
+
+
+
+
+
 ;(function() {
 
 // CONTROLLER FOR STORES
@@ -424,19 +541,3 @@ riot.mount( $id('header'), 'header')
 riot.mount( $id('index'), 'index')
 
 })()
-
-app = new (function(window, $) {
-
-  var self = this
-
-  self.elem = {
-    body: $('body')
-  }
-
-
-})( window, document.querySelectorAll.bind(document) )
-
-
-
-
-

@@ -1,4 +1,5 @@
 $dm = 12px
+$im = 10px
 
 #index
   margin: 0 auto
@@ -11,7 +12,15 @@ $dm = 12px
     text-align: center
 
   .isle
-    min-height: 70px
+    padding: 0
+
+  .inner
+    padding: $im
+
+  .name
+    font-weight: bold
+    text-align: right
+    line-height: 1.1
 
   .confirmed, .not_confirmed
     &:before
@@ -29,23 +38,23 @@ $dm = 12px
   .not_confirmed:before
     background: red
 
+  .datetime
+    min-width: 70px
+    height: 100%
+    padding: 5px 10px
+    margin-right: $im
+    font-size: 14px
+    text-align: center
+    background: $Cm
+    float: left
+    color: white
+
+    p
+      margin: 3px 0
+
+  .time
+    font-size: 24px
+    margin-bottom: 8px !important
+
   date
     float: right
-
-  time
-    position: absolute
-    bottom: 0
-    right: 0
-    padding: 6px 10px
-    background: $Cm
-    color: white
-    border-top-left-radius: 7px
-    font-size: 20px
-    font-weight: bold
-    margin-top: 10px
-
-  p
-    margin-bottom: 10px
-
-
-

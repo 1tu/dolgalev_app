@@ -1,4 +1,4 @@
-<reception>
+<receptions-item>
   <date>{ fn.parseDate(data.datetime) }</date>
   <time>{ fn.parseTime(data.datetime) }</time>
   <p>{ fn.data.rec_types[ data.type ] }</p>
@@ -13,5 +13,5 @@
     t.update({data: s.receptions.getCurrent()})
   });
   
-</reception>
+</receptions-item>
 

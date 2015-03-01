@@ -36,8 +36,8 @@ gulp.task('js', function() {
            './assets/js/fn.js',
            './assets/js/stores.js',
            './assets/js/router.js',
-           './assets/js/mounting.js',
            './assets/js/**/*.js', 
+           './assets/js/mounting.js',
            '!./assets/js/libs/**/*.js'
            ])
   .pipe(concat('app.js'))

@@ -931,7 +931,7 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
     io.sails = {
 
       // Whether to automatically connect a socket and save it as `io.socket`.
-      autoConnect: true,
+      autoConnect: false,
 
       // The route (path) to hit to get a x-origin (CORS) cookie
       // (or true to use the default: '/__getcookie')
