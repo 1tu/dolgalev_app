@@ -11,10 +11,15 @@ var $id = document.getElementById.bind(document)
         : this.detachEvent ('on' + eventName, fn)
     }
 
+on('DOMContentLoaded', function () {
+  Origami.fastclick.FastClick.attach(document.body);
+})
+
 ;(function(f, rc, s) {
 
   f.data = {
     days: ["Воскресение", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
+    rusDays: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресение"],
     month: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
     rec_types: {
         reception: 'Приём у врача',
@@ -110,33 +115,46 @@ var $id = document.getElementById.bind(document)
   //   return navigator.connection.type === Connection.NONE? false : true
   // }
 
+  f.createFormItem = function (name, opts) {
+    var el = document.createElement(opts.tag)
+    el.name = name
+    opts.type && (el.type = opts.type)
+    if (opts.tag === 'select' && opts.src) {
+      opts.src.forEach(function (item) {
+        var opt = document.createElement('option')
+
+        item.value && (opt.value = item.value)
+        item.text && (opt.innerHTML = item.text)
+        el.appendChild(opt)
+      })
+    }
+    return el
+  }
+
+
+  f.prepareToForm = function (arr, entity) {
+    var tmpArr = [{}]
+      , textPattern = {
+          doctors: ['last_name', 'first_name', 'second_name'],
+        }
+
+    function createText (item) {
+      return textPattern[entity].map(function (key) {
+        return item[key]
+      }).join(' ')
+    }
+
+    arr.forEach(function (item) {
+      tmpArr.push({value: item.id, text: createText(item)})
+    })
+    return tmpArr
+  }
+
 
 })(fn, RiotControl, stores)
 
 
 ;(function(s, rt, fn, ls) {
-
-s.header = new (function () {
-
-  rt.observable(this)
-  var t = this
-
-  t.title = ''
-  t.nav = {
-      createRequest: 'Записаться',
-      report: 'Отчеты',
-      settings: 'Настройки',
-      about: 'О клинике',
-      doctors: 'Врачи',
-    }
-
-  t.on('set_title', function(str) {
-    t.title = str
-    t.trigger('title_changed', t.title)
-  })
-
-})
-
 
 // ______________
 
@@ -149,9 +167,7 @@ s.doctors = new (function () {
   t.data = ( ls.doctors && JSON.parse(ls.doctors) ) || []
   t.currentId = null
 
-  t._init = function () {
-    if (!t.data[0]) t.data = fake[t._name] || [];
-  }
+  t._init = function () { }
 
   t.getFullname = function (id) {
     return fn.getById.call(t, id, function (doctor) {
@@ -178,9 +194,7 @@ s.receptions = new (function () {
   t.data = ( ls.receptions && JSON.parse(ls.receptions) ) || []
   t.currentId = null
 
-  t._init = function () {
-    if (!t.data[0]) t.data = fake[t._name] || [];
-  }
+  t._init = function () { }
 
   t.getCurrent = function () {
     return fn.getById.call(t, t.currentId)
@@ -201,15 +215,32 @@ s.requests = new (function () {
 
   t.data = ( ls.requests && JSON.parse(ls.requests) ) || []
 
-  t._init = function () {
-    if (!t.data[0]) t.data = fake[t._name] || [];
-  }
+  t._init = function () {}
 
   t.getCurrent = function () {
     return fn.getById.call(t, t.currentId)
   }
 
   t.setData = fn.syncData
+
+  t.create_request = function (query) {
+    socket.post('/request', query, function (data) {
+      alert(JSON.stringify(data))
+      
+      if (data.errorType) {
+        // TODO: notification
+        return
+      }
+
+      rt.route('/index')
+      t.data.push(data)
+      s.app.updateMod('requests', data.createdAt) 
+      ls.requests = JSON.stringify(t.data)
+      t.trigger('requests_updated', t.data)
+    })
+  }
+
+  t.on('create_request', t.create_request)
 
 })
 
@@ -231,6 +262,11 @@ s.requests = new (function () {
       }, {
         name: 'index',
       }, {
+        name: 'about',
+        className: 'isle',
+      }, {
+        name: 'reports',
+      }, {
         name: 'doctors',
       }, {
         name: 'doctors-item', 
@@ -242,7 +278,20 @@ s.requests = new (function () {
         name: 'requests-item',
         className: 'isle',
       }, {
-        name: 'settings'
+        name: 'requests-new',
+        className: 'isle',
+      }, {
+        name: 'settings',
+        className: 'isle',
+      }, {
+        name: 'auth-login',
+        className: 'isle',
+      }, {
+        name: 'auth-reset',
+        className: 'isle',
+      }, {
+        name: 'auth-new',
+        className: 'isle',
       }
     ]
 
@@ -302,7 +351,7 @@ s.router = new (function () {
   var t = this
 
   t.is_index = true
-  t.exceptions = ['requests', 'receptions']
+  t.exceptions = ['requests', 'receptions', 'auth']
   t.current = []
 
 
@@ -336,7 +385,6 @@ s.router = new (function () {
 
   t.on('route_changed', function(path) {
     t.current = path
-    RiotControl.trigger('set_title', stores.header.nav[ path[0] ] ) 
     t.checkIndexUpdate()
 
     if (path[2]) {
@@ -356,12 +404,9 @@ s.router = new (function () {
 
 
 // ____ROUTER INIT
-riot.route(function () {
-  RiotControl.trigger('route_changed', [].slice.call(arguments, 1) )
+rt.route(function () {
+  rc.trigger('route_changed', [].slice.call(arguments, 1) )
 })
-
-riot.route('/index')
-
 
 })(stores, riot, fn, RiotControl)
 
@@ -369,9 +414,10 @@ riot.route('/index')
 // ERROR TYPES:
 // 1 = not logined
 // 2 = validate error
+// 3 = invalid email/password
 
 
-;(function(s, rt, fn, ls) {
+;(function(s, rt, fn, ls, rc) {
 
 on('deviceready', function () {
 
@@ -395,6 +441,7 @@ s.user = new (function () {
 
   t.email = ls.email || null
   t.password = ls.password || null
+  t.is_registered = ls.is_registered || false
   t.data = ( ls.user && JSON.parse(ls.user) ) || {}
   t.settings = ( ls.settings && JSON.parse(ls.settings) ) || {}
 
@@ -408,14 +455,25 @@ s.user = new (function () {
     ls.settings = JSON.stringify(t.settings)
   }
 
-  t.on('need_login_with', function (data) {
+  t.on('set_emailpass', function(data) {
     t.email = ls.email = data.email
     t.password = ls.password = data.password
-    t.trigger('login')
+  });
+
+  t.on('registration_done', function() {
+    t.is_registered = ls.is_registered = "1"
   })
 
+  t.on('clear_emailpass', function(data) {
+    delete ls.email; t.email = null
+    delete ls.password; t.password = null
+  });
 
-  
+  t.on('need_login_with', function (data) {
+    t.trigger('set_emailpass',data)
+    rc.trigger('try_login')
+  })
+
 })
 
 
@@ -438,7 +496,6 @@ s.app = new (function () {
 
   t._init = function () {
     t.connect()
-
     // on('online', t.connect)
   }
 
@@ -453,43 +510,27 @@ s.app = new (function () {
       socket = io.sails.connect()
 
     socket.on('connect', t.checkUpdates)
-    off('online', t.connect)
-    on('offline', t.disconnect)
+    // off('online', t.connect)
+    // on('offline', t.disconnect)
   }
 
   t.disconnect = function () {
     socket.disconnect()
-    off('offline', t.disconnect)
-    on('online', t.connect)
+    // off('offline', t.disconnect)
+    // on('online', t.connect)
   }
 
-  t.login = function () {
-    if (!s.user.email || !s.user.password) 
-      return r.route('/auth/login')
-
-    if (!t.isOnline()) return
-
-    socket.post('/auth/login', {
-      email: s.user.email,
-      password: s.user.password
-    }, function (data) {
-      if (data.errorType) {
-        console.log('Авторизация не удалась по причине '+data.error)
-        return 
-      }
-
-      t.is_auth = true
-      t.chechUpdates()
-      rt.route('/index')
-    })
-
-  }
 
   t.checkUpdates = function () {
     if (!t.isOnline()) return
+    if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
+      alert(JSON.stringify(data))
+
+      if (data.errorType === 1) 
+        return t.try_login()
 
       if (data.doctors) {
         s.doctors.setData(data.doctors)
@@ -505,7 +546,6 @@ s.app = new (function () {
       }
 
       t.is_synced = true
-
     })
   }
 
@@ -514,19 +554,81 @@ s.app = new (function () {
     ls.mod = JSON.stringify(t.mod)
   }
 
-  t.on('login', t.login)
+
+  t.try_login = function () {
+    alert('start login')
+    if (!s.user.email || !s.user.password) 
+      return rt.route('/auth/new')
+
+    if (!t.isOnline()) return
+
+    socket.post('/auth/login', {
+      email: s.user.email,
+      password: s.user.password
+    }, function (data) {
+      alert(JSON.stringify(data))
+
+      if (data && data.errorType) {
+        if (data.errorType == 3) {
+          t.is_registered = ls.is_registered = false
+          rc.trigger('clear_emailpass')
+        }
+        // TODO: notification
+        alert('Авторизация не удалась по причине '+data.error)
+        // console.log('Авторизация не удалась по причине '+data.error)
+        return 
+      }
+
+      rt.route('/index')
+      socket.off('connect', t.try_login)
+      t.is_auth = true
+      t.checkUpdates()
+    })
+  }
+
+  t.try_register = function (query) {
+    alert('start reg')
+
+    // if (!t.isOnline()) {
+    //   // TODO: notification
+    //   return
+    // }
+
+    alert(t.isOnline())
+
+    socket.post('/auth/create', query, function (data) {
+
+      alert( 'register created' )
+
+      if (data && data.errorType) {
+        // TODO: notification
+        alert('Регистрация не удалась')
+        // console.log('Регистрация не удалась по причине '+data.error)
+        return 
+      }
+
+      s.user.is_registered = ls.is_registered = "1"
+      rc.trigger('set_emailpass', data)
+      rt.route('/index')
+      t.checkUpdates()
+    })
+  }
+
+  t.on('try_register', t.try_register)
+
+  t.on('try_login', t.try_login)
 
 })
 
 
-})(stores, riot, fn, localStorage)
+})(stores, riot, fn, localStorage, RiotControl)
 
 
 
 
 
 
-;(function() {
+;(function(s) {
 
 // CONTROLLER FOR STORES
 tags._init()
@@ -538,6 +640,10 @@ for (var key in stores) {
 
 // MOUNT TAGS
 riot.mount( $id('header'), 'header')
-riot.mount( $id('index'), 'index')
+if (s.user.is_registered) riot.route('/index')
+else riot.route('/auth/new')
 
-})()
+
+// alert(JSON.stringify(localStorage) )
+ 
+})(stores)

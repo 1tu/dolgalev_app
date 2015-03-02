@@ -6,75 +6,118 @@
 
   'use strict'
 
-riot.observable = function(el) {
 
-  el = el || {}
+riot.observable = (function() {
 
-  var callbacks = {},
-      _id = 0
+  var callbacks = {}
+    , list = {}
+    , _id = 0
 
-  el.on = function(events, fn) {
-    if (typeof fn == 'function') {
-      fn._id = typeof fn._id == 'undefined' ? _id++ : fn._id
+  function Obj (data) {
+    console.log('OBS CREATED');
+    this._id = _id++
+    list[this._id] = this
+    extend(this, data)
+  }
+
+  function spliceFn (fns, index) {
+    fns.splice(index, 1)
+    index--
+  }
+
+  Obj.prototype.on = function(events, fn) {
+    if (typeof fn === 'function') {
+      (fn.owners || (fn.owners = {}))[this._id] = 1
 
       events.replace(/\S+/g, function(name, pos) {
-        (callbacks[name] = callbacks[name] || []).push(fn)
-        fn.typed = pos > 0
+        if ( callbacks[name] && callbacks[name].indexOf(fn) !== -1 ) return
+        (callbacks[name] = callbacks[name] || []).push( fn )
       })
     }
-    return el
+    return this
   }
 
-  el.off = function(events, fn) {
-    if (events == '*') callbacks = {}
-    else {
-      events.replace(/\S+/g, function(name) {
-        if (fn) {
-          var arr = callbacks[name]
-          for (var i = 0, cb; (cb = arr && arr[i]); ++i) {
-            if (cb._id == fn._id) { arr.splice(i, 1); i-- }
-          }
-        } else {
-          callbacks[name] = []
-        }
-      })
-    }
-    return el
-  }
 
-  // only single event supported
-  el.one = function(name, fn) {
-    if (fn) fn.one = 1
-    return el.on(name, fn)
-  }
+  Obj.prototype.off = function(events, fn) {
+    var self = this
 
-  el.trigger = function(name) {
-    var args = [].slice.call(arguments, 1),
-        fns = callbacks[name] || []
-
-    for (var i = 0, fn; (fn = fns[i]); ++i) {
-      if (!fn.busy) {
-        fn.busy = 1
-        fn.apply(el, fn.typed ? [name].concat(args) : args)
-        if (fn.one) { fns.splice(i, 1); i-- }
-         else if (fns[i] !== fn) { i-- } // Makes self-removal possible during iteration
-        fn.busy = 0
+    function delOwnerCbs (id, fns) {
+      for (var i = 0, fn; (fn = fns[i]); ++i) {
+        delete fn.owners[id]
+        if (!Object.keys(fn.owners).length) 
+          spliceFn(fns, i)
       }
     }
 
-    return el
+    if (events === '*') 
+      for (var key in callbacks) delOwnerCbs(self._id, callbacks[key])
+    else {
+      events.replace(/\S+/g, function(name) {
+        delOwnerCbs(self._id, callbacks[name])
+      })
+    }
+    return self
   }
 
-  return el
+  // only single event supported
+  Obj.prototype.one = function(name, fn) {
+    if (fn) (fn.one || (fn.one = {}))[this._id] = 1
+    return this.on(name, fn)
+  }
 
-}
+  Obj.prototype.remove = function() {
+    delete list[this._id]
+  }
+
+  Obj.prototype.trigger = trigger
+
+  function trigger (name) {
+    var args = [].slice.call(arguments, 1)
+      , fns = callbacks[name] || []
+
+    for (var i = 0, fn; (fn = fns[i]); ++i) {
+      for (var ownerId in fn.owners) {
+        if (fn.busy) {
+          console.log('BUSY - ', name, this);
+        } else {
+          fn.busy = 1
+          if (list[ownerId]) fn.apply(list[ownerId], args)
+          else {
+            delete fn.owners[ownerId]
+            if (!Object.keys(fn.owners).length) 
+              spliceFn(fns, i)
+          }
+
+
+          if (fn.one && fn.one[ownerId]) {
+            delete fn.owners[ownerId]
+            delete fn.one[ownerId]
+          }
+          fn.busy = 0
+        }
+      }
+    }
+  }
+
+  return {
+    Obj: Obj,
+    trigger: trigger,
+    cbs: callbacks,
+    list: list
+  }
+
+})()
+
+
+
+
 ;(function(riot, evt) {
 
   // browsers only
   if (!this.top) return
 
   var loc = location,
-      fns = riot.observable(),
+      fns = new riot.observable.Obj(),
       win = window,
       current
 
@@ -119,27 +162,41 @@ riot.observable = function(el) {
 
 })(riot, 'hashchange')
 /*
+
 //// How it works?
+
+
 Three ways:
+
 1. Expressions: tmpl('{ value }', data).
    Returns the result of evaluated expression as a raw object.
+
 2. Templates: tmpl('Hi { name } { surname }', data).
    Returns a string with evaluated expressions.
+
 3. Filters: tmpl('{ show: !done, highlight: active }', data).
    Returns a space separated list of trueish keys (mainly
    used for setting html classes), e.g. "show highlight".
+
+
 // Template examples
+
 tmpl('{ title || "Untitled" }', data)
 tmpl('Results are { results ? "ready" : "loading" }', data)
 tmpl('Today is { new Date() }', data)
 tmpl('{ message.length > 140 && "Message is too long" }', data)
 tmpl('This item got { Math.round(rating) } stars', data)
 tmpl('<h1>{ title }</h1>{ body }', data)
+
+
 // Falsy expressions in templates
+
 In templates (as opposed to single expressions) all falsy values
 except zero (undefined/null/false) will default to empty string:
+
 tmpl('{ undefined } - { false } - { null } - { 0 }', {})
 // will return: " - - - 0"
+
 */
 
 
@@ -328,16 +385,7 @@ function _each(dom, parent, expr) {
     tags.splice(pos, 0, tag)
   }
 
-
-  // clean template code after update (and let walk finish it's parse)
-  parent.one('update', function() {
-    root.removeChild(dom)
-
-  }).one('premount', function() {
-    if (root.stub) root = parent.root
-
-  }).on('update', function() {
-
+  function onUpdate () {
     var items = tmpl(expr.val, parent)
     if (!items) return
 
@@ -418,7 +466,17 @@ function _each(dom, parent, expr) {
 
     rendered = items.slice()
 
-  })
+  }
+
+
+  // clean template code after update (and let walk finish it's parse)
+  parent.one('update', function() {
+    root.removeChild(dom)
+
+  }).one('premount', function() {
+    if (root.stub) root = parent.root
+
+  }).on('update', onUpdate )
 
 }
 
@@ -477,8 +535,9 @@ function parseLayout(root, tag, expressions) {
 
 function Tag(impl, conf) {
 
+  riot.observable.Obj.call(this)
 
-  var self = riot.observable(this)
+  var self = this
   this.opts = inherit(conf.opts) || {}
   this.dom = mkdom(impl.tmpl)
   this.parent = conf.parent
@@ -511,7 +570,7 @@ function Tag(impl, conf) {
       while (self.dom.firstChild) self.root.appendChild(self.dom.firstChild)
     }
 
-    if (self.root.stub) self.root = self.parent.root
+    if (self.root.stub) self.root = root = self.parent.root
 
     // one way data flow: propagate updates and unmounts downwards from parent to children
     self.parent && self.parent.on('update', self.update).one('unmount', self.unmount)
@@ -534,6 +593,7 @@ function Tag(impl, conf) {
 
 }
 
+Tag.prototype = riot.observable.Obj.prototype
 
   // options
 Tag.prototype.updateOpts = function (rem_attr) {
@@ -544,7 +604,7 @@ Tag.prototype.updateOpts = function (rem_attr) {
 }
 
 Tag.prototype.update = function(data, init) {
-  extend(this, data, this.item)
+  extend(self, data, this.item)
   this.updateOpts()
   this.trigger('update', this.item)
   update(this.expressions, this, this.item)
@@ -565,7 +625,15 @@ Tag.prototype.unmount = function() {
   }
 
   return self
+
 }
+
+
+
+
+
+
+
 
 
 function setEventHandler(name, handler, dom, tag, item) {

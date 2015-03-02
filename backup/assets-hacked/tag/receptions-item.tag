@@ -5,12 +5,10 @@
   <span>Ваш врач: { stores.doctors.getFullname( data.doctor_id ) }</span>
 
   var t = this
-    , rc = RiotControl
     , s = stores
 
   t.on('mount', function() {
     tags.add(t)
-    rc.trigger('set_title', 'Запись к врачу')
     t.update({data: s.receptions.getCurrent()})
   });
   

@@ -1,4 +1,4 @@
-;(function(s, rt, fn, rc) {
+;(function(s, rt, fn) {
 
 // ______________
 // NOT OBSERVABLE
@@ -13,11 +13,6 @@
       }, {
         name: 'index',
       }, {
-        name: 'about',
-        className: 'isle',
-      }, {
-        name: 'reports',
-      }, {
         name: 'doctors',
       }, {
         name: 'doctors-item', 
@@ -29,20 +24,7 @@
         name: 'requests-item',
         className: 'isle',
       }, {
-        name: 'requests-new',
-        className: 'isle',
-      }, {
-        name: 'settings',
-        className: 'isle',
-      }, {
-        name: 'auth-login',
-        className: 'isle',
-      }, {
-        name: 'auth-reset',
-        className: 'isle',
-      }, {
-        name: 'auth-new',
-        className: 'isle',
+        name: 'settings'
       }
     ]
 
@@ -95,69 +77,69 @@
 
 })();
 
+
 // ____ROUTER STORE
-s.router = new (function () {
+s.router = new rt.observable.Obj({
 
-  riot.observable(this)
-  var t = this
+  is_index: true,
+  exceptions: ['requests', 'receptions'],
+  current: [],
 
-  t.is_index = true
-  t.exceptions = ['requests', 'receptions', 'auth']
-  t.current = []
-
-
-  t.checkIndexUpdate = function () {
-    if ((t.current[0] === 'index' && !t.is_index) || (t.current[0] !== 'index' && t.is_index)) {
-      t.is_index = !t.is_index
-      t.trigger('index_changed', t.is_index)
+  checkIndexUpdate: function () {
+    if ((this.current[0] === 'index' && !this.is_index) 
+    || (this.current[0] !== 'index' && this.is_index)) {
+      this.is_index = !this.is_index
+      this.trigger('index_changed', this.is_index)
     }
-  }
+  },
 
-  t.changeViewTo = function (names) {
+  changeViewTo: function (names) {
     for (var key in tags.data) {
       if ( names.indexOf(key) === -1 && !tags.data[key].is_static ) tags.unmount(key)
       else if (names.indexOf(key) !== -1) tags.mount(key)
     }
-  }
+  },
 
-  t.goBack = function () {
-    if (t.current[0] === 'index') return false
-    else riot.route( '/'+t.reducePath(t.current) )
-  }
+  goBack: function () {
+    if (this.current[0] === 'index') return false
+    else riothis.route( '/'+this.reducePath(this.current) )
+  },
 
-  t.reducePath = function (path) {
+  reducePath: function (path) {
     if (path.length === 1) return 'index'
     path = path.slice(0, -1)
-    return (t.exceptions.indexOf( path[ path.length-1 ] ) === -1)
+    return (this.exceptions.indexOf( path[ path.length-1 ] ) === -1)
       ? path.join('/')
-      : t.reducePath(path)
+      : this.reducePath(path)
   }
 
+}).on('route_changed', function(path) {
+  var t = this
+  t.current = path
+  rt.observable.trigger('set_title', stores.header.nav[ path[0] ] ) 
+  t.checkIndexUpdate()
 
-  t.on('route_changed', function(path) {
-    t.current = path
-    t.checkIndexUpdate()
-
-    if (path[2]) {
+  if (path[2]) {
+    fn.setActiveId();
+    t.changeViewTo( [path[0]+'-item-'+path[2]] )
+  }else if (path[1]) {
+    if ( !isNaN(parseInt( path[1] )) ) {
       fn.setActiveId();
-      t.changeViewTo( [path[0]+'-item-'+path[2]] )
-    }else if (path[1]) {
-      if ( !isNaN(parseInt( path[1] )) ) {
-        fn.setActiveId();
-        t.changeViewTo( [path[0]+'-item'] )
-      }else
-        t.changeViewTo( [path[0]+'-'+path[1]] )
-    }else 
-      t.changeViewTo( [path[0]] )
-  })
-
+      t.changeViewTo( [path[0]+'-item'] )
+    }else
+      t.changeViewTo( [path[0]+'-'+path[1]] )
+  }else 
+    t.changeViewTo( [path[0]] )
 })
 
 
 // ____ROUTER INIT
 rt.route(function () {
-  rc.trigger('route_changed', [].slice.call(arguments, 1) )
+  rt.observable.trigger('route_changed', [].slice.call(arguments, 1) )
 })
 
-})(stores, riot, fn, RiotControl)
+rt.route('/index')
+
+
+})(stores, riot, fn)
 

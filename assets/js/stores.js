@@ -1,27 +1,5 @@
 ;(function(s, rt, fn, ls) {
 
-s.header = new (function () {
-
-  rt.observable(this)
-  var t = this
-
-  t.title = ''
-  t.nav = {
-      createRequest: 'Записаться',
-      report: 'Отчеты',
-      settings: 'Настройки',
-      about: 'О клинике',
-      doctors: 'Врачи',
-    }
-
-  t.on('set_title', function(str) {
-    t.title = str
-    t.trigger('title_changed', t.title)
-  })
-
-})
-
-
 // ______________
 
 s.doctors = new (function () {
@@ -33,9 +11,7 @@ s.doctors = new (function () {
   t.data = ( ls.doctors && JSON.parse(ls.doctors) ) || []
   t.currentId = null
 
-  t._init = function () {
-    if (!t.data[0]) t.data = fake[t._name] || [];
-  }
+  t._init = function () { }
 
   t.getFullname = function (id) {
     return fn.getById.call(t, id, function (doctor) {
@@ -62,9 +38,7 @@ s.receptions = new (function () {
   t.data = ( ls.receptions && JSON.parse(ls.receptions) ) || []
   t.currentId = null
 
-  t._init = function () {
-    if (!t.data[0]) t.data = fake[t._name] || [];
-  }
+  t._init = function () { }
 
   t.getCurrent = function () {
     return fn.getById.call(t, t.currentId)
@@ -85,15 +59,32 @@ s.requests = new (function () {
 
   t.data = ( ls.requests && JSON.parse(ls.requests) ) || []
 
-  t._init = function () {
-    if (!t.data[0]) t.data = fake[t._name] || [];
-  }
+  t._init = function () {}
 
   t.getCurrent = function () {
     return fn.getById.call(t, t.currentId)
   }
 
   t.setData = fn.syncData
+
+  t.create_request = function (query) {
+    socket.post('/request', query, function (data) {
+      alert(JSON.stringify(data))
+      
+      if (data.errorType) {
+        // TODO: notification
+        return
+      }
+
+      rt.route('/index')
+      t.data.push(data)
+      s.app.updateMod('requests', data.createdAt) 
+      ls.requests = JSON.stringify(t.data)
+      t.trigger('requests_updated', t.data)
+    })
+  }
+
+  t.on('create_request', t.create_request)
 
 })
 

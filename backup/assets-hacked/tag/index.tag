@@ -8,7 +8,7 @@
         <p>{ fn.parseDay(datetime) }</p>
       </div>
       <div class="inner">
-        <p style="font-size: 14px; margin-bottom: 10px">Вас примет:</p>
+        <p style="font-size: 14px; margin-bottom: 10px">Консультация у врача</p>
         <p class="name">{ stores.doctors.getFullname(doctor_id) }  </p>
       </div>
     </a>
@@ -23,6 +23,7 @@
         <p>{ fn.parseDay(date) }</p>
       </div>
       <div class="inner">
+        <p style="font-size: 14px; margin-bottom: 10px">Врач</p>
         <p class="name">{ stores.doctors.getFullname(doctor_id) }  </p>
       </div>
     </a>
@@ -31,7 +32,6 @@
   <h2 if={ !requests[0] && !receptions[0] }>Вы не записывались на приём</h2>
 
   var t = this
-    , rc = RiotControl
     , s = stores
 
   t.is_rec_visible = true
@@ -47,11 +47,11 @@
     tags.add(t)
   })
 
-  rc.on('requests_updated', function (data) {
+  t.on('requests_updated', function (data) {
     t.update({requests: data})  
   })
 
-  rc.on('receptions_updated', function (data) {
+  t.on('receptions_updated', function (data) {
     t.update({receptions: data})  
   })
 

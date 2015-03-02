@@ -937,7 +937,7 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
       // (or true to use the default: '/__getcookie')
 
       useCORSRouteToGetCookie: true,
-      url: 'http://localhost:1337',
+      url: 'http://192.168.1.38:1337', 
 
       // The environment we're running in.
       // (logs are not displayed when this is set to 'production')

@@ -1,4 +1,4 @@
-;(function() {
+;(function(s) {
 
 // CONTROLLER FOR STORES
 tags._init()
@@ -10,6 +10,10 @@ for (var key in stores) {
 
 // MOUNT TAGS
 riot.mount( $id('header'), 'header')
-riot.mount( $id('index'), 'index')
+if (s.user.is_registered) riot.route('/index')
+else riot.route('/auth/new')
 
-})()
+
+// alert(JSON.stringify(localStorage) )
+ 
+})(stores)

@@ -7,19 +7,15 @@
 
 
   var t = this
-    , rc = RiotControl
     , s = stores
 
   t.data = s.doctors.data || []
 
-  console.log(this);
-
-  rc.on('doctors_update', function(data) {
+  t.on('doctors_update', function(data) {
     t.update({data: data})
   });
   
   t.on('mount', function() {
-    rc.trigger('set_title', 'Врачи')
     tags.add(t)
   });
 

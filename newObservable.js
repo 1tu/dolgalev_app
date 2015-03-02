@@ -1,104 +1,96 @@
-var obs = new (function() {
+var obs = (function() {
 
   var callbacks = {}
-    , list = []
+    , list = {}
     , _id = 0
-    , test = []
 
   function Obj () {
-    list.push(this)
     this._id = _id++
+    list[this._id] = this
+    // extend(this, data)
   }
-
-  function fnInCb (event, fn) {
-    return callbacks[event] && callbacks[event].indexOf(fn) !== -1? true : false
-  }
-
-  function ownerOfFn (id, fn) {
-    return (fn.owners && fn.owners.indexOf(id) !== -1)? true : false
-  }
-
-  function delOwnerCbs (id, fns) {
-    fns.forEach(function (fn) {
-      delFn(id, fns, fn)
-    })
-  }
-
-  function delFn (id, fns, fn, bool) {
-    if ( !bool && !ownerOfFn(id, fn) ) return
-    if (fn.owners.length === 1) {
-      delete fn.owners;
-      fns.splice( fns.indexOf(fn), 1 )
-    }else 
-      fn.owners.splice( fn.owners.indexOf(id), 1)
-  }
-
 
   Obj.prototype.on = function(events, fn) {
-    var self = this
-    if (typeof fn == 'function') {
-      (fn.owners = fn.owners || []).push( self._id )
+    if (typeof fn === 'function') {
+      (fn.owners || (fn.owners = {}))[this._id] = 1
 
       events.replace(/\S+/g, function(name, pos) {
-        if ( fnInCb(name, fn) ) return
+        if ( callbacks[name] && callbacks[name].indexOf(fn) !== -1 ) return
         (callbacks[name] = callbacks[name] || []).push( fn )
       })
     }
-    return self
+    return this
   }
-
 
   Obj.prototype.off = function(events, fn) {
     var self = this
 
-    // TODO: filter all funcs with their OWNERS
-    if (events == '*') 
+    function delOwnerCbs (id, fns) {
+      for (var i = 0, fn; (fn = fns[i]); ++i) delete fn.owners[id]
+    }
+
+    if (events === '*') 
       for (var key in callbacks) delOwnerCbs(self._id, callbacks[key])
     else {
       events.replace(/\S+/g, function(name) {
         delOwnerCbs(self._id, callbacks[name])
       })
     }
-    
     return self
   }
 
-  // only single event supported
   Obj.prototype.one = function(name, fn) {
-    if (fn) (fn.one = fn.one || []).push( this._id )
+    if (fn) (fn.one || (fn.one = {}))[this._id] = 1
     return this.on(name, fn)
   }
 
-  
+  Obj.prototype.remove = function() {
+    delete list[this._id]
+  }
+
+  Obj.prototype.trigger = trigger
 
   function trigger (name) {
     var args = [].slice.call(arguments, 1)
       , fns = callbacks[name] || []
 
     for (var i = 0, fn; (fn = fns[i]); ++i) {
+      for (var ownerId in fn.owners) {
+        if (!fn.busy) {
+          fn.busy = 1
+          if (list[ownerId]) fn.apply(list[ownerId], args)
+          else delete fn.owners[ownerId]
 
-      fn.owners.forEach(function (owner) {
-        fn.apply(list[owner], args)
-
-        if (fn.one && fn.one.indexOf(owner) !== -1 ) {
-          delFn(owner, fns, fn, true)
-
-          if (fn.one.length === 1) delete fn.one;
-          else fn.one.splice( fn.one.indexOf(owner), 1 )
+          if (fn.one && fn.one[ownerId]) {
+            delete fn.owners[ownerId]
+            delete fn.one[ownerId]
+          }
+          fn.busy = 0
         }
-      })
+      }
     }
   }
-
-
-  Obj.prototype.trigger = trigger
 
   return {
     Obj: Obj,
     trigger: trigger
   }
 
-})
+})()
+
+
+
+var Next = function (data) {
+  obs.Obj.call(this)
+  this.data = data
+}
+
+Next.prototype = obs.Obj.prototype
+
+
+Next.prototype.say = function () {
+  console.log(this._id)
+}
 
 var start = (new Date()).getTime()
 
@@ -106,19 +98,26 @@ var z = new obs.Obj()
   , x = new obs.Obj()
   , y = new obs.Obj()
   , b = new obs.Obj()
+  , q = new obs.Obj()
+  , w = new obs.Obj()
+  , e = new obs.Obj()
+
+var zz = new Next('test111')
+var xx = new Next('test222')
+
 
 
 function ss (data) {
   console.log(this, data);
 }
 
-z.on('test', ss)
-y.on('test', ss)
+console.log(zz._id);
+zz.say()
+
+zz.on('test', ss)
+xx.on('test', ss)
+x.on('test', ss)
 
 x.trigger('test', '1')
 
-z.off('test')
-
-x.trigger('test', '2')
-
-console.log((new Date()).getTime() - start);
+// console.log((new Date()).getTime() - start)
