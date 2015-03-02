@@ -82,8 +82,8 @@ s.app = new (function () {
   t.is_auth = false
 
   t._init = function () {
-    t.connect()
-    // on('online', t.connect)
+    // t.connect()
+    on('online', t.connect)
   }
 
   t.isOnline = function () {
@@ -97,14 +97,14 @@ s.app = new (function () {
       socket = io.sails.connect()
 
     socket.on('connect', t.checkUpdates)
-    // off('online', t.connect)
-    // on('offline', t.disconnect)
+    off('online', t.connect)
+    on('offline', t.disconnect)
   }
 
   t.disconnect = function () {
     socket.disconnect()
-    // off('offline', t.disconnect)
-    // on('online', t.connect)
+    off('offline', t.disconnect)
+    on('online', t.connect)
   }
 
 
@@ -114,7 +114,6 @@ s.app = new (function () {
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
-      alert(JSON.stringify(data))
 
       if (data.errorType === 1) 
         return t.try_login()
@@ -143,7 +142,6 @@ s.app = new (function () {
 
 
   t.try_login = function () {
-    alert('start login')
     if (!s.user.email || !s.user.password) 
       return rt.route('/auth/new')
 
@@ -153,7 +151,6 @@ s.app = new (function () {
       email: s.user.email,
       password: s.user.password
     }, function (data) {
-      alert(JSON.stringify(data))
 
       if (data && data.errorType) {
         if (data.errorType == 3) {
@@ -161,7 +158,6 @@ s.app = new (function () {
           rc.trigger('clear_emailpass')
         }
         // TODO: notification
-        alert('Авторизация не удалась по причине '+data.error)
         // console.log('Авторизация не удалась по причине '+data.error)
         return 
       }
@@ -174,23 +170,15 @@ s.app = new (function () {
   }
 
   t.try_register = function (query) {
-    alert('start reg')
 
-    // if (!t.isOnline()) {
-    //   // TODO: notification
-    //   return
-    // }
-
-    alert(t.isOnline())
-
+    if (!t.isOnline()) {
+      // TODO: notification
+      return
+    }
     socket.post('/auth/create', query, function (data) {
-
-      alert( 'register created' )
-
       if (data && data.errorType) {
         // TODO: notification
-        alert('Регистрация не удалась')
-        // console.log('Регистрация не удалась по причине '+data.error)
+        console.log('Регистрация не удалась по причине '+data.error)
         return 
       }
 
