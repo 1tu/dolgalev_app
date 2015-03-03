@@ -490,11 +490,11 @@ s.app = new (function () {
       receptions: null
     }
 
-  t.server = 'localhost:1337'
+  t.server = '192.168.1.38:1337'
   t.is_auth = false
 
   t._init = function () {
-    t.connect()
+    // t.connect()
     on('online', t.connect)
   }
 
@@ -503,6 +503,7 @@ s.app = new (function () {
   }
 
   t.connect = function () {
+    navigator.notification.alert('try connect')
     if (socket) 
       socket._raw.connect()
     else 
@@ -526,6 +527,8 @@ s.app = new (function () {
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
+
+      navigator.notification.alert( Object.keys(data).joins(', ') )
 
       if (data.errorType === 1) 
         return t.try_login()
@@ -569,10 +572,10 @@ s.app = new (function () {
           t.is_registered = ls.is_registered = false
           rc.trigger('clear_emailpass')
         }
-        // TODO: notification
-        // console.log('Авторизация не удалась по причине '+data.error)
-        return 
+        return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
+
+      navigator.notification.alert('login success')
 
       rt.route('/index')
       socket.off('connect', t.try_login)
@@ -630,6 +633,6 @@ riot.mount( $id('header'), 'header')
 if (s.user.is_registered) riot.route('/index')
 else riot.route('/auth/new')
 navigator.splashscreen.hide()
-
+navigator.notification.alert(JSON.stringify(localStorage.mod))
  
 })(stores)
