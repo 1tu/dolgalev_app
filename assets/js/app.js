@@ -72,11 +72,11 @@ s.app = new (function () {
 
   t._init = function () {
     // t.connect()
-    on('online', t.connect)
-    on('backbutton', s.router.goBack)
-    on('menubutton', function () {
+    document.addEventListener('online', t.connect, false)
+    document.addEventListener('backbutton', s.router.goBack, false)
+    document.addEventListener('menubutton', function () {
       t.trigger('toggle_nav')
-    })
+    }, false)
   }
 
   t.isOnline = function () {
@@ -98,15 +98,15 @@ s.app = new (function () {
     }
 
     socket.on('connect', t.checkUpdates)
-    off('online', t.connect)
-    on('offline', t.disconnect)
+    document.removeEventListener('online', t.connect, false)
+    document.addEventListener('offline', t.disconnect, false)
   }
 
   t.disconnect = function () {
     console.log('internet FAILED');
     socket.disconnect()
-    off('offline', t.disconnect)
-    on('online', t.connect)
+    document.removeEventListener('offline', t.disconnect, false)
+    document.addEventListener('online', t.connect, false)
   }
 
 
