@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "ru.dolgalev-sk.app"
-        version   = "0.6.2">
+        version   = "0.6.3">
 
     <name>Клиника Долгалева</name>
 

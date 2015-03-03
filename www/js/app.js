@@ -503,7 +503,6 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    navigator.notification.alert('try connect')
     if (socket) 
       socket._raw.connect()
     else 
@@ -633,6 +632,5 @@ riot.mount( $id('header'), 'header')
 if (s.user.is_registered) riot.route('/index')
 else riot.route('/auth/new')
 navigator.splashscreen.hide()
-navigator.notification.alert(JSON.stringify(localStorage.mod))
  
 })(stores)

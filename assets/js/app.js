@@ -91,7 +91,6 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    navigator.notification.alert('try connect')
     if (socket) 
       socket._raw.connect()
     else 
