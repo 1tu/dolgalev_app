@@ -292,6 +292,11 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
     this.update()
   }.bind(this);
 
+  rc.on('toggle_nav', function () {
+    t.toggleNav()
+    t.update()
+  })
+
   rc.on('set_title', function (data) {
     t.update({title: data})
   })

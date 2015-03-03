@@ -111,9 +111,9 @@ on('DOMContentLoaded', function () {
     return (h.length ===1? '0'+h : h)+':'+(m.length ===1? '0'+m : m)
   }
 
-  // f.isNetwork = function () {
-  //   return navigator.connection.type === Connection.NONE? false : true
-  // }
+  f.isNetwork = function () {
+    return navigator.connection.type === Connection.NONE? false : true
+  }
 
   f.createFormItem = function (name, opts) {
     var el = document.createElement(opts.tag)
@@ -225,8 +225,8 @@ s.requests = new (function () {
 
   t.create_request = function (query) {
     socket.post('/request', query, function (data) {
+      console.log(typeof data, data);
       if (data.errorType) {
-        
         // TODO: notification
         return
       }
@@ -496,17 +496,29 @@ s.app = new (function () {
   t._init = function () {
     // t.connect()
     on('online', t.connect)
+    on('backbutton', s.router.goBack)
+    on('menubutton', function () {
+      t.trigger('toggle_nav')
+    })
   }
 
   t.isOnline = function () {
-    return (socket && socket.isConnected())? true : false
+    if (socket && socket.isConnected()) 
+      return true 
+    else {
+      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      return false
+    }
   }
 
   t.connect = function () {
+    console.log('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
-    else 
+    else {
       socket = io.sails.connect()
+      socket.on('reconnect', t.checkUpdates)
+    }
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
@@ -514,6 +526,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
+    console.log('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -527,7 +540,7 @@ s.app = new (function () {
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
 
-      navigator.notification.alert( Object.keys(data).joins(', ') )
+      console.log(data);
 
       if (data.errorType === 1) 
         return t.try_login()
@@ -544,8 +557,6 @@ s.app = new (function () {
         s.receptions.setData(data.receptions)
         t.updateMod('receptions', data.mod_receptions)
       }
-
-      t.is_synced = true
     })
   }
 
@@ -568,30 +579,27 @@ s.app = new (function () {
 
       if (data && data.errorType) {
         if (data.errorType == 3) {
-          t.is_registered = ls.is_registered = false
+          t.is_registered = false
+          delete ls.is_registered
           rc.trigger('clear_emailpass')
         }
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
 
-      navigator.notification.alert('login success')
+      console.log('login success')
 
       rt.route('/index')
-      socket.off('connect', t.try_login)
-      t.is_auth = true
+      t.is_auth = 'true'
       t.checkUpdates()
     })
   }
 
   t.try_register = function (query) {
 
-    if (!t.isOnline()) {
-      // TODO: notification
-      return
-    }
+    if (!t.isOnline()) return
+
     socket.post('/auth/create', query, function (data) {
       if (data && data.errorType) {
-        // TODO: notification
         console.log('Регистрация не удалась по причине '+data.error)
         return 
       }
@@ -604,7 +612,6 @@ s.app = new (function () {
   }
 
   t.on('try_register', t.try_register)
-
   t.on('try_login', t.try_login)
 
 })
@@ -620,18 +627,20 @@ s.app = new (function () {
 ;(function(s) {
 
 // CONTROLLER FOR STORES
-tags._init()
-for (var key in stores) {
-  if (stores[key]._init) stores[key]._init();
-  RiotControl.addStore( stores[key] )
-}
+on('deviceready', function () {
+  tags._init()
+  for (var key in s) {
+    if (s[key]._init) s[key]._init();
+    RiotControl.addStore( s[key] )
+  }
+
+  riot.mount( $id('header'), 'header')
+  if (s.user.is_registered) riot.route('/index')
+  else riot.route('/auth/new')
+
+  navigator.splashscreen.hide()
+})
 
 
-// MOUNT TAGS
-riot.mount( $id('header'), 'header')
-if (s.user.is_registered) riot.route('/index')
-else riot.route('/auth/new')
-navigator.splashscreen.hide()
-navigator.notification.alert(JSON.stringify(localStorage))
  
 })(stores)

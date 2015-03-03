@@ -84,17 +84,29 @@ s.app = new (function () {
   t._init = function () {
     // t.connect()
     on('online', t.connect)
+    on('backbutton', s.router.goBack)
+    on('menubutton', function () {
+      t.trigger('toggle_nav')
+    })
   }
 
   t.isOnline = function () {
-    return (socket && socket.isConnected())? true : false
+    if (socket && socket.isConnected()) 
+      return true 
+    else {
+      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      return false
+    }
   }
 
   t.connect = function () {
+    console.log('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
-    else 
+    else {
       socket = io.sails.connect()
+      socket.on('reconnect', t.checkUpdates)
+    }
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
@@ -102,6 +114,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
+    console.log('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -115,7 +128,7 @@ s.app = new (function () {
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
 
-      navigator.notification.alert( Object.keys(data).joins(', ') )
+      console.log(data);
 
       if (data.errorType === 1) 
         return t.try_login()
@@ -132,8 +145,6 @@ s.app = new (function () {
         s.receptions.setData(data.receptions)
         t.updateMod('receptions', data.mod_receptions)
       }
-
-      t.is_synced = true
     })
   }
 
@@ -156,30 +167,27 @@ s.app = new (function () {
 
       if (data && data.errorType) {
         if (data.errorType == 3) {
-          t.is_registered = ls.is_registered = false
+          t.is_registered = false
+          delete ls.is_registered
           rc.trigger('clear_emailpass')
         }
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
 
-      navigator.notification.alert('login success')
+      console.log('login success')
 
       rt.route('/index')
-      socket.off('connect', t.try_login)
-      t.is_auth = true
+      t.is_auth = 'true'
       t.checkUpdates()
     })
   }
 
   t.try_register = function (query) {
 
-    if (!t.isOnline()) {
-      // TODO: notification
-      return
-    }
+    if (!t.isOnline()) return
+
     socket.post('/auth/create', query, function (data) {
       if (data && data.errorType) {
-        // TODO: notification
         console.log('Регистрация не удалась по причине '+data.error)
         return 
       }
@@ -192,7 +200,6 @@ s.app = new (function () {
   }
 
   t.on('try_register', t.try_register)
-
   t.on('try_login', t.try_login)
 
 })

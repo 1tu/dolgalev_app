@@ -42,6 +42,11 @@
     riot.route( '/'+e.item.key )
   }
 
+  rc.on('toggle_nav', function () {
+    t.toggleNav()
+    t.update()
+  })
+
   rc.on('set_title', function (data) {
     t.update({title: data})
   })

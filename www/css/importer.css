@@ -1,5 +1,6 @@
 html,
-body {
+body,
+main {
   width: 100%;
   height: 100%;
 }
@@ -8,7 +9,7 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 main {
-  margin-top: 5em;
+  padding-top: 5em;
   box-sizing: border-box;
 }
 .VA:before {

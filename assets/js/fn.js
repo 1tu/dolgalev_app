@@ -111,9 +111,9 @@ on('DOMContentLoaded', function () {
     return (h.length ===1? '0'+h : h)+':'+(m.length ===1? '0'+m : m)
   }
 
-  // f.isNetwork = function () {
-  //   return navigator.connection.type === Connection.NONE? false : true
-  // }
+  f.isNetwork = function () {
+    return navigator.connection.type === Connection.NONE? false : true
+  }
 
   f.createFormItem = function (name, opts) {
     var el = document.createElement(opts.tag)
