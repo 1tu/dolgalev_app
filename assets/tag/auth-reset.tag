@@ -1,8 +1,7 @@
 <auth-reset>
-  <p>Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p>
+  <p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p>
   <form-item each={ name, prop in list } data={ this }></form-item>
   <button class={ 'connect' + (checkFields()? ' ' :' disabled') } onclick={ submit }>Получить ключ</button>
-  <itu-form data={ testt }></itu-form>
 
   var t = this
     , rc = RiotControl
@@ -16,20 +15,6 @@
       title: 'Ваш email',
       type: 'text',
       required: 1
-    }
-  }
-
-  t.testt = {
-    list: {
-      first_name: {
-        tag: 'input',
-        title: 'Ваш email',
-        type: 'text',
-        required: 1
-      }
-    },
-    onSubmit: function (query) {
-      rc.trigger('try_register', query)
     }
   }
 

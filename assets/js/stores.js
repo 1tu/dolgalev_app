@@ -69,9 +69,8 @@ s.requests = new (function () {
 
   t.create_request = function (query) {
     socket.post('/request', query, function (data) {
-      alert(JSON.stringify(data))
-      
       if (data.errorType) {
+        
         // TODO: notification
         return
       }

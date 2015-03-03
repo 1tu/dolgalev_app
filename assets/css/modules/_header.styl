@@ -1,4 +1,5 @@
-_fs = 20px
+_fs = 2em
+
 
 #header
   z-index: 1000
@@ -12,13 +13,17 @@ _fs = 20px
   text-align: center
 
   createrequest
-    padding: 4px 10px
+    padding: .5em 1em
     background-color: $Cb
     color: $Cm
     font-weight: bold
     border-radius: 5px
 
-  nav-item, createrequest, title
+  title
+    display: inline-block
+    font-size: 2.5em
+
+  nav-item, createrequest
     display: inline-block
     font-size: _fs
 
@@ -52,24 +57,14 @@ _fs = 20px
   nav
     text-align: left
     z-index: 100
-    top: $Hh 
-    left: 2vw   
-    right: 2vw   
-    min-width: 45vw
-    padding: 2vh 5vw
+    top: 100%
+    left: 0   
+    right: 0
     background: darken($Cb, 20%)
-    font-size: _fs
+    font-size: 1.3em
 
   nav-item
     width: 100%
-    padding: 2vh 0
-    margin: 5px 0
+    padding: .4em
+    margin: .2em
 
-
-  // MEDIA QUERIES
-  @media (min-width: 400px)
-    nav
-      text-align: center
-
-    nav-item
-      width: 49%

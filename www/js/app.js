@@ -225,9 +225,8 @@ s.requests = new (function () {
 
   t.create_request = function (query) {
     socket.post('/request', query, function (data) {
-      alert(JSON.stringify(data))
-      
       if (data.errorType) {
+        
         // TODO: notification
         return
       }
@@ -495,7 +494,7 @@ s.app = new (function () {
   t.is_auth = false
 
   t._init = function () {
-    // t.connect()
+    t.connect()
     on('online', t.connect)
   }
 
@@ -630,8 +629,7 @@ for (var key in stores) {
 riot.mount( $id('header'), 'header')
 if (s.user.is_registered) riot.route('/index')
 else riot.route('/auth/new')
+navigator.splashscreen.hide()
 
-
-// alert(JSON.stringify(localStorage) )
  
 })(stores)

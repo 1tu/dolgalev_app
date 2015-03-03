@@ -12,8 +12,7 @@ for (var key in stores) {
 riot.mount( $id('header'), 'header')
 if (s.user.is_registered) riot.route('/index')
 else riot.route('/auth/new')
+navigator.splashscreen.hide()
 
-
-// alert(JSON.stringify(localStorage) )
  
 })(stores)

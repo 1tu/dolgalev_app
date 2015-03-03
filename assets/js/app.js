@@ -82,7 +82,7 @@ s.app = new (function () {
   t.is_auth = false
 
   t._init = function () {
-    // t.connect()
+    t.connect()
     on('online', t.connect)
   }
 
