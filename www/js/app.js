@@ -11,23 +11,6 @@ var $id = document.getElementById.bind(document)
         : this.detachEvent ('on' + eventName, fn)
     }
 
-function onLoad() {
-  console.log('DOM content loaded');
-  Origami.fastclick.FastClick.attach(document.body);
-  
-  tags._init()
-  for (var key in stores) {
-    if (stores[key]._init) stores[key]._init();
-    RiotControl.addStore( stores[key] )
-  }
-
-  riot.mount( $id('header'), 'header')
-  if (stores.user.is_registered) riot.route('/index')
-  else riot.route('/auth/new')
-
-  navigator.splashscreen.hide()
-}
-
 
 ;(function(f, rc, s) {
 
@@ -496,8 +479,10 @@ s.app = new (function () {
   t.is_auth = false
 
   t._init = function () {
-    // t.connect()
-    on('online', t.connect)
+    if (fn.isNetwork) 
+      t.connect()
+    else
+      on('online', t.connect)
     on('backbutton', s.router.goBack)
     on('menubutton', function () {
       t.trigger('toggle_nav')
@@ -508,13 +493,13 @@ s.app = new (function () {
     if (socket && socket.isConnected()) 
       return true 
     else {
-      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      navigator.notification && navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
   }
 
   t.connect = function () {
-    navigator.notification.alert('internet SUCCESS');
+    navigator.notification && navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
     else {
@@ -528,7 +513,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    navigator.notification.alert('internet FAILED');
+    navigator.notification && navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -626,3 +611,18 @@ s.app = new (function () {
 
 
 
+
+
+Origami.fastclick.FastClick.attach(document.body);
+
+tags._init()
+for (var key in stores) {
+  if (stores[key]._init) stores[key]._init();
+  RiotControl.addStore( stores[key] )
+}
+
+riot.mount( $id('header'), 'header')
+if (stores.user.is_registered) riot.route('/index')
+else riot.route('/auth/new')
+
+navigator.splashscreen.hide()

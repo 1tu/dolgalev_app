@@ -71,8 +71,10 @@ s.app = new (function () {
   t.is_auth = false
 
   t._init = function () {
-    // t.connect()
-    on('online', t.connect)
+    if (fn.isNetwork) 
+      t.connect()
+    else
+      on('online', t.connect)
     on('backbutton', s.router.goBack)
     on('menubutton', function () {
       t.trigger('toggle_nav')
@@ -83,13 +85,13 @@ s.app = new (function () {
     if (socket && socket.isConnected()) 
       return true 
     else {
-      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      navigator.notification && navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
   }
 
   t.connect = function () {
-    navigator.notification.alert('internet SUCCESS');
+    navigator.notification && navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
     else {
@@ -103,7 +105,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    navigator.notification.alert('internet FAILED');
+    navigator.notification && navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
