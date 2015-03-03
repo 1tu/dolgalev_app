@@ -1,36 +1,3 @@
-var $id = document.getElementById.bind(document)
-  , $ = document.querySelectorAll.bind(document)
-  , on = function (eventName, fn, bool) {
-      return this.addEventListener
-        ? this.addEventListener(eventName, fn, bool || false) 
-        : this.attachEvent('on' + eventName, fn)
-    }
-  , off = function (eventName, fn, bool) {
-      return this.removeEventListener
-        ? this.removeEventListener(eventName, fn, bool || false) 
-        : this.detachEvent ('on' + eventName, fn)
-    }
-
-on('DOMContentLoaded', function () {
-  console.log('DOM content loaded');
-  Origami.fastclick.FastClick.attach(document.body);
-  on('deviceready', function () {
-    console.log('DEVICE READY');
-
-    tags._init()
-    for (var key in s) {
-      if (stores[key]._init) stores[key]._init();
-      RiotControl.addStore( stores[key] )
-    }
-
-    riot.mount( $id('header'), 'header')
-    if (stores.user.is_registered) riot.route('/index')
-    else riot.route('/auth/new')
-
-    navigator.splashscreen.hide()
-})
-})
-
 ;(function(f, rc, s) {
 
   f.data = {
@@ -232,7 +199,6 @@ s.requests = new (function () {
   t.data = ( ls.requests && JSON.parse(ls.requests) ) || []
 
   t._init = function () {}
-
   t.getCurrent = function () {
     return fn.getById.call(t, t.currentId)
   }
@@ -434,17 +400,6 @@ rt.route(function () {
 
 ;(function(s, rt, fn, ls, rc) {
 
-on('deviceready', function () {
-
-  // INITIATE ALL STORES
-  for (var key in stores) {
-    if (stores[key]._init) stores[key]._init();
-    RiotControl.addStore( stores[key] )
-  }
-
-
-})
-
 
 // ______________
 
@@ -640,12 +595,3 @@ s.app = new (function () {
 
 
 
-
-;(function(s) {
-
-// CONTROLLER FOR STORES
-
-
-
- 
-})(stores)

@@ -6,17 +6,6 @@
 
 ;(function(s, rt, fn, ls, rc) {
 
-on('deviceready', function () {
-
-  // INITIATE ALL STORES
-  for (var key in stores) {
-    if (stores[key]._init) stores[key]._init();
-    RiotControl.addStore( stores[key] )
-  }
-
-
-})
-
 
 // ______________
 

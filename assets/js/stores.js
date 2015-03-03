@@ -60,7 +60,6 @@ s.requests = new (function () {
   t.data = ( ls.requests && JSON.parse(ls.requests) ) || []
 
   t._init = function () {}
-
   t.getCurrent = function () {
     return fn.getById.call(t, t.currentId)
   }
