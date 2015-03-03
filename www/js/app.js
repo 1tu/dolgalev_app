@@ -1,3 +1,34 @@
+var $id = document.getElementById.bind(document)
+  , $ = document.querySelectorAll.bind(document)
+  , on = function (eventName, fn, bool) {
+      this.addEventListener
+        ? this.addEventListener(eventName, fn, bool || false) 
+        : this.attachEvent('on' + eventName, fn)
+    }
+  , off = function (eventName, fn, bool) {
+      this.removeEventListener
+        ? this.removeEventListener(eventName, fn, bool || false) 
+        : this.detachEvent ('on' + eventName, fn)
+    }
+
+function onLoad() {
+  console.log('DOM content loaded');
+  Origami.fastclick.FastClick.attach(document.body);
+  
+  tags._init()
+  for (var key in stores) {
+    if (stores[key]._init) stores[key]._init();
+    RiotControl.addStore( stores[key] )
+  }
+
+  riot.mount( $id('header'), 'header')
+  if (stores.user.is_registered) riot.route('/index')
+  else riot.route('/auth/new')
+
+  navigator.splashscreen.hide()
+}
+
+
 ;(function(f, rc, s) {
 
   f.data = {
@@ -483,7 +514,7 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    console.log('internet SUCCESS');
+    navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
     else {
@@ -497,7 +528,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    console.log('internet FAILED');
+    navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -558,7 +589,7 @@ s.app = new (function () {
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
 
-      console.log('login success')
+      navigator.notification.alert('login success')
 
       rt.route('/index')
       t.is_auth = 'true'
@@ -572,7 +603,7 @@ s.app = new (function () {
 
     socket.post('/auth/create', query, function (data) {
       if (data && data.errorType) {
-        console.log('Регистрация не удалась по причине '+data.error)
+        navigator.notification.alert('Регистрация не удалась по причине '+data.error)
         return 
       }
 

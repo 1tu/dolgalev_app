@@ -9,6 +9,7 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 main {
+  display: block;
   padding-top: 5em;
   box-sizing: border-box;
 }

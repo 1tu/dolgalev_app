@@ -89,7 +89,7 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    console.log('internet SUCCESS');
+    navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
     else {
@@ -103,7 +103,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    console.log('internet FAILED');
+    navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -164,7 +164,7 @@ s.app = new (function () {
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
 
-      console.log('login success')
+      navigator.notification.alert('login success')
 
       rt.route('/index')
       t.is_auth = 'true'
@@ -178,7 +178,7 @@ s.app = new (function () {
 
     socket.post('/auth/create', query, function (data) {
       if (data && data.errorType) {
-        console.log('Регистрация не удалась по причине '+data.error)
+        navigator.notification.alert('Регистрация не удалась по причине '+data.error)
         return 
       }
 

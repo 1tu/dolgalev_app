@@ -1,3 +1,34 @@
+var $id = document.getElementById.bind(document)
+  , $ = document.querySelectorAll.bind(document)
+  , on = function (eventName, fn, bool) {
+      this.addEventListener
+        ? this.addEventListener(eventName, fn, bool || false) 
+        : this.attachEvent('on' + eventName, fn)
+    }
+  , off = function (eventName, fn, bool) {
+      this.removeEventListener
+        ? this.removeEventListener(eventName, fn, bool || false) 
+        : this.detachEvent ('on' + eventName, fn)
+    }
+
+function onLoad() {
+  console.log('DOM content loaded');
+  Origami.fastclick.FastClick.attach(document.body);
+  
+  tags._init()
+  for (var key in stores) {
+    if (stores[key]._init) stores[key]._init();
+    RiotControl.addStore( stores[key] )
+  }
+
+  riot.mount( $id('header'), 'header')
+  if (stores.user.is_registered) riot.route('/index')
+  else riot.route('/auth/new')
+
+  navigator.splashscreen.hide()
+}
+
+
 ;(function(f, rc, s) {
 
   f.data = {
