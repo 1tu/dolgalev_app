@@ -126,6 +126,7 @@ s.app = new (function () {
     if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
+    console.log('prepare to sync!');
     socket.get('/api/check_updates', t.mod, function (data) {
 
       console.log(data);

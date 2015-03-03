@@ -12,7 +12,23 @@ var $id = document.getElementById.bind(document)
     }
 
 on('DOMContentLoaded', function () {
+  console.log('DOM content loaded');
   Origami.fastclick.FastClick.attach(document.body);
+  on('deviceready', function () {
+    console.log('DEVICE READY');
+
+    tags._init()
+    for (var key in s) {
+      if (stores[key]._init) stores[key]._init();
+      RiotControl.addStore( stores[key] )
+    }
+
+    riot.mount( $id('header'), 'header')
+    if (stores.user.is_registered) riot.route('/index')
+    else riot.route('/auth/new')
+
+    navigator.splashscreen.hide()
+})
 })
 
 ;(function(f, rc, s) {
@@ -538,6 +554,7 @@ s.app = new (function () {
     if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
+    console.log('prepare to sync!');
     socket.get('/api/check_updates', t.mod, function (data) {
 
       console.log(data);
@@ -627,19 +644,7 @@ s.app = new (function () {
 ;(function(s) {
 
 // CONTROLLER FOR STORES
-on('deviceready', function () {
-  tags._init()
-  for (var key in s) {
-    if (s[key]._init) s[key]._init();
-    RiotControl.addStore( s[key] )
-  }
 
-  riot.mount( $id('header'), 'header')
-  if (s.user.is_registered) riot.route('/index')
-  else riot.route('/auth/new')
-
-  navigator.splashscreen.hide()
-})
 
 
  

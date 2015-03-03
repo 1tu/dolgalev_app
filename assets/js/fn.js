@@ -12,7 +12,23 @@ var $id = document.getElementById.bind(document)
     }
 
 on('DOMContentLoaded', function () {
+  console.log('DOM content loaded');
   Origami.fastclick.FastClick.attach(document.body);
+  on('deviceready', function () {
+    console.log('DEVICE READY');
+
+    tags._init()
+    for (var key in s) {
+      if (stores[key]._init) stores[key]._init();
+      RiotControl.addStore( stores[key] )
+    }
+
+    riot.mount( $id('header'), 'header')
+    if (stores.user.is_registered) riot.route('/index')
+    else riot.route('/auth/new')
+
+    navigator.splashscreen.hide()
+})
 })
 
 ;(function(f, rc, s) {
