@@ -35,12 +35,12 @@
 
 
     <!-- Core plugins -->
-    <gap:plugin name="org.apache.cordova.console" />
     <!-- <gap:plugin name="org.apache.cordova.device" /> -->
-    <gap:plugin name="org.apache.cordova.dialogs" />
     <!-- <gap:plugin name="org.apache.cordova.file" /> -->
     <!-- <gap:plugin name="org.apache.cordova.file-transfer" /> -->
     <!-- <gap:plugin name="org.apache.cordova.media" /> -->
+    <gap:plugin name="org.apache.cordova.console" />
+    <gap:plugin name="org.apache.cordova.dialogs" />
     <gap:plugin name="org.apache.cordova.network-information" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="org.apache.cordova.vibration" />
@@ -62,28 +62,17 @@
     <icon src="res/icon/windows-phone/icon-173.png" gap:platform="winphone"   gap:role="background" />
 
     <!-- Define app splash screen for each platform. -->
-    <platform name="android">
-        <!-- you can use any density that exists in the Android project -->
-        <splash src="res/screen/android/splash-hdpi-portrait.png" density="port-hdpi"/>
-        <splash src="res/screen/android/splash-ldpi-portrait.png" density="port-ldpi"/>
-        <splash src="res/screen/android/splash-mdpi-portrait.png" density="port-mdpi"/>
-        <splash src="res/screen/android/splash-xhdpi-portrait.png" density="port-xhdpi"/>
-    </platform>
-
-    <platform name="ios">
-        <!-- images are determined by width and height. The following are supported -->
-        <splash src="res/screen/ios/screen-iphone-portrait.png"         width="320" height="480" />
-        <splash src="res/screen/ios/screen-iphone-portrait-2x.png"      width="640" height="960" />
-        <splash src="res/screen/ios/screen-iphone-portrait-568h-2x.png" width="640" height="1136" />
-        <splash src="res/screen/ios/screen-ipad-portrait.png"           width="768" height="1024" />
-        <splash src="res/screen/ios/screen-ipad-landscape.png"          width="1024" height="768" />
-    </platform>
-    
-    <platform name="wp8">
-        <splash src="res/screen/windows-phone/screen-portrait.jpg"      width="768" height="1280" />
-    </platform>
-
-    <preference name="SplashScreenDelay" value="10000" />
+    <gap:splash src="splash.png" />
+    <gap:splash src="res/screen/android/screen-ldpi-portrait.png"       gap:platform="android" gap:qualifier="port-ldpi" />
+    <gap:splash src="res/screen/android/screen-mdpi-portrait.png"       gap:platform="android" gap:qualifier="port-mdpi" />
+    <gap:splash src="res/screen/android/screen-hdpi-portrait.png"       gap:platform="android" gap:qualifier="port-hdpi" />
+    <gap:splash src="res/screen/android/screen-xhdpi-portrait.png"      gap:platform="android" gap:qualifier="port-xhdpi" />
+    <gap:splash src="res/screen/ios/screen-iphone-portrait.png"         gap:platform="ios"     width="320" height="480" />
+    <gap:splash src="res/screen/ios/screen-iphone-portrait-2x.png"      gap:platform="ios"     width="640" height="960" />
+    <gap:splash src="res/screen/ios/screen-iphone-portrait-568h-2x.png" gap:platform="ios"     width="640" height="1136" />
+    <gap:splash src="res/screen/ios/screen-ipad-portrait.png"           gap:platform="ios"     width="768" height="1024" />
+    <gap:splash src="res/screen/ios/screen-ipad-landscape.png"          gap:platform="ios"     width="1024" height="768" />
+    <gap:splash src="res/screen/windows-phone/screen-portrait.jpg"      gap:platform="winphone" />
 
     <gap:config-file platform="ios" parent="CFBundleShortVersionString">
     <string>100</string>
