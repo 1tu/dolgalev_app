@@ -5,12 +5,12 @@ main {
   height: 100%;
 }
 body {
-  background: #e4e4e4;
+  background: url("../img/bg_pattern.png");
   font-family: 'Open Sans', sans-serif;
 }
 main {
   display: block;
-  padding-top: 2.5em;
+  padding-top: 3em;
   box-sizing: border-box;
 }
 #input-stub {
@@ -169,7 +169,7 @@ table td {
   right: 0;
   background: #21447a;
   display: block;
-  height: 2.5em;
+  height: 3em;
   text-align: center;
 }
 #header createrequest {
@@ -214,8 +214,8 @@ table td {
 #header nav-toggler,
 #header back {
   background-size: cover;
-  height: 2.5em;
-  width: 2.5em;
+  height: 3em;
+  width: 3em;
 }
 #header nav-toggler {
   top: 0;

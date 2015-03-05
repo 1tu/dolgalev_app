@@ -502,10 +502,8 @@ s.app = new (function () {
     navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
-    else {
+    else 
       socket = io.sails.connect()
-      // socket.on('reconnect', t.checkUpdates)
-    }
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
@@ -523,8 +521,6 @@ s.app = new (function () {
   t.checkUpdates = function () {
     if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
     if (!s.user.is_registered) return rt.route('/auth/new');
-
-    navigator.notification.alert('CHECK UPDATES');
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
