@@ -1,19 +1,3 @@
-var $id = document.getElementById.bind(document)
-  , $ = document.querySelectorAll.bind(document)
-  , on = function (eventName, fn, bool) {
-      this.addEventListener
-        ? this.addEventListener(eventName, fn, bool || false) 
-        : this.attachEvent('on' + eventName, fn)
-    }
-  , off = function (eventName, fn, bool) {
-      this.removeEventListener
-        ? this.removeEventListener(eventName, fn, bool || false) 
-        : this.detachEvent ('on' + eventName, fn)
-    }
-
-document.body.style.fontSize = window.devicePixelRatio+'em'
-
-
 ;(function(f, rc, s) {
 
   f.data = {
@@ -150,6 +134,14 @@ document.body.style.fontSize = window.devicePixelRatio+'em'
   }
 
 
+  f.onFocus = function () {
+    input_stub.style.display = 'block'
+  }
+
+  f.onBlur = function () {
+    input_stub.style.display = 'none'
+  }
+
 })(fn, RiotControl, stores)
 
 
@@ -255,6 +247,9 @@ s.requests = new (function () {
   t._all = [
       {
         name: 'header',
+        is_static: true
+      }, {
+        name: 'notifications',
         is_static: true
       }, {
         name: 'index',
@@ -489,10 +484,6 @@ s.app = new (function () {
       t.connect()
     else
       on('online', t.connect)
-    on('backbutton', s.router.goBack)
-    on('menubutton', function () {
-      t.trigger('toggle_nav')
-    })
   }
 
   t.isOnline = function () {
@@ -527,15 +518,11 @@ s.app = new (function () {
 
 
   t.checkUpdates = function () {
-    if (!t.isOnline()) return
+    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
     if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
-    console.log('prepare to sync!');
     socket.get('/api/check_updates', t.mod, function (data) {
-
-      console.log(data);
-
       if (data.errorType === 1) 
         return t.try_login()
 
@@ -564,7 +551,7 @@ s.app = new (function () {
     if (!s.user.email || !s.user.password) 
       return rt.route('/auth/new')
 
-    if (!t.isOnline()) return
+    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
 
     socket.post('/auth/login', {
       email: s.user.email,
@@ -579,8 +566,6 @@ s.app = new (function () {
         }
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
-
-      navigator.notification.alert('login success')
 
       rt.route('/index')
       t.is_auth = 'true'
@@ -618,6 +603,32 @@ s.app = new (function () {
 
 
 
+var $id = document.getElementById.bind(document)
+  , $ = document.querySelectorAll.bind(document)
+  , on = function (eventName, fn, bool) {
+      this.addEventListener
+        ? this.addEventListener(eventName, fn, bool || false) 
+        : this.attachEvent('on' + eventName, fn)
+    }
+  , off = function (eventName, fn, bool) {
+      this.removeEventListener
+        ? this.removeEventListener(eventName, fn, bool || false) 
+        : this.detachEvent ('on' + eventName, fn)
+    }
+  , input_stub = $id('input-stub')
+
+
+on('deviceready', function() {
+  navigator.notification.alret('DEVICE IS READY')
+  console.log('DEVICE IS READY');
+
+  on('backbutton', stores.router.goBack)
+  on('menubutton', function () {
+    stores.router.trigger('toggle_nav')
+  })
+})
+
+document.body.style.fontSize = window.devicePixelRatio+'em'
 
 Origami.fastclick.FastClick.attach(document.body);
 

@@ -33,6 +33,8 @@
     t.input = fn.createFormItem(t.name, t.prop)
     t.test.appendChild( t.input )
     t.input.onchange = t.onChange
+    t.input.onfocus = fn.onFocus
+    t.input.onblur = fn.onBlur
     t.onChange()
   });
 

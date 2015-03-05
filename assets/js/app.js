@@ -78,10 +78,6 @@ s.app = new (function () {
       t.connect()
     else
       on('online', t.connect)
-    on('backbutton', s.router.goBack)
-    on('menubutton', function () {
-      t.trigger('toggle_nav')
-    })
   }
 
   t.isOnline = function () {
@@ -116,15 +112,11 @@ s.app = new (function () {
 
 
   t.checkUpdates = function () {
-    if (!t.isOnline()) return
+    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
     if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
-    console.log('prepare to sync!');
     socket.get('/api/check_updates', t.mod, function (data) {
-
-      console.log(data);
-
       if (data.errorType === 1) 
         return t.try_login()
 
@@ -153,7 +145,7 @@ s.app = new (function () {
     if (!s.user.email || !s.user.password) 
       return rt.route('/auth/new')
 
-    if (!t.isOnline()) return
+    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
 
     socket.post('/auth/login', {
       email: s.user.email,
@@ -168,8 +160,6 @@ s.app = new (function () {
         }
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
-
-      navigator.notification.alert('login success')
 
       rt.route('/index')
       t.is_auth = 'true'

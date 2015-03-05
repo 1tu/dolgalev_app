@@ -1,5 +1,8 @@
 <auth-new>
   <form-item each={ name, prop in list } data={ this }></form-item>
+  <div class="tar">
+    <a style="text-align: right" href="#/auth/login">У меня уже есть аккаунт</a>
+  </div>
   <button class={ 'connect' + (checkFields()? ' ' : ' disabled') } onclick={ submit }>Зарегистрироваться</button>
 
   var t = this

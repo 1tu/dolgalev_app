@@ -56,7 +56,7 @@
 
   
   t.on('mount', function() {
-    rc.trigger('set_title', 'Записаться на прием')
+    rc.trigger('set_title', 'Форма для записи')
     tags.add(t)
   });
 

@@ -1,19 +1,3 @@
-var $id = document.getElementById.bind(document)
-  , $ = document.querySelectorAll.bind(document)
-  , on = function (eventName, fn, bool) {
-      this.addEventListener
-        ? this.addEventListener(eventName, fn, bool || false) 
-        : this.attachEvent('on' + eventName, fn)
-    }
-  , off = function (eventName, fn, bool) {
-      this.removeEventListener
-        ? this.removeEventListener(eventName, fn, bool || false) 
-        : this.detachEvent ('on' + eventName, fn)
-    }
-
-document.body.style.fontSize = window.devicePixelRatio+'em'
-
-
 ;(function(f, rc, s) {
 
   f.data = {
@@ -149,6 +133,14 @@ document.body.style.fontSize = window.devicePixelRatio+'em'
     return tmpArr
   }
 
+
+  f.onFocus = function () {
+    input_stub.style.display = 'block'
+  }
+
+  f.onBlur = function () {
+    input_stub.style.display = 'none'
+  }
 
 })(fn, RiotControl, stores)
 

@@ -13,6 +13,12 @@ main {
   padding-top: 2.5em;
   box-sizing: border-box;
 }
+#input-stub {
+  display: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
 .VA:before {
   content: '';
   height: 100%;
@@ -83,6 +89,9 @@ a.isle {
 .field .innerField {
   padding: 0.2em 0.5em;
 }
+a {
+  color: #21447a;
+}
 p {
   line-height: 1.3;
 }
@@ -97,6 +106,9 @@ p {
 }
 .tac {
   text-align: center;
+}
+.tar {
+  text-align: right;
 }
 h1,
 h2,

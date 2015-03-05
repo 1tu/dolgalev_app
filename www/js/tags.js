@@ -13,7 +13,7 @@ riot.tag('about', '<p class="tm nmt">Созданный в 2005г. на базе
 
 
 });
-riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Записаться</button><a href="/auth/reset">Забыли пароль или хотите его сменить?</a>', function(opts) {
+riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Записаться</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -65,7 +65,7 @@ riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"
 
 
 });
-riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Зарегистрироваться</button>', function(opts) {
+riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a style="text-align: right" href="#/auth/login">У меня уже есть аккаунт</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Зарегистрироваться</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -252,6 +252,8 @@ riot.tag('form-item', '<div name="test" class="form-item"><p>{ prop.title }</p><
     t.input = fn.createFormItem(t.name, t.prop)
     t.test.appendChild( t.input )
     t.input.onchange = t.onChange
+    t.input.onfocus = fn.onFocus
+    t.input.onblur = fn.onBlur
     t.onChange()
   });
 
@@ -432,6 +434,20 @@ riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, 
 //       else input.className = '' 
 //     }
 //   }
+riot.tag('notifications', '', function(opts) {
+  
+
+  var t = this
+    , rc = RiotControl
+    , s = stores
+
+  
+  t.on('mount', function() {
+    tags.add(t)
+  });
+
+
+});
 riot.tag('receptions-item', '<date>{ fn.parseDate(data.datetime) }</date><time>{ fn.parseTime(data.datetime) }</time><p>{ fn.data.rec_types[ data.type ] }</p><span>Ваш врач: { stores.doctors.getFullname( data.doctor_id ) }</span>', function(opts) {
 
   var t = this
@@ -539,7 +555,7 @@ riot.tag('requests-new', '<form-item each="{ name, prop in list }" data="{ this 
 
   
   t.on('mount', function() {
-    rc.trigger('set_title', 'Записаться на прием')
+    rc.trigger('set_title', 'Форма для записи')
     tags.add(t)
   });
 

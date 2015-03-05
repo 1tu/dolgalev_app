@@ -11,6 +11,9 @@
         name: 'header',
         is_static: true
       }, {
+        name: 'notifications',
+        is_static: true
+      }, {
         name: 'index',
       }, {
         name: 'about',
