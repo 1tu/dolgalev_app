@@ -605,7 +605,7 @@ s.app = new (function () {
 
 
 
-// document.addEventListener('deviceready', DRfun, false)
+document.addEventListener('deviceready', DRfun, false)
 
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
@@ -627,8 +627,6 @@ function DRfun () {
   console.log('DEVICE IS READY');
 }
 
-on('deviceready', DRfun)
-on('deviceReady', DRfun)
 
 
 
