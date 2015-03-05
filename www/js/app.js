@@ -645,5 +645,5 @@ function onDeviceReady () {
 }
 
 
-
+// onDeviceReady()
 
