@@ -608,15 +608,11 @@ s.app = new (function () {
 
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
-  , on = function (eventName, fn, bool) {
-      this.addEventListener
-        ? this.addEventListener(eventName, fn, bool || false) 
-        : this.attachEvent('on' + eventName, fn)
+  , on = function (eventName, fn) {
+      document.addEventListener(eventName, fn, false) 
     }
-  , off = function (eventName, fn, bool) {
-      this.removeEventListener
-        ? this.removeEventListener(eventName, fn, bool || false) 
-        : this.detachEvent ('on' + eventName, fn)
+  , off = function (eventName, fn) {
+      document.removeEventListener(eventName, fn,false) 
     }
   , input_stub = $id('input-stub')
 
@@ -624,6 +620,32 @@ function DRfun () {
   document.body.style.background = 'green'
   navigator.notification.alret('DEVICE IS READY')
   console.log('DEVICE IS READY');
+
+  document.addEventListener('backbutton', stores.router.goBack, false)
+  document.addEventListener('menubutton', function () {
+    stores.router.trigger('toggle_nav')
+  }, false)
+
+  // navigator.app.overrideBackButton(stores.router.goBack)
+  // navigator.app.overrideButton(function () {
+  //   stores.router.trigger('toggle_nav')
+  // })
+}
+
+function DRfunR () {
+  document.body.style.background = 'red'
+  navigator.notification.alret('DEVICE IS READY')
+  console.log('DEVICE IS READY');
+
+  on('backbutton', stores.router.goBack)
+  on('menubutton', function () {
+    stores.router.trigger('toggle_nav')
+  })
+
+  // navigator.app.overrideBackButton(stores.router.goBack)
+  // navigator.app.overrideButton(function () {
+  //   stores.router.trigger('toggle_nav')
+  // })
 }
 
 
@@ -631,6 +653,7 @@ function DRfun () {
 
 document.body.style.fontSize = window.devicePixelRatio+'em'
 document.addEventListener('deviceready', DRfun, false)
+on('deviceready', DRfunR)
 
 Origami.fastclick.FastClick.attach(document.body);
 
@@ -645,12 +668,3 @@ if (stores.user.is_registered) riot.route('/index')
 else riot.route('/auth/new')
 
 navigator.splashscreen.hide()
-on('backbutton', stores.router.goBack)
-on('menubutton', function () {
-  stores.router.trigger('toggle_nav')
-})
-
-navigator.app.overrideBackButton(stores.router.goBack)
-navigator.app.overrideButton(function () {
-  stores.router.trigger('toggle_nav')
-})
