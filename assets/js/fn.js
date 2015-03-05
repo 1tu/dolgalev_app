@@ -135,6 +135,7 @@
 
 
   f.onFocus = function () {
+    scrollTo(0, this.offsetTop - this.scrollHeigth)
     input_stub.style.display = 'block'
   }
 

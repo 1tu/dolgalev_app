@@ -135,6 +135,7 @@
 
 
   f.onFocus = function () {
+    scrollTo(0, this.offsetTop - this.scrollHeigth)
     input_stub.style.display = 'block'
   }
 
@@ -619,6 +620,7 @@ var $id = document.getElementById.bind(document)
 
 
 on('deviceready', function() {
+  document.body.style.background = 'green'
   navigator.notification.alret('DEVICE IS READY')
   console.log('DEVICE IS READY');
 
