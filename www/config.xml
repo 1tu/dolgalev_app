@@ -86,6 +86,6 @@
 
         Otherwise, you can specify specific domains:
     -->
-    <access origin="*"/>
+    <access origin="app.implantat-sk.ru"/>
 
 </widget>
