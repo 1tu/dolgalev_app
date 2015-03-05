@@ -11,8 +11,7 @@ var $id = document.getElementById.bind(document)
 
 function DRfun () {
   document.body.style.background = 'green'
-  navigator.notification.alret('DEVICE IS READY')
-  console.log('DEVICE IS READY');
+
 
   document.addEventListener('backbutton', stores.router.goBack, false)
   document.addEventListener('menubutton', function () {
@@ -23,12 +22,13 @@ function DRfun () {
   // navigator.app.overrideButton(function () {
   //   stores.router.trigger('toggle_nav')
   // })
+  navigator.notification.alret('DEVICE IS READY')
+  console.log('DEVICE IS READY');
 }
 
 function DRfunR () {
   document.body.style.background = 'red'
-  navigator.notification.alret('DEVICE IS READY')
-  console.log('DEVICE IS READY');
+
 
   on('backbutton', stores.router.goBack)
   on('menubutton', function () {
@@ -39,6 +39,8 @@ function DRfunR () {
   // navigator.app.overrideButton(function () {
   //   stores.router.trigger('toggle_nav')
   // })
+  navigator.notification.alret('DEVICE IS READY')
+  console.log('DEVICE IS READY');
 }
 
 
