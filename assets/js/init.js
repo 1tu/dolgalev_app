@@ -1,4 +1,4 @@
-document.addEventListener('deviceready', DRfun, false)
+// document.addEventListener('deviceready', DRfun, false)
 
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
