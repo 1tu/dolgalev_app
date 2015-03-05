@@ -605,6 +605,8 @@ s.app = new (function () {
 
 
 
+document.addEventListener('deviceready', DRfun, false)
+
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
   , on = function (eventName, fn, bool) {
@@ -619,17 +621,16 @@ var $id = document.getElementById.bind(document)
     }
   , input_stub = $id('input-stub')
 
-
-on('deviceready', function() {
+function DRfun () {
   document.body.style.background = 'green'
   navigator.notification.alret('DEVICE IS READY')
   console.log('DEVICE IS READY');
+}
 
-  on('backbutton', stores.router.goBack)
-  on('menubutton', function () {
-    stores.router.trigger('toggle_nav')
-  })
-})
+on('deviceready', DRfun)
+on('deviceReady', DRfun)
+
+
 
 document.body.style.fontSize = window.devicePixelRatio+'em'
 
@@ -646,3 +647,12 @@ if (stores.user.is_registered) riot.route('/index')
 else riot.route('/auth/new')
 
 navigator.splashscreen.hide()
+on('backbutton', stores.router.goBack)
+on('menubutton', function () {
+  stores.router.trigger('toggle_nav')
+})
+
+navigator.app.overrideBackButton(stores.router.goBack)
+navigator.app.overrideButton(function () {
+  stores.router.trigger('toggle_nav')
+})
