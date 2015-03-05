@@ -135,8 +135,8 @@
 
 
   f.onFocus = function () {
-    scrollTo(0, this.offsetTop - this.scrollHeigth)
     input_stub.style.display = 'block'
+    window.scrollTo(0, this.offsetTop - this.scrollHeight*2)
   }
 
   f.onBlur = function () {

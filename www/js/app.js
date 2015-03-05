@@ -135,8 +135,8 @@
 
 
   f.onFocus = function () {
-    scrollTo(0, this.offsetTop - this.scrollHeigth)
     input_stub.style.display = 'block'
+    window.scrollTo(0, this.offsetTop - this.scrollHeight*2)
   }
 
   f.onBlur = function () {
@@ -568,7 +568,7 @@ s.app = new (function () {
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
       
-      !s.user.is_registered && s.user.is_registered = ls.is_registered = "1"
+      !s.user.is_registered && (s.user.is_registered = ls.is_registered = "1")
       rt.route('/index')
       t.is_auth = 'true'
       t.checkUpdates()
