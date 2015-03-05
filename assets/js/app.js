@@ -88,6 +88,10 @@ s.app = new (function () {
     else 
       socket = io.sails.connect()
 
+    setTimeout(function () {
+      navigator.notification.beep(2)
+    }, 60000);
+
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
     on('offline', t.disconnect)
