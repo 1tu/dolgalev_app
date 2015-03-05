@@ -10,12 +10,16 @@ body {
 }
 main {
   display: block;
-  padding-top: 5em;
+  padding-top: 2.5em;
   box-sizing: border-box;
 }
 .VA:before {
   content: '';
   height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.VA > div {
   display: inline-block;
   vertical-align: middle;
 }
@@ -36,7 +40,7 @@ button.connect {
   margin-top: 1em;
   padding: 0.5em;
   text-align: center;
-  font-size: 2.5em;
+  font-size: 1.25em;
   color: #fff;
 }
 button:active {
@@ -54,19 +58,19 @@ button:active {
   display: block;
   position: relative;
   box-sizing: border-box;
-  margin: 1.5em;
-  padding: 2em;
+  margin: 1em;
+  padding: 1em;
   background: #fff;
-  box-shadow: 0 2px 10px -3px #000;
+  box-shadow: 0 0.125em 0.625em -0.125em #000;
 }
 a.isle {
   text-decoration: none;
   color: #000;
 }
 .field {
-  font-size: 2em;
+  font-size: 1em;
   margin: 0.7em 0;
-  border: 3px solid #21447a;
+  border: 0.0625em solid #21447a;
 }
 .field .fieldTitle {
   display: block;
@@ -74,17 +78,16 @@ a.isle {
   color: #fff;
   background: #21447a;
   padding-bottom: 0.3em;
-  margin: 0 0 5px !important;
+  margin: 0 0 0.3125em !important;
 }
 .field .innerField {
   padding: 0.2em 0.5em;
 }
 p {
   line-height: 1.3;
-  font-size: 1.7em;
 }
 .tm {
-  margin: 0.6em 0;
+  margin: 0.5em 0;
 }
 .nmt {
   margin-top: 0 !important;
@@ -100,41 +103,41 @@ h2,
 h3 {
   font-weight: bold;
   line-height: 1.3;
-  margin: 1em 0;
+  margin: 0.8em 0;
 }
 h1 {
-  font-size: 2.7em;
+  font-size: 1.5em;
 }
 h2 {
-  font-size: 2.4em;
+  font-size: 1.3em;
 }
 h3 {
-  font-size: 2em;
+  font-size: 1.15em;
 }
 table {
   margin-top: 0.5em;
   width: 100%;
 }
 table td {
-  padding: 0.3em;
-  border: 3px solid #21447a;
+  padding: 0.5em;
+  border: 0.0625em solid #21447a;
 }
 .form-item {
   display: block;
-  margin-bottom: 1.5em;
+  margin-bottom: 1em;
 }
 .form-item p {
-  font-size: 1.7em;
-  margin-bottom: 4px;
+  font-size: 0.8em;
+  margin-bottom: 0.1em;
 }
 .form-item input,
 .form-item select {
   display: block;
-  width: 100%;
-  height: 2.5em;
-  padding: 0.5em;
-  font-size: 2em;
   box-sizing: border-box;
+  width: 100%;
+  min-height: 2em;
+  padding: 0.5em 1em;
+  font-size: 1em;
 }
 .form-item .valid {
   background: rgba(0,200,0,0.1);
@@ -150,24 +153,24 @@ table td {
   right: 0;
   background: #21447a;
   display: block;
-  height: 5em;
+  height: 2.5em;
   text-align: center;
 }
 #header createrequest {
-  padding: 0.5em 1em;
+  padding: 0.25em 0.5em;
   background-color: #e4e4e4;
   color: #21447a;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 0.3125em;
 }
 #header title {
   display: inline-block;
-  font-size: 2.5em;
+  font-size: 1.25em;
 }
 #header nav-item,
 #header createrequest {
   display: inline-block;
-  font-size: 2em;
+  font-size: 1.2em;
 }
 #header title,
 #header createrequest,
@@ -195,8 +198,8 @@ table td {
 #header nav-toggler,
 #header back {
   background-size: cover;
-  height: 5em;
-  width: 5em;
+  height: 2.5em;
+  width: 2.5em;
 }
 #header nav-toggler {
   top: 0;
@@ -210,67 +213,70 @@ table td {
   left: 0;
   right: 0;
   background: #b6b6b6;
-  font-size: 1.3em;
 }
 #header nav-item {
   width: 100%;
   padding: 0.4em;
-  margin: 0.2em;
+  margin: 0.3em;
 }
 #index {
   margin: 0 auto;
 }
+#index:first-child > h2 {
+  margin-top: 0.5em;
+}
 #index h2 {
   display: block;
-  margin: 15px 0 10px;
-  font-size: 20px;
+  margin: 1.3em 0 0.6em;
   font-weight: bold;
   text-align: center;
 }
 #index .isle {
   padding: 0;
 }
-#index .inner {
-  padding: 10px;
+#index .withDoctor {
+  position: relative;
+  padding: 0.625em;
+}
+#index .withDoctor:before {
+  position: absolute;
+  content: 'Доктор';
+  top: -0.9em;
+  right: -0.5em;
+  font-size: 0.75em;
+  padding: 0.4em;
+  background: #21447a;
+  color: #fff;
 }
 #index .name {
   font-weight: bold;
   text-align: right;
   line-height: 1.1;
 }
-#index .confirmed:before,
-#index .not_confirmed:before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: -6px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-#index .confirmed:before {
-  background: #008000;
-}
-#index .not_confirmed:before {
-  background: #f00;
-}
 #index .datetime {
-  min-width: 70px;
-  height: 100%;
-  padding: 5px 10px;
-  margin-right: 10px;
-  font-size: 14px;
+  min-width: 6em;
+  height: 4.5em;
+  padding: 0.3125em 0.625em;
+  margin-right: 0.625em;
+  font-size: 0.9em;
   text-align: center;
   background: #21447a;
   float: left;
   color: #fff;
 }
+#index .datetime.withoutDoctor {
+  width: 100%;
+  box-sizing: border-box;
+}
 #index .datetime p {
-  margin: 3px 0;
+  margin: 0.125em 0;
 }
 #index .time {
-  font-size: 24px;
-  margin-bottom: 8px !important;
+  font-size: 1.5em;
+  margin-bottom: 0.5em !important;
+}
+#index .day {
+  font-size: 0.8em;
 }
 #index date {
   float: right;

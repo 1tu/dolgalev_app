@@ -10,7 +10,7 @@
 
   t.on('mount', function() {
     tags.add(t)
-    rc.trigger('set_title', 'Ваш запрос обрабатывается')
+    rc.trigger('set_title', 'Обрабатывается...')
     t.update({data: s.requests.getCurrent()})
   });
   

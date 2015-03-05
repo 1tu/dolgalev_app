@@ -3,6 +3,9 @@
 // 2 = validate error
 // 3 = invalid email/password
 
+// window.devicePixelRatio
+// window.innerHeight
+// window.innerWidth
 
 ;(function(s, rt, fn, ls, rc) {
 

@@ -1,28 +1,31 @@
 <index>
-  <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Ваши текущие записи</h2>
+  <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
     <a href={ '#/receptions/'+id } class={ 'isle cf' }  each={ receptions }>
-      <div class="datetime">
-        <p class="time">{ fn.parseTime(datetime) }</p>
-        <p>{ fn.parseDate(datetime) }</p>
-        <p>{ fn.parseDay(datetime) }</p>
+      <div class="datetime VA">
+        <div>
+          <p class="time">{ fn.parseTime(datetime) }</p>
+          <p>{ fn.parseDate(datetime) }</p>
+          <p class="day">{ fn.parseDay(datetime) }</p>
+        </div>
       </div>
-      <div class="inner">
-        <p style="font-size: 14px; margin-bottom: 10px">Вас примет:</p>
+      <div class="withDoctor">
         <p class="name">{ stores.doctors.getFullname(doctor_id) }  </p>
       </div>
     </a>
   </tab>
 
-  <h2 if={ requests[0] } onclick={ toggleState.bind(this, 'is_req_visible') }>Ваши текущие заявки</h2>
+  <h2 if={ requests[0] } onclick={ toggleState.bind(this, 'is_req_visible') }>Текущие заявки</h2>
   <tab if={ requests[0] && is_req_visible }>
     <a href={ '#/requests/'+id } class={ 'isle cf ' } each={ requests }>
-      <div class="datetime">
-        <p>{ time_begin && time_begin } { (time_begin && time_end) && (' - '+time_end) }</p>
-        <p>{ fn.parseDate(date) }</p>
-        <p>{ fn.parseDay(date) }</p>
+      <div class={ 'datetime VA' + (doctor_id? ' ' : ' withoutDoctor') }>
+        <div>
+          <p if={ time_begin }>{ time_begin && time_begin } { (time_begin && time_end) && (' - '+time_end) }</p>
+          <p>{ fn.parseDate(date) }</p>
+          <p class="day">{ fn.parseDay(date) }</p>
+        </div>
       </div>
-      <div class="inner">
+      <div if={ doctor_id } class="withDoctor">
         <p class="name">{ stores.doctors.getFullname(doctor_id) }  </p>
       </div>
     </a>

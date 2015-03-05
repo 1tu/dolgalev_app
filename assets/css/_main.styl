@@ -11,12 +11,15 @@ main
   padding-top: $Hh
   box-sizing: border-box
 
-.VA:before
-  content: ''
-  height: 100%
-  display: inline-block
-  vertical-align: middle
-
+.VA
+  &:before
+    content: ''
+    height: 100%
+    display: inline-block
+    vertical-align: middle
+  & > div
+    display: inline-block
+    vertical-align: middle
 
 button
   border: 0
@@ -35,7 +38,7 @@ button
     margin-top: 1em
     padding: .5em
     text-align: center
-    font-size: 2.5em
+    font-size: 1.25em
     color: white
 
   
@@ -43,12 +46,10 @@ button
   &:active
     transform: scale(0.98) 
 
- 
 
 .hidden
   display: none
   
-
 .cf:after
   content: ''
   display: table
@@ -59,34 +60,34 @@ button
   display: block
   position: relative
   box-sizing: border-box
-  margin: 1.5em
-  padding: 2em
+  margin: 1em
+  padding: 1em
   background: white
-  box-shadow: 0 2px 10px -3px black
+  box-shadow: 0 .125em .625em -.125em black
 
 a.isle
   text-decoration: none
   color: black
 
 .field
-  font-size: 2em
+  font-size: 1em
   margin: .7em 0
-  border: 3px solid $Cm
+  border: .0625em solid $Cm
   .fieldTitle
     display: block
     padding: .1em .3em .7em 
     color: white
     background: $Cm
     padding-bottom: .3em
-    margin: 0 0 5px !important
+    margin: 0 0 .3125em !important
   .innerField
     padding: .2em .5em
 p
   line-height: 1.3
-  font-size: 1.7em
+  // font-size: 1em
 
 .tm //text margin
-  margin: .6em 0
+  margin: .5em 0
 
 .nmt // no margin top
   margin-top: 0 !important
@@ -100,21 +101,20 @@ p
 h1, h2, h3
   font-weight: bold
   line-height: 1.3
-  margin: 1em 0
+  margin: .8em 0
 
 h1
-  font-size: 2.7em
+  font-size: 1.5em
 
 h2
-  font-size: 2.4em
+  font-size: 1.3em
 
 h3
-  font-size: 2em
+  font-size: 1.15em
 
 table
   margin-top: .5em
   width: 100%
-  // border: 1px solid $Cm
   td
-    padding: .3em
-    border: 3px solid $Cm
+    padding: .5em
+    border: .0625em solid $Cm

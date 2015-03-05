@@ -63,7 +63,7 @@
   })
   
   t.on('mount', function() {
-    rc.trigger('set_title','Зарегистрироваться')
+    rc.trigger('set_title','Регистрация')
     tags.add(t)
   });
 

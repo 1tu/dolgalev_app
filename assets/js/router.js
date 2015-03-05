@@ -118,6 +118,7 @@ s.router = new (function () {
       if ( names.indexOf(key) === -1 && !tags.data[key].is_static ) tags.unmount(key)
       else if (names.indexOf(key) !== -1) tags.mount(key)
     }
+    window.scrollTo(0, 0)
   }
 
   t.goBack = function () {

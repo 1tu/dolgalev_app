@@ -130,7 +130,7 @@ riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"><
   })
   
   t.on('mount', function() {
-    rc.trigger('set_title','Зарегистрироваться')
+    rc.trigger('set_title','Регистрация')
     tags.add(t)
   });
 
@@ -176,7 +176,7 @@ riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановле
   })
   
   t.on('mount', function() {
-    rc.trigger('set_title','Восстановление пароля')
+    rc.trigger('set_title','Смена пароля')
     tags.add(t)
   });
 
@@ -313,7 +313,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 });
 
 
-riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Ваши текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime"><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p>{ fn.parseDay(datetime) }</p></div><div class="inner"><p style="font-size: 14px; margin-bottom: 10px">Вас примет:</p><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Ваши текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="datetime"><p>{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p>{ fn.parseDay(date) }</p></div><div class="inner"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
+riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -473,7 +473,7 @@ riot.tag('requests-item', '<p>{ fn.parseDate(data.date) }, { fn.parseDay(data.da
 
   t.on('mount', function() {
     tags.add(t)
-    rc.trigger('set_title', 'Ваш запрос обрабатывается')
+    rc.trigger('set_title', 'Обрабатывается...')
     t.update({data: s.requests.getCurrent()})
   });
   

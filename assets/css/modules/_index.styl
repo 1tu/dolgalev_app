@@ -1,60 +1,61 @@
-$dm = 12px
-$im = 10px
+$im = .625em
 
 #index
   margin: 0 auto
+
+  &:first-child > h2
+    margin-top: .5em
   
   h2
     display: block
-    margin: 15px 0 10px
-    font-size: 20px
+    margin: 1.3em 0 .6em
     font-weight: bold
     text-align: center
 
   .isle
     padding: 0
 
-  .inner
+  .withDoctor
+    position: relative
     padding: $im
+    &:before
+      position: absolute
+      content: 'Доктор'
+      top: -.9em
+      right: -.5em
+      font-size: .75em
+      padding: .4em
+      background: $Cm
+      color: white
 
   .name
     font-weight: bold
     text-align: right
     line-height: 1.1
 
-  .confirmed, .not_confirmed
-    &:before
-      content: ''
-      position: absolute
-      left: -($dm/2)
-      top: -($dm/2)
-      width: $dm
-      height: $dm
-      border-radius: 50%
-
-  .confirmed:before
-    background: green
-
-  .not_confirmed:before
-    background: red
-
   .datetime
-    min-width: 70px
-    height: 100%
-    padding: 5px 10px
+    min-width: 6em
+    height: 4.5em
+    padding: .3125em .625em
     margin-right: $im
-    font-size: 14px
+    font-size: 0.9em
     text-align: center
     background: $Cm
     float: left
     color: white
+    &.withoutDoctor
+      width: 100%
+      box-sizing: border-box
 
     p
-      margin: 3px 0
+      margin: .125em 0
 
   .time
-    font-size: 24px
-    margin-bottom: 8px !important
+    font-size: 1.5em
+    margin-bottom: .5em !important
+
+  .day
+    font-size: .8em
 
   date
     float: right

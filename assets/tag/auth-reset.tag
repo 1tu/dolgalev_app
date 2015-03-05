@@ -39,7 +39,7 @@
   })
   
   t.on('mount', function() {
-    rc.trigger('set_title','Восстановление пароля')
+    rc.trigger('set_title','Смена пароля')
     tags.add(t)
   });
 

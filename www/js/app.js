@@ -11,6 +11,8 @@ var $id = document.getElementById.bind(document)
         : this.detachEvent ('on' + eventName, fn)
     }
 
+document.body.style.fontSize = window.devicePixelRatio+'em'
+
 
 ;(function(f, rc, s) {
 
@@ -362,6 +364,7 @@ s.router = new (function () {
       if ( names.indexOf(key) === -1 && !tags.data[key].is_static ) tags.unmount(key)
       else if (names.indexOf(key) !== -1) tags.mount(key)
     }
+    window.scrollTo(0, 0)
   }
 
   t.goBack = function () {
@@ -411,6 +414,9 @@ rt.route(function () {
 // 2 = validate error
 // 3 = invalid email/password
 
+// window.devicePixelRatio
+// window.innerHeight
+// window.innerWidth
 
 ;(function(s, rt, fn, ls, rc) {
 

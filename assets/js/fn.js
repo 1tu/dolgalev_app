@@ -11,6 +11,8 @@ var $id = document.getElementById.bind(document)
         : this.detachEvent ('on' + eventName, fn)
     }
 
+document.body.style.fontSize = window.devicePixelRatio+'em'
+
 
 ;(function(f, rc, s) {
 
