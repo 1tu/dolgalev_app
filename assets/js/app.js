@@ -84,18 +84,18 @@ s.app = new (function () {
     if (socket && socket.isConnected()) 
       return true 
     else {
-      navigator.notification && navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
   }
 
   t.connect = function () {
-    navigator.notification && navigator.notification.alert('internet SUCCESS');
+    navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
     else {
       socket = io.sails.connect()
-      socket.on('reconnect', t.checkUpdates)
+      // socket.on('reconnect', t.checkUpdates)
     }
 
     socket.on('connect', t.checkUpdates)
@@ -104,7 +104,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    navigator.notification && navigator.notification.alert('internet FAILED');
+    navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -114,6 +114,8 @@ s.app = new (function () {
   t.checkUpdates = function () {
     if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
     if (!s.user.is_registered) return rt.route('/auth/new');
+
+    navigator.notification.alert('CHECK UPDATES');
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
@@ -145,7 +147,8 @@ s.app = new (function () {
     if (!s.user.email || !s.user.password) 
       return rt.route('/auth/new')
 
-    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) 
+      return socket.on('connect', t.checkUpdates)
 
     socket.post('/auth/login', {
       email: s.user.email,
@@ -168,9 +171,10 @@ s.app = new (function () {
     })
   }
 
+
   t.try_register = function (query) {
 
-    if (!t.isOnline()) return
+    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
 
     socket.post('/auth/create', query, function (data) {
       if (data && data.errorType) {

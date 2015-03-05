@@ -1,3 +1,5 @@
+Origami.fastclick.FastClick.attach(document.body);
+
 ;(function(f, rc, s) {
 
   f.data = {
