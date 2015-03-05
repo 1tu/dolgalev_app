@@ -1,3 +1,4 @@
+document.addEventListener('deviceready', DRfun, false)
 
 Origami.fastclick.FastClick.attach(document.body);
 

@@ -605,7 +605,6 @@ s.app = new (function () {
 
 
 
-document.addEventListener('deviceready', DRfun, false)
 
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
@@ -631,6 +630,7 @@ function DRfun () {
 
 
 document.body.style.fontSize = window.devicePixelRatio+'em'
+document.addEventListener('deviceready', DRfun, false)
 
 Origami.fastclick.FastClick.attach(document.body);
 
