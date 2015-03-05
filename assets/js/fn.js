@@ -37,7 +37,6 @@ Origami.fastclick.FastClick.attach(document.body);
     return tmp
   }
 
-
   f.getById = function (id, fn) {
     var tmp
     this.data.some(function (item) {
@@ -45,8 +44,6 @@ Origami.fastclick.FastClick.attach(document.body);
     })
     return fn? fn(tmp) : tmp 
   }
-
-
   f.setActiveId = function () {
     var path = s.router.current
     s[ path[0] ].currentId = path[1] >> 0
@@ -55,7 +52,6 @@ Origami.fastclick.FastClick.attach(document.body);
 
 
   f.syncData = function (newData) {
-
     var result = []
     if ( this._name === 'doctors' ) result = newData
     else {
@@ -83,12 +79,10 @@ Origami.fastclick.FastClick.attach(document.body);
     var z = (date instanceof Date)? date : new Date(date)
     return z.getDate()+' '+f.data.month[ z.getMonth() ]
   }
-
   f.parseDay = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
     return f.data.days[ z.getDay() ]
   }
-
   f.parseTime = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
       , h = z.getHours()+''
@@ -96,9 +90,6 @@ Origami.fastclick.FastClick.attach(document.body);
     return (h.length ===1? '0'+h : h)+':'+(m.length ===1? '0'+m : m)
   }
 
-  f.isNetwork = function () {
-    return navigator.connection.type === Connection.NONE? false : true
-  }
 
   f.createFormItem = function (name, opts) {
     var el = document.createElement(opts.tag)
@@ -115,8 +106,6 @@ Origami.fastclick.FastClick.attach(document.body);
     }
     return el
   }
-
-
   f.prepareToForm = function (arr, entity) {
     var tmpArr = [{}]
       , textPattern = {
@@ -138,11 +127,18 @@ Origami.fastclick.FastClick.attach(document.body);
 
   f.onFocus = function () {
     input_stub.style.display = 'block'
-    window.scrollTo(0, this.offsetTop - this.scrollHeight*2)
+    var offsetTop = this.offsetTop - this.scrollHeight*2
+    setTimeout(function () {
+      window.scrollTo(0, offsetTop)
+    }, 10);
   }
-
   f.onBlur = function () {
     input_stub.style.display = 'none'
+  }
+
+
+  f.isNetwork = function () {
+    return navigator.connection.type === Connection.NONE? false : true
   }
 
 })(fn, RiotControl, stores)

@@ -1,7 +1,7 @@
 <auth-new>
   <form-item each={ name, prop in list } data={ this }></form-item>
   <div class="tar">
-    <a style="text-align: right" href="#/auth/login">У меня уже есть аккаунт</a>
+    <a href="#/auth/login">У меня уже есть аккаунт</a>
   </div>
   <button class={ 'connect' + (checkFields()? ' ' : ' disabled') } onclick={ submit }>Зарегистрироваться</button>
 
@@ -42,7 +42,6 @@
       type: 'password',
       required: 1
     },
-
   }
 
   checkFields(query) {
@@ -51,6 +50,7 @@
       if (inp.required && !inp.value) return false;
       query && inp.value && (query[key] = inp.value)
     }
+    if (list.password.value !== list.confirmPassword.value) return false
     return true
   }
 

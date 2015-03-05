@@ -3,14 +3,7 @@
 // 2 = validate error
 // 3 = invalid email/password
 
-// window.devicePixelRatio
-// window.innerHeight
-// window.innerWidth
-
 ;(function(s, rt, fn, ls, rc) {
-
-
-// ______________
 
 
 s.user = new (function () {
@@ -70,7 +63,6 @@ s.app = new (function () {
       receptions: null
     }
 
-  t.server = '192.168.1.38:1337'
   t.is_auth = false
 
   t._init = function () {

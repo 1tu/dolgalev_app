@@ -1,12 +1,8 @@
 
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
-  , on = function (eventName, fn) {
-      document.addEventListener(eventName, fn, false) 
-    }
-  , off = function (eventName, fn) {
-      document.removeEventListener(eventName, fn,false) 
-    }
+  , on = function (eventName, fn) {document.addEventListener(eventName, fn, false)}
+  , off = function (eventName, fn) {document.removeEventListener(eventName, fn,false)}
   , input_stub = $id('input-stub')
 
 document.body.style.fontSize = window.devicePixelRatio+'em'
