@@ -13,7 +13,7 @@ riot.tag('about', '<p class="tm nmt">Созданный в 2005г. на базе
 
 
 });
-riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Записаться</button>', function(opts) {
+riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Войти</button>', function(opts) {
 
   var t = this
     , rc = RiotControl

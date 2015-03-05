@@ -160,7 +160,8 @@ s.app = new (function () {
         }
         return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
       }
-
+      
+      !s.user.is_registered && s.user.is_registered = ls.is_registered = "1"
       rt.route('/index')
       t.is_auth = 'true'
       t.checkUpdates()
