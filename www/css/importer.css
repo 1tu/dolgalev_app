@@ -135,9 +135,13 @@ table td {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  min-height: 2em;
-  padding: 0.5em 1em;
   font-size: 1em;
+}
+.form-item select {
+  height: 2.5em;
+}
+.form-item input {
+  padding: 0.5em;
 }
 .form-item .valid {
   background: rgba(0,200,0,0.1);
