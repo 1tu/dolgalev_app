@@ -59,16 +59,16 @@
   nav
     text-align: left
     z-index: -1
+    // top: 100%
     top: -16em
     left: 1em   
     right: 1em
-    background: darken($Cb, 20%)
-    transition: top .2s ease
-    &.opened
-      top: 100%
+    background: white
+    box-shadow: 0 .5em 1em -.4em rgba(0,0,0,.5)
 
   nav-item
+    box-sizing: border-box
     width: 100%
-    padding: .5em 1em
-    margin: .3em
+    padding: .8em 1em
+    border-top: .0625em solid $Cm
 

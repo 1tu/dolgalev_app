@@ -234,16 +234,14 @@ table td {
   top: -16em;
   left: 1em;
   right: 1em;
-  background: #b6b6b6;
-  transition: top 0.2s ease;
-}
-#header nav.opened {
-  top: 100%;
+  background: #fff;
+  box-shadow: 0 0.5em 1em -0.4em rgba(0,0,0,0.5);
 }
 #header nav-item {
+  box-sizing: border-box;
   width: 100%;
-  padding: 0.5em 1em;
-  margin: 0.3em;
+  padding: 0.8em 1em;
+  border-top: 0.0625em solid #21447a;
 }
 #index {
   margin: 0 auto;
