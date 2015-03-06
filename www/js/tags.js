@@ -337,9 +337,7 @@ riot.tag('index', '<button onclick="{ beep }">set badge 1</button><button onclic
   }.bind(this);
 
   this.getBadges = function() {
-    cordova.plugins.notification.badge.get(function (badge) {
-      navigator.notification.alert( badge )
-    })
+    navigator.notification.alert( s.app.badges )
     this.update()
   }.bind(this);
 

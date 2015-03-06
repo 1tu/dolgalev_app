@@ -128,7 +128,7 @@ s.router = new (function () {
     if (t.current[0] === 'index') 
       navigator.notification.confirm(
         'Если вы хотите чтобы уведомления продолжали поступать, то нужно свернуть приложение (значек "домой"), а не закрыть.', 
-        function(){ navigator.app.exitApp() }, 
+        function(index){ index == 1 && navigator.app.exitApp() }, 
         'Закрыть приложение?',
         ['Да','Нет']
       )

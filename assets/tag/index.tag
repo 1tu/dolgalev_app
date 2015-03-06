@@ -55,9 +55,7 @@
   }
 
   getBadges(){
-    cordova.plugins.notification.badge.get(function (badge) {
-      navigator.notification.alert( badge )
-    })
+    navigator.notification.alert( s.app.badges )
   }
 
   toggleState(item) {
