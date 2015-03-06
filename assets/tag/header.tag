@@ -9,7 +9,7 @@
   </div>
   
 
-  <nav name="navigation">
+  <nav if={ is_nav_opened } >
     <nav-item each={ key, value in nav } onclick={ parent.changeRoute }>{ value }</menu-item>
   </nav>
 
@@ -33,31 +33,23 @@
 
   goBack() {
     t.is_nav_opened = false
-    t.moveNav()
     s.router.goBack()
   }
 
   toggleNav(e) {
     e.stopPropagation()
     t.is_nav_opened = !t.is_nav_opened
-    t.moveNav()
-  }
-
-  moveNav(){
-    TweenMax.to(t.navigation, .3, {top: t.is_nav_opened? "100%" : "-16em"} )
   }
 
   changeRoute(e) {
     e.stopPropagation()
     t.is_nav_opened = false
-    t.moveNav()
     if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/requests/new' )
     riot.route( '/'+e.item.key )
   }
 
   rc.on('toggle_nav', function (action) {
     t.update({ is_nav_opened: (action === 'close')? false : !t.is_nav_opened  })
-    t.moveNav()
   })
 
   rc.on('set_title', function (data) {

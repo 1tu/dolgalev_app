@@ -257,7 +257,7 @@ riot.tag('form-item', '<div name="test" class="form-item"><p>{ prop.title }</p><
 
 
 });
-riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }" onclick="{ goBack }"></back><createRequest class="button" if="{ is_index }" onclick="{ changeRoute }">Записаться на прием</createRequest><title if="{ !is_index }">{ title }</title><nav-toggler class="button" onclick="{ toggleNav }"></nav-toggler></div><nav name="navigation"><nav-item each="{ key, value in nav }" onclick="{ parent.changeRoute }">{ value }</menu-item></nav>', function(opts) {
+riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }" onclick="{ goBack }"></back><createRequest class="button" if="{ is_index }" onclick="{ changeRoute }">Записаться на прием</createRequest><title if="{ !is_index }">{ title }</title><nav-toggler class="button" onclick="{ toggleNav }"></nav-toggler></div><nav if="{ is_nav_opened }" ><nav-item each="{ key, value in nav }" onclick="{ parent.changeRoute }">{ value }</menu-item></nav>', function(opts) {
   var t = this
     , rc = RiotControl
     , s = stores
@@ -277,7 +277,6 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
 
   this.goBack = function() {
     t.is_nav_opened = false
-    t.moveNav()
     s.router.goBack()
     this.update()
   }.bind(this);
@@ -285,19 +284,12 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
   this.toggleNav = function(e) {
     e.stopPropagation()
     t.is_nav_opened = !t.is_nav_opened
-    t.moveNav()
-    this.update()
-  }.bind(this);
-
-  this.moveNav = function() {
-    TweenMax.to(t.navigation, .3, {top: t.is_nav_opened? "100%" : "-16em"} )
     this.update()
   }.bind(this);
 
   this.changeRoute = function(e) {
     e.stopPropagation()
     t.is_nav_opened = false
-    t.moveNav()
     if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/requests/new' )
     riot.route( '/'+e.item.key )
     this.update()
@@ -305,7 +297,6 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
 
   rc.on('toggle_nav', function (action) {
     t.update({ is_nav_opened: (action === 'close')? false : !t.is_nav_opened  })
-    t.moveNav()
   })
 
   rc.on('set_title', function (data) {

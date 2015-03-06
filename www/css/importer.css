@@ -231,17 +231,18 @@ table td {
 #header nav {
   text-align: left;
   z-index: -1;
-  top: -16em;
-  left: 1em;
-  right: 1em;
+  top: 100%;
+  left: 0.7em;
+  right: 0.7em;
   background: #fff;
+  border: 0.0625em solid #e6e6e6;
+  border-top: 0;
   box-shadow: 0 0.5em 1em -0.4em rgba(0,0,0,0.5);
 }
 #header nav-item {
   box-sizing: border-box;
   width: 100%;
   padding: 0.8em 1em;
-  border-top: 0.0625em solid #21447a;
 }
 #index {
   margin: 0 auto;
