@@ -61,10 +61,10 @@ Origami.fastclick.FastClick.attach(document.body);
       for (var key in newTmp) {
         if (oldTmp[key] && 
           (oldTmp[key]['updatedAt'] != newTmp[key]['updatedAt']) ){
-            newTmp[key]['_status'] = 'updated'
+            newTmp[key]['_status'] = 'updated';
             s.app.addBadge()
         } else if ( !oldTmp[key] ) {
-          newTmp[key]['_status'] = 'new'
+          newTmp[key]['_status'] = 'new';
           s.app.addBadge()
         }
 
@@ -363,7 +363,12 @@ s.router = new (function () {
 
   t.goBack = function () {
     if (t.current[0] === 'index') 
-      navigator.notification.confirm('Если вы хотите чтобы уведомления продолжали поступать, то нужно свернуть приложение (значек "домой"), а не закрыть.', function(){navigator.app.exitApp()}, 'Закрыть приложение?',['Да','Нет'])
+      navigator.notification.confirm(
+        'Если вы хотите чтобы уведомления продолжали поступать, то нужно свернуть приложение (значек "домой"), а не закрыть.', 
+        function(){ navigator.app.exitApp() }, 
+        'Закрыть приложение?',
+        ['Да','Нет']
+      )
     else 
       riot.route( '/'+t.reducePath(t.current) )
   }
@@ -539,11 +544,12 @@ s.app = new (function () {
   }
 
   t.addBadge = function () {
-    ls.badges = t.badges++
+    t.badges++
+    ls.badges = t.badges
     cordova.plugins.notification.badge.set( t.badges )
   }
 
-  t.clear_badges = function () {
+  t.clearBadges = function () {
     t.badges = ls.badges = 0
   }
 
@@ -595,7 +601,6 @@ s.app = new (function () {
 
   t.on('try_register', t.try_register)
   t.on('try_login', t.try_login)
-  t.on('clear_badges', t.clear_badges)
 
 })
 
@@ -624,7 +629,7 @@ function onDeviceReady () {
   })
   document.body.onclick = function () {
     stores.router.trigger('toggle_nav', 'close')
-  }
+  };
   
 
   tags._init()

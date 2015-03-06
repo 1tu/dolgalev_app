@@ -132,11 +132,12 @@ s.app = new (function () {
   }
 
   t.addBadge = function () {
-    ls.badges = t.badges++
+    t.badges++
+    ls.badges = t.badges
     cordova.plugins.notification.badge.set( t.badges )
   }
 
-  t.clear_badges = function () {
+  t.clearBadges = function () {
     t.badges = ls.badges = 0
   }
 
@@ -188,7 +189,6 @@ s.app = new (function () {
 
   t.on('try_register', t.try_register)
   t.on('try_login', t.try_login)
-  t.on('clear_badges', t.clear_badges)
 
 })
 

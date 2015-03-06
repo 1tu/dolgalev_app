@@ -296,7 +296,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
   }.bind(this);
 
   rc.on('toggle_nav', function (action) {
-    t.update({is_nav_opened: (action === 'close')? false : !t.is_nav_opened })
+    t.update({ is_nav_opened: (action === 'close')? false : !t.is_nav_opened  })
   })
 
   rc.on('set_title', function (data) {

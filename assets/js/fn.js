@@ -61,10 +61,10 @@ Origami.fastclick.FastClick.attach(document.body);
       for (var key in newTmp) {
         if (oldTmp[key] && 
           (oldTmp[key]['updatedAt'] != newTmp[key]['updatedAt']) ){
-            newTmp[key]['_status'] = 'updated'
+            newTmp[key]['_status'] = 'updated';
             s.app.addBadge()
         } else if ( !oldTmp[key] ) {
-          newTmp[key]['_status'] = 'new'
+          newTmp[key]['_status'] = 'new';
           s.app.addBadge()
         }
 

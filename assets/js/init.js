@@ -15,7 +15,7 @@ function onDeviceReady () {
   })
   document.body.onclick = function () {
     stores.router.trigger('toggle_nav', 'close')
-  }
+  };
   
 
   tags._init()
