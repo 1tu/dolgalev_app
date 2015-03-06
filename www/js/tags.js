@@ -290,7 +290,7 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
   }.bind(this);
 
   this.moveNav = function() {
-    TweenMax.to(t.navigation, .2, {y: t.is_nav_opened? t.navigation.scrollHeight : 0} )
+    TweenMax.to(t.navigation, .3, {top: t.is_nav_opened? "100%" : "-16em"} )
     this.update()
   }.bind(this);
 
