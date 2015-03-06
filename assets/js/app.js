@@ -64,6 +64,7 @@ s.app = new (function () {
     }
 
   t.is_auth = false
+  t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
     if (fn.isNetwork) 
@@ -87,10 +88,6 @@ s.app = new (function () {
       socket._raw.connect()
     else 
       socket = io.sails.connect()
-
-    setTimeout(function () {
-      navigator.notification.beep(2)
-    }, 60000);
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
@@ -134,6 +131,14 @@ s.app = new (function () {
     ls.mod = JSON.stringify(t.mod)
   }
 
+  t.addBadge = function () {
+    ls.badges = t.badges++
+    cordova.plugins.notification.badge.set( t.badges )
+  }
+
+  t.clear_badges = function () {
+    t.badges = ls.badges = 0
+  }
 
   t.try_login = function () {
     if (!s.user.email || !s.user.password) 
@@ -183,6 +188,7 @@ s.app = new (function () {
 
   t.on('try_register', t.try_register)
   t.on('try_login', t.try_login)
+  t.on('clear_badges', t.clear_badges)
 
 })
 

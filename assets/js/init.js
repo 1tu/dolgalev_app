@@ -1,4 +1,3 @@
-
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
   , on = function (eventName, fn) {document.addEventListener(eventName, fn, false)}
@@ -10,9 +9,14 @@ on('deviceready', onDeviceReady)
 
 function onDeviceReady () {
   on('backbutton', stores.router.goBack)
+  on('resume', stores.app.clearBadges);
   on('menubutton', function () {
     stores.router.trigger('toggle_nav')
   })
+  document.body.onclick = function () {
+    stores.router.trigger('toggle_nav', 'close')
+  }
+  
 
   tags._init()
   for (var key in stores) {

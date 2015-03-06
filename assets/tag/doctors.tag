@@ -12,8 +12,6 @@
 
   t.data = s.doctors.data || []
 
-  console.log(this);
-
   rc.on('doctors_update', function(data) {
     t.update({data: data})
   });

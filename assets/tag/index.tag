@@ -1,6 +1,8 @@
 <index>
   <button onclick={ beep }>set badge 1</button>
-  <button onclick={ beepLater }>clear badge</button>
+  <button onclick={ beepLater }>set 5 badge</button>
+  <button onclick={ getBadges }>get badges</button>
+
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
     <a href={ '#/receptions/'+id } class={ 'isle cf' }  each={ receptions }>
@@ -49,7 +51,13 @@
   }
 
   beepLater() {
-    ccordova.plugins.notification.badge.clear()
+    cordova.plugins.notification.badge.set(5)
+  }
+
+  getBadges(){
+    cordova.plugins.notification.badge.get(function (badge) {
+      navigator.notification.alert( badge )
+    })
   }
 
   toggleState(item) {

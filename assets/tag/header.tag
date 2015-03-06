@@ -15,6 +15,7 @@
     , rc = RiotControl
     , s = stores
 
+
   t.title = ''
   t.nav = {
     'requests/new': 'Записаться',
@@ -32,19 +33,20 @@
     s.router.goBack()
   }
 
-  toggleNav() {
+  toggleNav(e) {
+    e.stopPropagation()
     t.is_nav_opened = !t.is_nav_opened
   }
 
   changeRoute(e) {
+    e.stopPropagation()
     t.is_nav_opened = false
     if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/requests/new' )
     riot.route( '/'+e.item.key )
   }
 
-  rc.on('toggle_nav', function () {
-    t.toggleNav()
-    t.update()
+  rc.on('toggle_nav', function (action) {
+    t.update({is_nav_opened: (action === 'close')? false : !t.is_nav_opened })
   })
 
   rc.on('set_title', function (data) {

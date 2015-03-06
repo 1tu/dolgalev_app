@@ -206,8 +206,6 @@ riot.tag('doctors', '<a href="{ \'#/doctors/\'+id }" class="{ \'isle\' }" each="
 
   t.data = s.doctors.data || []
 
-  console.log(this);
-
   rc.on('doctors_update', function(data) {
     t.update({data: data})
   });
@@ -264,6 +262,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
     , rc = RiotControl
     , s = stores
 
+
   t.title = ''
   t.nav = {
     'requests/new': 'Записаться',
@@ -282,21 +281,22 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
     this.update()
   }.bind(this);
 
-  this.toggleNav = function() {
+  this.toggleNav = function(e) {
+    e.stopPropagation()
     t.is_nav_opened = !t.is_nav_opened
     this.update()
   }.bind(this);
 
   this.changeRoute = function(e) {
+    e.stopPropagation()
     t.is_nav_opened = false
     if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/requests/new' )
     riot.route( '/'+e.item.key )
     this.update()
   }.bind(this);
 
-  rc.on('toggle_nav', function () {
-    t.toggleNav()
-    t.update()
+  rc.on('toggle_nav', function (action) {
+    t.update({is_nav_opened: (action === 'close')? false : !t.is_nav_opened })
   })
 
   rc.on('set_title', function (data) {
@@ -315,7 +315,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 });
 
 
-riot.tag('index', '<button onclick="{ beep }">set badge 1</button><button onclick="{ beepLater }">clear badge</button><h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
+riot.tag('index', '<button onclick="{ beep }">set badge 1</button><button onclick="{ beepLater }">set 5 badge</button><button onclick="{ getBadges }">get badges</button><h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -332,7 +332,14 @@ riot.tag('index', '<button onclick="{ beep }">set badge 1</button><button onclic
   }.bind(this);
 
   this.beepLater = function() {
-    ccordova.plugins.notification.badge.clear()
+    cordova.plugins.notification.badge.set(5)
+    this.update()
+  }.bind(this);
+
+  this.getBadges = function() {
+    cordova.plugins.notification.badge.get(function (badge) {
+      navigator.notification.alert( badge )
+    })
     this.update()
   }.bind(this);
 

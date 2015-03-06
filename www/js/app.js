@@ -60,10 +60,13 @@ Origami.fastclick.FastClick.attach(document.body);
 
       for (var key in newTmp) {
         if (oldTmp[key] && 
-          (oldTmp[key]['updatedAt'] != newTmp[key]['updatedAt']) ) 
+          (oldTmp[key]['updatedAt'] != newTmp[key]['updatedAt']) ){
             newTmp[key]['_status'] = 'updated'
-        else if ( !oldTmp[key] )
+            s.app.addBadge()
+        } else if ( !oldTmp[key] ) {
           newTmp[key]['_status'] = 'new'
+          s.app.addBadge()
+        }
 
         result.push( newTmp[key] )
       }
@@ -359,8 +362,10 @@ s.router = new (function () {
   }
 
   t.goBack = function () {
-    if (t.current[0] === 'index') navigator.app.exitApp()
-    else riot.route( '/'+t.reducePath(t.current) )
+    if (t.current[0] === 'index') 
+      navigator.notification.confirm('Если вы хотите чтобы уведомления продолжали поступать, то нужно свернуть приложение (значек "домой"), а не закрыть.', function(){navigator.app.exitApp()}, 'Закрыть приложение?',['Да','Нет'])
+    else 
+      riot.route( '/'+t.reducePath(t.current) )
   }
 
   t.reducePath = function (path) {
@@ -466,6 +471,7 @@ s.app = new (function () {
     }
 
   t.is_auth = false
+  t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
     if (fn.isNetwork) 
@@ -489,10 +495,6 @@ s.app = new (function () {
       socket._raw.connect()
     else 
       socket = io.sails.connect()
-
-    setTimeout(function () {
-      navigator.notification.beep(2)
-    }, 60000);
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
@@ -536,6 +538,14 @@ s.app = new (function () {
     ls.mod = JSON.stringify(t.mod)
   }
 
+  t.addBadge = function () {
+    ls.badges = t.badges++
+    cordova.plugins.notification.badge.set( t.badges )
+  }
+
+  t.clear_badges = function () {
+    t.badges = ls.badges = 0
+  }
 
   t.try_login = function () {
     if (!s.user.email || !s.user.password) 
@@ -585,12 +595,12 @@ s.app = new (function () {
 
   t.on('try_register', t.try_register)
   t.on('try_login', t.try_login)
+  t.on('clear_badges', t.clear_badges)
 
 })
 
 
 })(stores, riot, fn, localStorage, RiotControl)
-
 
 
 
@@ -608,9 +618,14 @@ on('deviceready', onDeviceReady)
 
 function onDeviceReady () {
   on('backbutton', stores.router.goBack)
+  on('resume', stores.app.clearBadges);
   on('menubutton', function () {
     stores.router.trigger('toggle_nav')
   })
+  document.body.onclick = function () {
+    stores.router.trigger('toggle_nav', 'close')
+  }
+  
 
   tags._init()
   for (var key in stores) {
