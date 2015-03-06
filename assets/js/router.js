@@ -103,7 +103,7 @@ s.router = new (function () {
 
   riot.observable(this)
   var t = this
-
+ 
   t.is_index = true
   t.exceptions = ['requests', 'receptions', 'auth']
   t.current = []

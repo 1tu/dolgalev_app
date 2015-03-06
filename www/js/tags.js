@@ -65,7 +65,7 @@ riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"
 
 
 });
-riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a style="text-align: right" href="#/auth/login">У меня уже есть аккаунт</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Зарегистрироваться</button>', function(opts) {
+riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a href="#/auth/login">У меня уже есть аккаунт</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Зарегистрироваться</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -104,7 +104,6 @@ riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"><
       type: 'password',
       required: 1
     },
-
   }
 
   this.checkFields = function(query) {
@@ -113,6 +112,7 @@ riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"><
       if (inp.required && !inp.value) return false;
       query && inp.value && (query[key] = inp.value)
     }
+    if (list.password.value !== list.confirmPassword.value) return false
     return true
     this.update()
   }.bind(this);
@@ -315,7 +315,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 });
 
 
-riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
+riot.tag('index', '<button onclick="{ beep }">BEEP!</button><button onclick="{ beepLater }">BEEP later</button><h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -325,6 +325,18 @@ riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, 
   t.is_req_visible = true
   t.receptions = s.receptions.data || [];
   t.requests = s.requests.data || [];
+
+  this.beep = function() {
+    navigator.notification.beep(1)
+    this.update()
+  }.bind(this);
+
+  this.beepLater = function() {
+    setTimeout(function () {
+      navigator.notification.beep(1)
+    }, 2000);
+    this.update()
+  }.bind(this);
 
   this.toggleState = function(item) {
     t[ item ] = !t[ item ]
