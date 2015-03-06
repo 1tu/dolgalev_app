@@ -127,10 +127,7 @@ Origami.fastclick.FastClick.attach(document.body);
 
   f.onFocus = function () {
     input_stub.style.display = 'block'
-    var offsetTop = this.offsetTop - this.scrollHeight*2
-    setTimeout(function () {
-      window.scrollTo(0, offsetTop)
-    }, 10);
+    window.scrollTo(0, this.offsetTop - this.scrollHeight*2)
   }
   f.onBlur = function () {
     input_stub.style.display = 'none'

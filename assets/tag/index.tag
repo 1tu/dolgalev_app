@@ -51,7 +51,7 @@
   beepLater() {
     setTimeout(function () {
       navigator.notification.beep(1)
-    }, 2000);
+    }, 5000);
   }
 
   toggleState(item) {

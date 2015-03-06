@@ -334,7 +334,7 @@ riot.tag('index', '<button onclick="{ beep }">BEEP!</button><button onclick="{ b
   this.beepLater = function() {
     setTimeout(function () {
       navigator.notification.beep(1)
-    }, 2000);
+    }, 5000);
     this.update()
   }.bind(this);
 
