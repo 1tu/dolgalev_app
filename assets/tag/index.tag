@@ -45,13 +45,11 @@
   t.requests = s.requests.data || [];
 
   beep() {
-    navigator.notification.beep(1)
+    StatusBar.hide()
   }
 
   beepLater() {
-    setTimeout(function () {
-      navigator.notification.beep(1)
-    }, 5000);
+    StatusBar.show();
   }
 
   toggleState(item) {

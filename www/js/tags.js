@@ -327,14 +327,12 @@ riot.tag('index', '<button onclick="{ beep }">BEEP!</button><button onclick="{ b
   t.requests = s.requests.data || [];
 
   this.beep = function() {
-    navigator.notification.beep(1)
+    StatusBar.hide()
     this.update()
   }.bind(this);
 
   this.beepLater = function() {
-    setTimeout(function () {
-      navigator.notification.beep(1)
-    }, 5000);
+    StatusBar.show();
     this.update()
   }.bind(this);
 
