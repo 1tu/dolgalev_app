@@ -24,6 +24,12 @@ function onDeviceReady () {
   if (stores.user.is_registered) riot.route('/index')
   else riot.route('/auth/new')
 
+  cordova.plugins.notification.badge.configure({ 
+    autoClear: true,
+    title: 'Новое уведомление!',
+    smallIcon: 'icon'
+  })
+
   navigator.splashscreen.hide()
 }
 
