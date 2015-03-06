@@ -1,6 +1,7 @@
 <index>
   <button onclick={ beep }>BEEP!</button>
   <button onclick={ beepLater }>BEEP later</button>
+  <button onclick={ json }>show</button>
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
     <a href={ '#/receptions/'+id } class={ 'isle cf' }  each={ receptions }>
@@ -49,7 +50,11 @@
   }
 
   beepLater() {
-    StatusBar.show();
+    StatusBar.show('test');
+  }
+
+  json(){
+    navigator.notification.alert( Object.keys(StatusBar).toString() )
   }
 
   toggleState(item) {
