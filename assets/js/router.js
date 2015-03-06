@@ -125,7 +125,7 @@ s.router = new (function () {
   }
 
   t.goBack = function () {
-    if (t.current[0] === 'index') return navigator.app.exitApp()
+    if (t.current[0] === 'index') navigator.app.exitApp()
     else riot.route( '/'+t.reducePath(t.current) )
   }
 

@@ -1,4 +1,6 @@
 <index>
+  <button onclick={ beep }>BEEP!</button>
+  <button onclick={ beepLater }>BEEP later</button>
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
     <a href={ '#/receptions/'+id } class={ 'isle cf' }  each={ receptions }>
@@ -41,6 +43,16 @@
   t.is_req_visible = true
   t.receptions = s.receptions.data || [];
   t.requests = s.requests.data || [];
+
+  beep() {
+    navigator.notification.beep(1)
+  }
+
+  beepLater() {
+    setTimeout(function () {
+      navigator.notification.beep(1)
+    }, 2000);
+  }
 
   toggleState(item) {
     t[ item ] = !t[ item ]
