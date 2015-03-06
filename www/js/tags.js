@@ -257,7 +257,7 @@ riot.tag('form-item', '<div name="test" class="form-item"><p>{ prop.title }</p><
 
 
 });
-riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"></back><createRequest class="button" if="{ is_index }" onclick="{ changeRoute }">Записаться на прием</createRequest><title if="{ !is_index }">{ title }</title><nav-toggler class="button" onclick="{ toggleNav }"></nav-toggler><nav if="{ is_nav_opened }"><nav-item each="{ key, value in nav }" onclick="{ parent.changeRoute }">{ value }</menu-item></nav>', function(opts) {
+riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }" onclick="{ goBack }"></back><createRequest class="button" if="{ is_index }" onclick="{ changeRoute }">Записаться на прием</createRequest><title if="{ !is_index }">{ title }</title><nav-toggler class="button" onclick="{ toggleNav }"></nav-toggler></div><nav class="{ opened: is_nav_opened }" ><nav-item each="{ key, value in nav }" onclick="{ parent.changeRoute }">{ value }</menu-item></nav>', function(opts) {
   var t = this
     , rc = RiotControl
     , s = stores
@@ -315,7 +315,7 @@ riot.tag('header', '<back class="button" if="{ !is_index }" onclick="{ goBack }"
 });
 
 
-riot.tag('index', '<button onclick="{ beep }">set badge 1</button><button onclick="{ beepLater }">set 5 badge</button><button onclick="{ getBadges }">get badges</button><h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
+riot.tag('index', '<button onclick="{ addBadge }">add badge</button><button onclick="{ getBadges }">get badges</button><h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -326,13 +326,8 @@ riot.tag('index', '<button onclick="{ beep }">set badge 1</button><button onclic
   t.receptions = s.receptions.data || [];
   t.requests = s.requests.data || [];
 
-  this.beep = function() {
-    cordova.plugins.notification.badge.set(1)
-    this.update()
-  }.bind(this);
-
-  this.beepLater = function() {
-    cordova.plugins.notification.badge.set(5)
+  this.addBadge = function() {
+    s.app.addBadge()
     this.update()
   }.bind(this);
 

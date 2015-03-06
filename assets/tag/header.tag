@@ -1,12 +1,15 @@
 <header>
-  <back class="button" if={ !is_index } onclick={ goBack }></back>
-  <createRequest class="button" if={ is_index } onclick={ changeRoute }>Записаться на прием</createRequest>
+  <div class="VA inner">
+    <back class="button" if={ !is_index } onclick={ goBack }></back>
+    <createRequest class="button" if={ is_index } onclick={ changeRoute }>Записаться на прием</createRequest>
 
-  <title if={ !is_index }>{ title }</title>
+    <title if={ !is_index }>{ title }</title>
 
-  <nav-toggler class="button" onclick={ toggleNav }></nav-toggler>
+    <nav-toggler class="button" onclick={ toggleNav }></nav-toggler>
+  </div>
+  
 
-  <nav if={ is_nav_opened }>
+  <nav class={ opened: is_nav_opened } >
     <nav-item each={ key, value in nav } onclick={ parent.changeRoute }>{ value }</menu-item>
   </nav>
 

@@ -22,6 +22,7 @@ main {
 .VA:before {
   content: '';
   height: 100%;
+  width: 0;
   display: inline-block;
   vertical-align: middle;
 }
@@ -162,15 +163,20 @@ table td {
   background: rgba(200,0,0,0.1);
 }
 #header {
-  z-index: 1000;
+  z-index: 100;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: #21447a;
-  display: block;
   height: 3em;
   text-align: center;
+}
+#header .inner {
+  background: #21447a;
+  display: block;
+  z-index: 10;
+  height: 100%;
+  width: 100%;
 }
 #header createrequest {
   padding: 0.25em 0.5em;
@@ -224,15 +230,19 @@ table td {
 }
 #header nav {
   text-align: left;
-  z-index: 100;
-  top: 100%;
-  left: 0;
-  right: 0;
+  z-index: -1;
+  top: -16em;
+  left: 1em;
+  right: 1em;
   background: #b6b6b6;
+  transition: top 0.2s ease;
+}
+#header nav.opened {
+  top: 100%;
 }
 #header nav-item {
   width: 100%;
-  padding: 0.4em;
+  padding: 0.5em 1em;
   margin: 0.3em;
 }
 #index {

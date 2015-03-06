@@ -1,6 +1,5 @@
 <index>
-  <button onclick={ beep }>set badge 1</button>
-  <button onclick={ beepLater }>set 5 badge</button>
+  <button onclick={ addBadge }>add badge</button>
   <button onclick={ getBadges }>get badges</button>
 
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
@@ -46,12 +45,8 @@
   t.receptions = s.receptions.data || [];
   t.requests = s.requests.data || [];
 
-  beep() {
-    cordova.plugins.notification.badge.set(1)
-  }
-
-  beepLater() {
-    cordova.plugins.notification.badge.set(5)
+  addBadge() {
+    s.app.addBadge()
   }
 
   getBadges(){

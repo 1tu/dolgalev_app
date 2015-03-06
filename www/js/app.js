@@ -612,6 +612,7 @@ s.app = new (function () {
 
 
 
+
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
   , on = function (eventName, fn) {document.addEventListener(eventName, fn, false)}
@@ -629,7 +630,7 @@ function onDeviceReady () {
   })
   document.body.onclick = function () {
     stores.router.trigger('toggle_nav', 'close')
-  };
+  }
   
 
   tags._init()

@@ -1,13 +1,18 @@
 #header
-  z-index: 1000
+  z-index: 100
   position: fixed
   top: 0
   left: 0
   right: 0
-  background: $Cm
-  display: block
   height: $Hh
   text-align: center
+
+  .inner
+    background: $Cm
+    display: block
+    z-index: 10
+    height: 100%
+    width: 100%
 
   createrequest
     padding: .25em .5em
@@ -53,14 +58,17 @@
 
   nav
     text-align: left
-    z-index: 100
-    top: 100%
-    left: 0   
-    right: 0
+    z-index: -1
+    top: -16em
+    left: 1em   
+    right: 1em
     background: darken($Cb, 20%)
+    transition: top .2s ease
+    &.opened
+      top: 100%
 
   nav-item
     width: 100%
-    padding: .4em
+    padding: .5em 1em
     margin: .3em
 
