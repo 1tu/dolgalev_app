@@ -27,6 +27,26 @@ s.user = new (function () {
     ls.settings = JSON.stringify(t.settings)
   }
 
+
+
+  t.on('password_reset', function (query) {
+    socket.post('/auth/reset', query, function (data) {
+      if (fn.isError(data)) return
+      
+      navigator.notification.alert('Пароль был успешно сменен.')
+      t.trigger('clear_emailpass')
+      rt.route('/auth/login')
+    })
+  });
+
+  t.on('password_reset_request', function (query) {
+    socket.post('/auth/reset', query, function (data) {
+      if (fn.isError(data)) return
+      
+      navigator.notification.alert('На ваш email было отправлено письмо с ключом.')
+    })
+  });
+
   t.on('set_emailpass', function(data) {
     t.email = ls.email = data.email
     t.password = ls.password = data.password

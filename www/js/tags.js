@@ -124,10 +124,6 @@ riot.tag('auth-new', '<form-item each="{ formData.items }" src="{ \'formData\' }
     rc.trigger('try_register', form.query)
     this.update()
   }.bind(this);
-
-  t.on('update', function () {
-    console.log('auth new UPDATED');
-  })
   
   t.on('mount', function() {
     rc.trigger('set_title','Регистрация')
@@ -136,7 +132,7 @@ riot.tag('auth-new', '<form-item each="{ formData.items }" src="{ \'formData\' }
 
 
 });
-riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p><form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><button class="{ \'connect\' + (checkFields(formData)? \' \' :\' disabled\') }" onclick="{ submit.bind(this, formData) }">Получить ключ</button>', function(opts) {
+riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p><form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><button class="{ \'connect\' + (checkFields(formData)? \' \' :\' disabled\') }" onclick="{ submit.bind(this, formData) }">Получить ключ</button><p class="tm" style="margin-top: 2em">Если у вас уже есть ключ - вы можете сменить пароль</p><form-item each="{ formPass.items }" src="{ \'formPass\' }"></form-item><button class="{ \'connect\' + (checkFields(formPass)? \' \' :\' disabled\') }" onclick="{ submitPass.bind(this, formPass) }">Сменить пароль</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -146,14 +142,38 @@ riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановле
     query: {},
     items: [
       {
-        name: 'first_name',
+        name: 'email',
         tag: 'input',
         title: 'Ваш email',
-        type: 'text',
+        type: 'email',
         required: 1
       }
     ]
-    
+  }
+
+  t.formPass = {
+    query: {},
+    items: [
+      {
+        name: 'resetToken',
+        tag: 'textarea',
+        title: 'Ключ для смены пароля',
+        required: 1
+      },{
+        name: 'password',
+        tag: 'input',
+        title: 'Новый пароль',
+        type: 'password',
+        required: 1
+      },{
+        name: 'confirmPassword',
+        tag: 'input',
+        title: 'Повторите пароль',
+        type: 'password',
+        required: 1
+      }
+    ],
+    compare: ['password', 'confirmPassword'],
   }
 
   this.checkFields = function(form) {
@@ -169,7 +189,13 @@ riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановле
 
   this.submit = function(form) {
     if (!t.checkFields(form)) return
+    rc.trigger('password_reset_request', form.query)
+    this.update()
+  }.bind(this);
 
+  this.submitPass = function(form) {
+    if (!t.checkFields(form)) return
+    rc.trigger('password_reset', form.query)
     this.update()
   }.bind(this);
 
@@ -239,13 +265,12 @@ riot.tag('form-item', '<p>{ parent.title }</p><div if="{ invalids }" class="inva
       if (t.parent.required) t.input.className = 'invalid' 
       else t.input.className = '' 
     }
-  parent.update()
+    parent.update()
     this.update()
   }.bind(this);
 
   rc.on('form_invalid', function (data) {
     if (!data[ t.name ]) return
-    console.log('form INVALID! ', data[ t.name ]);
     t.update({invalids: data[ t.name ]})
   })
 

@@ -26,12 +26,11 @@
       if (t.parent.required) t.input.className = 'invalid' 
       else t.input.className = '' 
     }
-  parent.update()
+    parent.update()
   }
 
   rc.on('form_invalid', function (data) {
     if (!data[ t.name ]) return
-    console.log('form INVALID! ', data[ t.name ]);
     t.update({invalids: data[ t.name ]})
   })
 

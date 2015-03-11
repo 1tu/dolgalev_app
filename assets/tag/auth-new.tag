@@ -62,10 +62,6 @@
     if (!t.checkFields(form)) return
     rc.trigger('try_register', form.query)
   }
-
-  t.on('update', function () {
-    console.log('auth new UPDATED');
-  })
   
   t.on('mount', function() {
     rc.trigger('set_title','Регистрация')
