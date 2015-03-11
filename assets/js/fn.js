@@ -1,6 +1,4 @@
-Origami.fastclick.FastClick.attach(document.body);
-
-;(function(f, rc, s) {
+;(function(f, rt, rc, s) {
 
   f.data = {
     days: ["Воскресение", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
@@ -9,7 +7,31 @@ Origami.fastclick.FastClick.attach(document.body);
     rec_types: {
         reception: 'Приём у врача',
         pull_tooth: 'Вырывание зуба'
-      },
+      } 
+  }
+
+  f.AEH = {
+    1: function () {
+      s.app.trigger('try_login')
+    },
+
+    2: function (data) {
+      s.app.trigger('form_invalid', data.invalid)
+    },
+
+    3: function () {
+      navigator.notification.alert('Такой комбинации email`а и пароля не существует')
+      s.app.is_registered = false
+      delete localStorage.is_registered
+      s.user.trigger('clear_emailpass')
+      rt.route('/auth/new')
+    }
+  }
+
+  f.isError = function (data) {
+    if (!data || !data.errorType) return false
+    fn.AEH[ data.errorType ] && fn.AEH[ data.errorType ](data)
+    return true
   }
 
 
@@ -94,12 +116,12 @@ Origami.fastclick.FastClick.attach(document.body);
   }
 
 
-  f.createFormItem = function (name, opts) {
+  f.createFormItem = function (opts) {
     var el = document.createElement(opts.tag)
-    el.name = name
+    el.name = opts.name
     opts.type && (el.type = opts.type)
-    if (opts.tag === 'select' && opts.src) {
-      opts.src.forEach(function (item) {
+    if (opts.tag === 'select' && opts.options) {
+      opts.options.forEach(function (item) {
         var opt = document.createElement('option')
 
         item.value && (opt.value = item.value)
@@ -141,5 +163,7 @@ Origami.fastclick.FastClick.attach(document.body);
     return navigator.connection.type === Connection.NONE? false : true
   }
 
-})(fn, RiotControl, stores)
 
+  
+
+})(fn, riot, RiotControl, stores)

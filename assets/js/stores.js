@@ -68,11 +68,7 @@ s.requests = new (function () {
 
   t.create_request = function (query) {
     socket.post('/request', query, function (data) {
-      console.log(typeof data, data);
-      if (data.errorType) {
-        // TODO: notification
-        return
-      }
+      if (fn.isError(data)) return
 
       rt.route('/index')
       t.data.push(data)
@@ -82,7 +78,17 @@ s.requests = new (function () {
     })
   }
 
+  t.reject_request = function (id) {
+    socket.put('/request/'+id+'/reject', function (data) {
+      if (fn.isError(data)) return
+
+      rt.route('/index')
+      s.app.checkUpdates()
+    })
+  }
+
   t.on('create_request', t.create_request)
+  t.on('reject_request', t.reject_request)
 
 })
 

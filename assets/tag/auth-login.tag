@@ -1,50 +1,48 @@
 <auth-login>
-  <form-item each={ name, prop in list } data={ this }></form-item>
+  <form-item each={ formData.items } src={ 'formData' }></form-item>
   <div class="tar">
     <a href="#/auth/reset">Забыли пароль или хотите его сменить?</a>
   </div>
-  <button class={ 'connect' + (checkFields()? ' ' : ' disabled') } onclick={ submit }>Войти</button>
+  <button class={ 'connect' + (checkFields(formData)? ' ' : ' disabled') } onclick={ submit.bind(this, formData) }>Войти</button>
 
   var t = this
     , rc = RiotControl
     , s = stores
 
-
-  t._name = 'form_login_auth_changed'
-  t.list = {
-    email: {
-      tag: 'input',
-      title: 'Email',
-      type: 'email',
-      required: 1
-    },
-    password: {
-      tag: 'input',
-      title: 'Пароль',
-      type: 'password',
-      required: 1
-    },
+  t.formData = {
+    query: {},
+    items: [
+      {
+        name: 'email',
+        tag: 'input',
+        title: 'Email',
+        type: 'email',
+        required: 1
+      },{
+        name: 'password',
+        tag: 'input',
+        title: 'Пароль',
+        type: 'password',
+        required: 1
+      }
+    ]
   }
 
-  checkFields(query) {
-    for (var key in t.list) {
-      var inp = t.list[key]
-      if (inp.required && !inp.value) return false;
-      query && inp.value && (query[key] = inp.value)
-    }
+  checkFields(form) {
+    for (var i = 0, item; (item = form.items[i]); i++) 
+      if (item.required && !form.query[ item.name ]) return false
+
+    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
+      return false
+
     return true
   }
 
-  submit() {
-    var query = {}
-    if (!t.checkFields(query)) return
-    rc.trigger('need_login_with', query)
+  submit(form) {
+    if (!t.checkFields(form)) return
+    rc.trigger('need_login_with', form.query)
   }
 
-  t.on(t._name, function (data) {
-    t.list[ data.name ].value = data.value || null
-    t.update()
-  })
   
   t.on('mount', function() {
     rc.trigger('set_title','Войти')

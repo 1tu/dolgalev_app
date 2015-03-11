@@ -13,50 +13,48 @@ riot.tag('about', '<p class="tm nmt">Созданный в 2005г. на базе
 
 
 });
-riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Войти</button>', function(opts) {
+riot.tag('auth-login', '<form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div><button class="{ \'connect\' + (checkFields(formData)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">Войти</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
     , s = stores
 
-
-  t._name = 'form_login_auth_changed'
-  t.list = {
-    email: {
-      tag: 'input',
-      title: 'Email',
-      type: 'email',
-      required: 1
-    },
-    password: {
-      tag: 'input',
-      title: 'Пароль',
-      type: 'password',
-      required: 1
-    },
+  t.formData = {
+    query: {},
+    items: [
+      {
+        name: 'email',
+        tag: 'input',
+        title: 'Email',
+        type: 'email',
+        required: 1
+      },{
+        name: 'password',
+        tag: 'input',
+        title: 'Пароль',
+        type: 'password',
+        required: 1
+      }
+    ]
   }
 
-  this.checkFields = function(query) {
-    for (var key in t.list) {
-      var inp = t.list[key]
-      if (inp.required && !inp.value) return false;
-      query && inp.value && (query[key] = inp.value)
-    }
+  this.checkFields = function(form) {
+    for (var i = 0, item; (item = form.items[i]); i++) 
+      if (item.required && !form.query[ item.name ]) return false
+
+    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
+      return false
+
     return true
     this.update()
   }.bind(this);
 
-  this.submit = function() {
-    var query = {}
-    if (!t.checkFields(query)) return
-    rc.trigger('need_login_with', query)
+  this.submit = function(form) {
+    if (!t.checkFields(form)) return
+    rc.trigger('need_login_with', form.query)
     this.update()
   }.bind(this);
 
-  t.on(t._name, function (data) {
-    t.list[ data.name ].value = data.value || null
-    t.update()
-  })
   
   t.on('mount', function() {
     rc.trigger('set_title','Войти')
@@ -65,68 +63,70 @@ riot.tag('auth-login', '<form-item each="{ name, prop in list }" data="{ this }"
 
 
 });
-riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><div class="tar"><a href="#/auth/login">У меня уже есть аккаунт</a></div><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Зарегистрироваться</button>', function(opts) {
+riot.tag('auth-new', '<form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><div class="tar"><a href="#/auth/login">У меня уже есть аккаунт</a></div><button class="{ \'connect\' + (checkFields(formData)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">Зарегистрироваться</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
     , s = stores
 
+  t.formData = {
+    query: {},
+    items: [
+      {
+        name: 'first_name',
+        tag: 'input',
+        title: 'Имя',
+        type: 'text',
+        required: 1
+      },{
+        name: 'last_name',
+        tag: 'input',
+        title: 'Фамилия',
+        type: 'text',
+        required: 1
+      },{
+        name: 'email',
+        tag: 'input',
+        title: 'Email',
+        type: 'email',
+        required: 1
+      },{
+        name: 'password',
+        tag: 'input',
+        title: 'Пароль',
+        type: 'password',
+        required: 1
+      },{
+        name: 'confirmPassword',
+        tag: 'input',
+        title: 'Повторите пароль',
+        type: 'password',
+        required: 1
+      }
+    ],
+    compare: ['password', 'confirmPassword'],
 
-  t._name = 'form_new_auth_changed'
-  t.list = {
-    first_name: {
-      tag: 'input',
-      title: 'Имя',
-      type: 'text',
-      required: 1
-    },
-    last_name: {
-      tag: 'input',
-      title: 'Фамилия',
-      type: 'text',
-      required: 1
-    },
-    email: {
-      tag: 'input',
-      title: 'Email',
-      type: 'email',
-      required: 1
-    },
-    password: {
-      tag: 'input',
-      title: 'Пароль',
-      type: 'password',
-      required: 1
-    },
-    confirmPassword: {
-      tag: 'input',
-      title: 'Повторите пароль',
-      type: 'password',
-      required: 1
-    },
   }
 
-  this.checkFields = function(query) {
-    for (var key in t.list) {
-      var inp = t.list[key]
-      if (inp.required && !inp.value) return false;
-      query && inp.value && (query[key] = inp.value)
-    }
-    if (list.password.value !== list.confirmPassword.value) return false
+  this.checkFields = function(form) {
+    for (var i = 0, item; (item = form.items[i]); i++) 
+      if (item.required && !form.query[ item.name ]) return false
+
+    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
+      return false
+
     return true
     this.update()
   }.bind(this);
 
-  this.submit = function() {
-    var query = {}
-    if (!t.checkFields(query)) return
-    rc.trigger('try_register', query)
+  this.submit = function(form) {
+    if (!t.checkFields(form)) return
+    rc.trigger('try_register', form.query)
     this.update()
   }.bind(this);
 
-  t.on(t._name, function (data) {
-    t.list[ data.name ].value = data.value || null
-    t.update()
+  t.on('update', function () {
+    console.log('auth new UPDATED');
   })
   
   t.on('mount', function() {
@@ -136,45 +136,44 @@ riot.tag('auth-new', '<form-item each="{ name, prop in list }" data="{ this }"><
 
 
 });
-riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p><form-item each="{ name, prop in list }" data="{ this }"></form-item><button class="{ \'connect\' + (checkFields()? \' \' :\' disabled\') }" onclick="{ submit }">Получить ключ</button>', function(opts) {
+riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p><form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><button class="{ \'connect\' + (checkFields(formData)? \' \' :\' disabled\') }" onclick="{ submit.bind(this, formData) }">Получить ключ</button>', function(opts) {
 
   var t = this
     , rc = RiotControl
     , s = stores
 
-
-  t._name = 'form_new_auth_changed'
-  t.list = {
-    first_name: {
-      tag: 'input',
-      title: 'Ваш email',
-      type: 'text',
-      required: 1
-    }
+  t.formData = {
+    query: {},
+    items: [
+      {
+        name: 'first_name',
+        tag: 'input',
+        title: 'Ваш email',
+        type: 'text',
+        required: 1
+      }
+    ]
+    
   }
 
-  this.checkFields = function(query) {
-    for (var key in t.list) {
-      var inp = t.list[key]
-      if (inp.required && !inp.value) return false;
-      query && inp.value && (query[key] = inp.value)
-    }
+  this.checkFields = function(form) {
+    for (var i = 0, item; (item = form.items[i]); i++) 
+      if (item.required && !form.query[ item.name ]) return false
+
+    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
+      return false
+
     return true
     this.update()
   }.bind(this);
 
-  this.submit = function() {
-    var query = {}
-    if (!t.checkFields(query)) return
+  this.submit = function(form) {
+    if (!t.checkFields(form)) return
 
     this.update()
   }.bind(this);
 
-  t.on(t._name, function (data) {
-    t.list[ data.name ].value = data.value || null
-    t.update()
-  })
-  
+
   t.on('mount', function() {
     rc.trigger('set_title','Смена пароля')
     tags.add(t)
@@ -192,7 +191,6 @@ riot.tag('doctors-item', '<p>{ data.last_name }</p><p>{ data.first_name }</p><p>
     tags.add(t)
     rc.trigger('set_title', 'Врач')
     t.update({data: s.doctors.getCurrent()})
-  console.log(t.data);
   });
   
 
@@ -217,38 +215,43 @@ riot.tag('doctors', '<a href="{ \'#/doctors/\'+id }" class="{ \'isle\' }" each="
 
 
 });
-riot.tag('form-item', '<div name="test" class="form-item"><p>{ prop.title }</p></div>', function(opts) {
+riot.tag('form-item', '<p>{ parent.title }</p><div if="{ invalids }" class="invalid_reasons"><p each="{ reason in invalids }">{ reason }</p></div>', function(opts) {
 
   var t = this
     , rc = RiotControl
     , s = stores
     , parent = t.parent.parent
 
-  t.name = t.opts.data.item.name
-  t.prop = t.opts.data.item.prop
+  t.src = t.opts.src
 
   this.onChange = function() {
     var val = t.input.value
     if (val) {
-      if (!t.prop.pattern || (t.prop.pattern && val.search(t.prop.pattern) !== -1 )) {
-        parent.trigger(parent._name, {name: t.name, value: val})
+      if (!t.parent.pattern || (t.parent.pattern && val.search(t.parent.pattern) !== -1 )) {
+        parent[ t.src ].query[ t.name ] = val
         t.input.className = 'valid'  
-      }
-      else {
-        parent.trigger(parent._name, {name: t.name})
+      }else {
+        delete parent[ t.src ].query[ t.name ]
         t.input.className = 'invalid'
       }
     }else{
-      parent.trigger(parent._name, {name: t.name})
-      if (t.prop.required) t.input.className = 'invalid' 
+      delete parent[ t.src ].query[ t.name ]
+      if (t.parent.required) t.input.className = 'invalid' 
       else t.input.className = '' 
     }
+  parent.update()
     this.update()
   }.bind(this);
 
+  rc.on('form_invalid', function (data) {
+    if (!data[ t.name ]) return
+    console.log('form INVALID! ', data[ t.name ]);
+    t.update({invalids: data[ t.name ]})
+  })
+
   t.on('mount', function() {
-    t.input = fn.createFormItem(t.name, t.prop)
-    t.test.appendChild( t.input )
+    t.input = fn.createFormItem(t.parent)
+    t.root.insertBefore( t.input, t.root.firstChild.nextSibling )
     t.input.onchange = t.onChange
     t.input.onfocus = fn.onFocus
     t.input.onblur = fn.onBlur
@@ -315,7 +318,7 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
 });
 
 
-riot.tag('index', '<button onclick="{ addBadge }">add badge</button><button onclick="{ getBadges }">get badges</button><h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
+riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, \'is_rec_visible\') }">Текущие записи</h2><tab if="{ receptions[0] && is_rec_visible }"><a href="{ \'#/receptions/\'+id }" class="{ \'isle cf\' }" each="{ receptions }"><div class="datetime VA"><div><p class="time">{ fn.parseTime(datetime) }</p><p>{ fn.parseDate(datetime) }</p><p class="day">{ fn.parseDay(datetime) }</p></div></div><div class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ requests[0] }" onclick="{ toggleState.bind(this, \'is_req_visible\') }">Текущие заявки</h2><tab if="{ requests[0] && is_req_visible }"><a href="{ \'#/requests/\'+id }" class="{ \'isle cf \' }" each="{ requests }"><div class="{ \'datetime VA\' + (doctor_id? \' \' : \' withoutDoctor\') }"><div><p if="{ time_begin }">{ time_begin && time_begin } { (time_begin && time_end) && (\' - \'+time_end) }</p><p>{ fn.parseDate(date) }</p><p class="day">{ fn.parseDay(date) }</p></div></div><div if="{ doctor_id }" class="withDoctor"><p class="name">{ stores.doctors.getFullname(doctor_id) } </p></div></a></tab><h2 if="{ !requests[0] && !receptions[0] }">Вы не записывались на приём</h2>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -326,15 +329,6 @@ riot.tag('index', '<button onclick="{ addBadge }">add badge</button><button oncl
   t.receptions = s.receptions.data || [];
   t.requests = s.requests.data || [];
 
-  this.addBadge = function() {
-    s.app.addBadge()
-    this.update()
-  }.bind(this);
-
-  this.getBadges = function() {
-    navigator.notification.alert( s.app.badges )
-    this.update()
-  }.bind(this);
 
   this.toggleState = function(item) {
     t[ item ] = !t[ item ]
@@ -355,95 +349,6 @@ riot.tag('index', '<button onclick="{ addBadge }">add badge</button><button oncl
 
 
 });
-// <form-item>
-//   <p>{ parent.item.prop.title }</p>
-
-//   this.input = fn.createFormItem(this.parent.item.key, this.parent.item.prop)
-//   this.input.onchange = function () {
-//     this.parent.parent.onChange(this)
-//     return 2
-//   }.bind(this)
-
-//   this.on('mount', function() {
-//     console.log('MOUNT');
-//     this.root.appendChild( this.input )
-//   });
-
-// </form-item>
-
-// <itu-form>
-//   <form-item each={ key, prop in data.list } key={ key } prop={ prop }/>
-//   <button class={ 'connect' + (checkFields()? ' ' : ' disabled') } onclick={ submit }>{ data.submitTitle }</button>
-
-//   var t = this
-//     , rc = RiotControl
-//     , s = stores
-//     , parent = t.parent.parent
-//     , cls = t.opts.data.itemClass
-
-//   t.data = t.opts.data
-//   t.itemClass = t.data.itemClass
-
-//   console.log(t.data);
-
-//   checkFields(query) {
-//     for (var key in t.data.list) {
-//       var input = t.data.list[key]
-//       if (input.required && !input.value) return false;
-//       query && input.value && (query[key] = input.value)
-//     }
-//     return true
-//   }
-
-//   onChange(el) {
-//     var input = el.input
-//       , val = input.value
-//       , prop = t.data.list[ el.parent.key ]
-
-//     if (input.value) {
-//       if (!prop.pattern || (prop.pattern && val.search(prop.pattern) !== -1 )) {
-//         prop.value = val
-//         input.className = 'valid'  
-//       }
-//       else {
-//         prop.value = null
-//         input.className = 'invalid'
-//       }
-//     }else{
-//       prop.value = null
-//       if (prop.required) input.className = 'invalid' 
-//       else input.className = '' 
-//     }
-//   }
-
-//   submit(){
-//     var query = {}
-//     if (!t.checkFields(query)) return
-//     t.data.onSubmit(query)
-//   }
-
-// </itu-form>
-
-// fn.onChange = function (el) {
-//     var input = el.input
-//       , val = input.value
-//       , prop = t.data.list[ el.parent.key ]
-
-//     if (input.value) {
-//       if (!prop.pattern || (prop.pattern && val.search(prop.pattern) !== -1 )) {
-//         prop.value = val
-//         input.className = 'valid'  
-//       }
-//       else {
-//         prop.value = null
-//         input.className = 'invalid'
-//       }
-//     }else{
-//       prop.value = null
-//       if (prop.required) input.className = 'invalid' 
-//       else input.className = '' 
-//     }
-//   }
 riot.tag('notifications', '', function(opts) {
   
 
@@ -489,13 +394,17 @@ riot.tag('reports', '', function(opts) {
 
 
 });
-riot.tag('requests-item', '<p>{ fn.parseDate(data.date) }, { fn.parseDay(data.date) }</p><button class="connect">Отменить запрос</button>', function(opts) {
+riot.tag('requests-item', '<p>{ fn.parseDate(data.date) }, { fn.parseDay(data.date) }</p><button class="connect" onclick="{ reject }">Отменить запрос</button>', function(opts) {
 
 
   var t = this
     , rc = RiotControl
     , s = stores
 
+  this.reject = function() {
+    s.requests.trigger('reject_request', t.data.id)
+    this.update()
+  }.bind(this);
 
   t.on('mount', function() {
     tags.add(t)
@@ -507,61 +416,56 @@ riot.tag('requests-item', '<p>{ fn.parseDate(data.date) }, { fn.parseDay(data.da
 });
 
 
-riot.tag('requests-new', '<form-item each="{ name, prop in list }" data="{ this }"></form-item><button class="{ \'connect\' + (checkFields()? \' \' : \' disabled\') }" onclick="{ submit }">Записаться</button>', function(opts) {
+riot.tag('requests-new', '<form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><button class="{ \'connect\' + (checkFields(formData)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">Записаться</button>', function(opts) {
   var t = this
     , rc = RiotControl
     , s = stores
 
-  t._name = 'form_new_request_changed'
-
-  t.list = {
-    date: {
-      title: 'Дата на которую вы хотите записаться',
-      tag: 'input',
-      type: 'date',
-      required: 1
-    },
-
-    time_begin: {
-      title: 'На промежуток с',
-      tag: 'input',
-      type: 'time'
-    },
-
-    time_end: {
-      title: 'по',
-      tag: 'input',
-      type: 'time'
-    },
-
-    doctor_id: {
-      title: 'К доктору',
-      tag: 'select',
-      src: fn.prepareToForm(s.doctors.data, 'doctors')
-    }
+  t.formData = {
+    query: {},
+    items: [
+      {
+        name: 'date',
+        title: 'Дата на которую вы хотите записаться',
+        tag: 'input',
+        type: 'date',
+        required: 1
+      },{
+        name: 'time_begin',
+        title: 'На промежуток с',
+        tag: 'input',
+        type: 'time'
+      },{
+        name: 'time_end',
+        title: 'по',
+        tag: 'input',
+        type: 'time'
+      },{
+        name: 'doctor_id',
+        title: 'К доктору',
+        tag: 'select',
+        options: fn.prepareToForm(s.doctors.data, 'doctors')
+      }
+    ]
+    
   }
 
-  this.checkFields = function(query) {
-    for (var key in t.list) {
-      var inp = t.list[key]
-      if (inp.required && !inp.value) return false;
-      query && inp.value && (query[key] = inp.value)
-    }
+  this.checkFields = function(form) {
+    for (var i = 0, item; (item = form.items[i]); i++) 
+      if (item.required && !form.query[ item.name ]) return false
+
+    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
+      return false
+
     return true
     this.update()
   }.bind(this);
 
-  this.submit = function() {
-    var query = {}
-    if (!t.checkFields(query)) return
-    rc.trigger('create_request', query)
+  this.submit = function(form) {
+    if (!t.checkFields(form)) return
+    rc.trigger('create_request', form.query)
     this.update()
   }.bind(this);
-
-  t.on(t._name, function (data) {
-    t.list[ data.name ].value = data.value || null
-    t.update()
-  })
 
   
   t.on('mount', function() {

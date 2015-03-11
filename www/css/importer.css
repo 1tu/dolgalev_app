@@ -135,32 +135,45 @@ table td {
   padding: 0.5em;
   border: 0.0625em solid #21447a;
 }
-.form-item {
+form-item {
+  clear: both;
   display: block;
   margin-bottom: 1em;
 }
-.form-item p {
+form-item p {
   font-size: 0.8em;
   margin-bottom: 0.1em;
 }
-.form-item input,
-.form-item select {
+form-item input,
+form-item select {
   display: block;
   box-sizing: border-box;
   width: 100%;
   font-size: 1em;
 }
-.form-item select {
+form-item select {
   height: 2.5em;
 }
-.form-item input {
+form-item input {
   padding: 0.5em;
 }
-.form-item .valid {
+form-item .valid {
   background: rgba(0,200,0,0.1);
 }
-.form-item .invalid {
+form-item .invalid {
   background: rgba(200,0,0,0.1);
+}
+form-item .invalid_reasons {
+  text-align: right;
+  float: right;
+  position: relative;
+  top: -0.7em;
+  right: -0.5em;
+  padding: 0.3em;
+  background: #f00;
+}
+form-item .invalid_reasons p {
+  color: #fff;
 }
 #header {
   z-index: 100;

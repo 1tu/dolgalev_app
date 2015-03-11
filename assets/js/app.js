@@ -67,6 +67,7 @@ s.app = new (function () {
   t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
+    // t.connect()
     if (fn.isNetwork) 
       t.connect()
     else
@@ -77,6 +78,7 @@ s.app = new (function () {
     if (socket && socket.isConnected()) 
       return true 
     else {
+      socket.on('connect', t.checkUpdates)
       navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
@@ -103,13 +105,12 @@ s.app = new (function () {
 
 
   t.checkUpdates = function () {
-    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) return
     if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
-      if (data.errorType === 1) 
-        return t.try_login()
+      if (fn.isError(data)) return
 
       if (data.doctors) {
         s.doctors.setData(data.doctors)
@@ -145,22 +146,13 @@ s.app = new (function () {
     if (!s.user.email || !s.user.password) 
       return rt.route('/auth/new')
 
-    if (!t.isOnline()) 
-      return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) return
 
     socket.post('/auth/login', {
       email: s.user.email,
       password: s.user.password
     }, function (data) {
-
-      if (data && data.errorType) {
-        if (data.errorType == 3) {
-          t.is_registered = false
-          delete ls.is_registered
-          rc.trigger('clear_emailpass')
-        }
-        return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
-      }
+      if (fn.isError(data)) return
       
       !s.user.is_registered && (s.user.is_registered = ls.is_registered = "1")
       rt.route('/index')
@@ -171,15 +163,11 @@ s.app = new (function () {
 
 
   t.try_register = function (query) {
-
-    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) return
 
     socket.post('/auth/create', query, function (data) {
-      if (data && data.errorType) {
-        navigator.notification.alert('Регистрация не удалась по причине '+data.error)
-        return 
-      }
-
+      if (fn.isError(data)) return
+      
       s.user.is_registered = ls.is_registered = "1"
       rc.trigger('set_emailpass', data)
       rt.route('/index')

@@ -1,7 +1,4 @@
 <index>
-  <button onclick={ addBadge }>add badge</button>
-  <button onclick={ getBadges }>get badges</button>
-
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
     <a href={ '#/receptions/'+id } class={ 'isle cf' }  each={ receptions }>
@@ -45,13 +42,6 @@
   t.receptions = s.receptions.data || [];
   t.requests = s.requests.data || [];
 
-  addBadge() {
-    s.app.addBadge()
-  }
-
-  getBadges(){
-    navigator.notification.alert( s.app.badges )
-  }
 
   toggleState(item) {
     t[ item ] = !t[ item ]

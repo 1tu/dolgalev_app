@@ -1,6 +1,4 @@
-Origami.fastclick.FastClick.attach(document.body);
-
-;(function(f, rc, s) {
+;(function(f, rt, rc, s) {
 
   f.data = {
     days: ["Воскресение", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"],
@@ -9,7 +7,31 @@ Origami.fastclick.FastClick.attach(document.body);
     rec_types: {
         reception: 'Приём у врача',
         pull_tooth: 'Вырывание зуба'
-      },
+      } 
+  }
+
+  f.AEH = {
+    1: function () {
+      s.app.trigger('try_login')
+    },
+
+    2: function (data) {
+      s.app.trigger('form_invalid', data.invalid)
+    },
+
+    3: function () {
+      navigator.notification.alert('Такой комбинации email`а и пароля не существует')
+      s.app.is_registered = false
+      delete localStorage.is_registered
+      s.user.trigger('clear_emailpass')
+      rt.route('/auth/new')
+    }
+  }
+
+  f.isError = function (data) {
+    if (!data || !data.errorType) return false
+    fn.AEH[ data.errorType ] && fn.AEH[ data.errorType ](data)
+    return true
   }
 
 
@@ -94,12 +116,12 @@ Origami.fastclick.FastClick.attach(document.body);
   }
 
 
-  f.createFormItem = function (name, opts) {
+  f.createFormItem = function (opts) {
     var el = document.createElement(opts.tag)
-    el.name = name
+    el.name = opts.name
     opts.type && (el.type = opts.type)
-    if (opts.tag === 'select' && opts.src) {
-      opts.src.forEach(function (item) {
+    if (opts.tag === 'select' && opts.options) {
+      opts.options.forEach(function (item) {
         var opt = document.createElement('option')
 
         item.value && (opt.value = item.value)
@@ -141,9 +163,10 @@ Origami.fastclick.FastClick.attach(document.body);
     return navigator.connection.type === Connection.NONE? false : true
   }
 
-})(fn, RiotControl, stores)
 
+  
 
+})(fn, riot, RiotControl, stores)
 ;(function(s, rt, fn, ls) {
 
 // ______________
@@ -214,11 +237,7 @@ s.requests = new (function () {
 
   t.create_request = function (query) {
     socket.post('/request', query, function (data) {
-      console.log(typeof data, data);
-      if (data.errorType) {
-        // TODO: notification
-        return
-      }
+      if (fn.isError(data)) return
 
       rt.route('/index')
       t.data.push(data)
@@ -228,7 +247,17 @@ s.requests = new (function () {
     })
   }
 
+  t.reject_request = function (id) {
+    socket.put('/request/'+id+'/reject', function (data) {
+      if (fn.isError(data)) return
+
+      rt.route('/index')
+      s.app.checkUpdates()
+    })
+  }
+
   t.on('create_request', t.create_request)
+  t.on('reject_request', t.reject_request)
 
 })
 
@@ -479,6 +508,7 @@ s.app = new (function () {
   t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
+    // t.connect()
     if (fn.isNetwork) 
       t.connect()
     else
@@ -489,6 +519,7 @@ s.app = new (function () {
     if (socket && socket.isConnected()) 
       return true 
     else {
+      socket.on('connect', t.checkUpdates)
       navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
@@ -515,13 +546,12 @@ s.app = new (function () {
 
 
   t.checkUpdates = function () {
-    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) return
     if (!s.user.is_registered) return rt.route('/auth/new');
 
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
-      if (data.errorType === 1) 
-        return t.try_login()
+      if (fn.isError(data)) return
 
       if (data.doctors) {
         s.doctors.setData(data.doctors)
@@ -557,22 +587,13 @@ s.app = new (function () {
     if (!s.user.email || !s.user.password) 
       return rt.route('/auth/new')
 
-    if (!t.isOnline()) 
-      return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) return
 
     socket.post('/auth/login', {
       email: s.user.email,
       password: s.user.password
     }, function (data) {
-
-      if (data && data.errorType) {
-        if (data.errorType == 3) {
-          t.is_registered = false
-          delete ls.is_registered
-          rc.trigger('clear_emailpass')
-        }
-        return navigator.notification.alert('Авторизация не удалась по причине '+data.error)
-      }
+      if (fn.isError(data)) return
       
       !s.user.is_registered && (s.user.is_registered = ls.is_registered = "1")
       rt.route('/index')
@@ -583,15 +604,11 @@ s.app = new (function () {
 
 
   t.try_register = function (query) {
-
-    if (!t.isOnline()) return socket.on('connect', t.checkUpdates)
+    if (!t.isOnline()) return
 
     socket.post('/auth/create', query, function (data) {
-      if (data && data.errorType) {
-        navigator.notification.alert('Регистрация не удалась по причине '+data.error)
-        return 
-      }
-
+      if (fn.isError(data)) return
+      
       s.user.is_registered = ls.is_registered = "1"
       rc.trigger('set_emailpass', data)
       rt.route('/index')
@@ -612,6 +629,7 @@ s.app = new (function () {
 
 
 
+Origami.fastclick.FastClick.attach(document.body);
 
 var $id = document.getElementById.bind(document)
   , $ = document.querySelectorAll.bind(document)
@@ -655,3 +673,17 @@ function onDeviceReady () {
 
 // onDeviceReady()
 
+
+;(function(rt, rc, s) {
+
+// rt.fn.tagStore = function (title) {
+//   return this.forEach(function(title) {
+//     this.on('mount', function() {
+//       if (title) rc.trigger('set_title', title)
+//       tags.add(this)
+//     })
+//   })
+// }
+
+
+})(riot, RiotControl, stores)

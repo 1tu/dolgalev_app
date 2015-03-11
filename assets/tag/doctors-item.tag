@@ -20,7 +20,6 @@
     tags.add(t)
     rc.trigger('set_title', 'Врач')
     t.update({data: s.doctors.getCurrent()})
-  console.log(t.data);
   });
   
 </doctors-item>
