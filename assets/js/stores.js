@@ -71,10 +71,6 @@ s.requests = new (function () {
       if (fn.isError(data)) return
 
       rt.route('/index')
-      t.data.push(data)
-      s.app.updateMod('requests', data.createdAt) 
-      ls.requests = JSON.stringify(t.data)
-      t.trigger('requests_updated', t.data)
     })
   }
 

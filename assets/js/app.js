@@ -105,11 +105,14 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    navigator.notification.alert('internet SUCCESS');
+    // navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
-    else 
+    else {
       socket = io.sails.connect()
+      socket.on('update', t.checkUpdates)
+    }
+
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
@@ -117,7 +120,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    navigator.notification.alert('internet FAILED');
+    // navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
@@ -131,6 +134,7 @@ s.app = new (function () {
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
       if (fn.isError(data)) return
+      console.log(data);
 
       if (data.doctors) {
         s.doctors.setData(data.doctors)
