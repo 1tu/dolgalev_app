@@ -1,5 +1,4 @@
 <index>
-  <pre>{ JSON.stringify(window.navigator) }</pre>
   <h2 if={ receptions[0] } onclick={ toggleState.bind(this, 'is_rec_visible') }>Текущие записи</h2>
   <tab if={ receptions[0] && is_rec_visible }>
     <a href={ '#/receptions/'+id } class={ 'isle cf' }  each={ receptions }>

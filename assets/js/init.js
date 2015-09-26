@@ -6,7 +6,6 @@ var $id = document.getElementById.bind(document)
 	, off = function (eventName, fn) {document.removeEventListener(eventName, fn,false)}
 	, input_stub = $id('input-stub')
 
-document.body.style.fontSize = window.devicePixelRatio+'em'
 // для запуска на phone
 on('deviceready', onDeviceReady)
 // для запуска на PC
@@ -14,6 +13,8 @@ on('deviceready', onDeviceReady)
 
 
 function onDeviceReady () {
+	if (navigator && navigator.vendor) document.body.style.fontSize = window.devicePixelRatio+'em';
+
 	on('backbutton', stores.router.goBack)
 	on('resume', stores.app.clearBadges);
 	on('menubutton', function () {
