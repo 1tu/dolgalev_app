@@ -552,12 +552,11 @@ s.app = new (function () {
 
   t.connect = function () {
     if (socket) {
-      navigator.notification.alert('socket been created');
       socket._raw.connect()
     }
     else {
-      navigator.notification.alert('socket no created');
       socket = io.sails.connect()
+      navigator.notification.alert(socket)
       socket.on('update', t.checkUpdates)
     }
 
@@ -674,7 +673,7 @@ on('deviceready', onDeviceReady)
 
 
 function onDeviceReady () {
-	if (navigator && navigator.vendor) document.body.style.fontSize = window.devicePixelRatio+'em';
+	if (navigator && navigator.vendor && navigator.vendor.toLowerCase().search('google') !== -1) document.body.style.fontSize = window.devicePixelRatio+'em';
 
 	on('backbutton', stores.router.goBack)
 	on('resume', stores.app.clearBadges);

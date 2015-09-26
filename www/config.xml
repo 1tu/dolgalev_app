@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "ru.implantat-sk.app"
-        version   = "0.9.3">
+        version   = "0.9.4">
 
     <name>Клиника Долгалева</name>
 
@@ -87,7 +87,7 @@
 
         Otherwise, you can specify specific domains:
     -->
-    <access origin="app.implantat-sk.ru"/>
-    <!-- <access origin="*"/> -->
+    <!-- <access origin="app.implantat-sk.ru"/> -->
+    <access origin="*"/>
 
 </widget>

@@ -106,12 +106,11 @@ s.app = new (function () {
 
   t.connect = function () {
     if (socket) {
-      navigator.notification.alert('socket been created');
       socket._raw.connect()
     }
     else {
-      navigator.notification.alert('socket no created');
       socket = io.sails.connect()
+      navigator.notification.alert(socket)
       socket.on('update', t.checkUpdates)
     }
 
