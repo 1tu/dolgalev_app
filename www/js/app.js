@@ -545,7 +545,8 @@ s.app = new (function () {
       return true 
     else {
       socket.on('connect', t.checkUpdates)
-      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      navigator.notification.alert(socket.isConnected(), Object.keys(socket))
+      // navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
   }
