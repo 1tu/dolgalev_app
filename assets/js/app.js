@@ -88,7 +88,7 @@ s.app = new (function () {
 
   t._init = function () {
     // t.connect()
-    if (fn.isNetwork) 
+    if (fn.isNetwork()) 
       t.connect()
     else
       on('online', t.connect)
@@ -105,7 +105,7 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    // navigator.notification.alert('internet SUCCESS');
+    navigator.notification.alert('internet SUCCESS');
     if (socket) 
       socket._raw.connect()
     else {
@@ -120,7 +120,7 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    // navigator.notification.alert('internet FAILED');
+    navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)

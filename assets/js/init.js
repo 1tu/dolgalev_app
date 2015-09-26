@@ -6,7 +6,7 @@ var $id = document.getElementById.bind(document)
 	, off = function (eventName, fn) {document.removeEventListener(eventName, fn,false)}
 	, input_stub = $id('input-stub')
 
-// document.body.style.fontSize = window.devicePixelRatio+'em'
+document.body.style.fontSize = window.devicePixelRatio+'em'
 // для запуска на phone
 on('deviceready', onDeviceReady)
 // для запуска на PC
