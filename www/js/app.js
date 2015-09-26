@@ -658,7 +658,7 @@ s.app = new (function () {
 
 
 
-Origami.fastclick.FastClick.attach(document.body);
+// Origami.fastclick.FastClick.attach(document.body);
 
 var $id = document.getElementById.bind(document)
 	, $ = document.querySelectorAll.bind(document)
