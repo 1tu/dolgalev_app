@@ -551,10 +551,12 @@ s.app = new (function () {
   }
 
   t.connect = function () {
-    navigator.notification.alert('internet SUCCESS');
-    if (socket) 
+    if (socket) {
+      navigator.notification.alert('socket been created');
       socket._raw.connect()
+    }
     else {
+      navigator.notification.alert('socket no created');
       socket = io.sails.connect()
       socket.on('update', t.checkUpdates)
     }
@@ -566,7 +568,6 @@ s.app = new (function () {
   }
 
   t.disconnect = function () {
-    navigator.notification.alert('internet FAILED');
     socket.disconnect()
     off('offline', t.disconnect)
     on('online', t.connect)
