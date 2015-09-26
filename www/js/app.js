@@ -669,6 +669,31 @@ var $id = document.getElementById.bind(document)
 // для запуска на phone
 on('deviceready', onDeviceReady)
 // для запуска на PC
+
+// navigator = {};
+// navigator.notification = {
+// 	alert: function (data) {console.log(data)}
+// }
+
+// navigator.connection = {
+// 	type: 'wifi'
+// }
+
+// var cordova = {
+// 	plugins: {
+// 		notification:{
+// 			badge: {
+// 				set: function () {}
+// 			}
+// 		}
+// 	}
+// }
+
+// var Connection = {
+// 	NONE: 'fsafsaf'
+// }
+
+
 // onDeviceReady();
 
 
@@ -704,19 +729,7 @@ function onDeviceReady () {
 	navigator.splashscreen.hide()
 }
 
-// navigator.notification = {
-// 	alert: function (data) {console.log(data)}
-// }
 
-// var cordova = {
-// 	plugins: {
-// 		notification:{
-// 			badge: {
-// 				set: function () {}
-// 			}
-// 		}
-// 	}
-// }
 ;(function(rt, rc, s) {
 
 // rt.fn.tagStore = function (title) {

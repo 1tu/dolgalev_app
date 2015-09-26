@@ -937,7 +937,7 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
       // (or true to use the default: '/__getcookie')
 
       useCORSRouteToGetCookie: true,
-      url: 'http://app.implantat-sk.ru', 
+      url: 'http://app.implantat-sk.ru:80', 
       // url: 'http://192.168.1.52:1337', 
 
       // The environment we're running in.
