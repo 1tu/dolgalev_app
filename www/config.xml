@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "ru.implantat-sk.app"
-        version   = "0.9.0">
+        version   = "0.9.1">
 
     <name>Клиника Долгалева</name>
 
@@ -20,7 +20,7 @@
     <preference name="permissions"                value="none"/>
     <preference name="orientation"                value="default" />        
     <preference name="target-device"              value="universal" />      
-    <preference name="fullscreen"                 value="true" />           
+    <preference name="fullscreen"                 value="false" />           
     <preference name="webviewbounce"              value="true" />           
     <preference name="prerendered-icon"           value="true" />           
     <preference name="stay-in-webview"            value="false" />          

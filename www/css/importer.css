@@ -354,6 +354,7 @@ form-item .invalid_reasons p {
   width: 100%;
 }
 #header createrequest {
+  display: inline-block;
   padding: 0.25em 0.5em;
   background-color: #e4e4e4;
   color: #21447a;
@@ -367,7 +368,6 @@ form-item .invalid_reasons p {
 #header nav-item,
 #header createrequest {
   display: inline-block;
-  font-size: 1.2em;
 }
 #header title,
 #header createrequest,
@@ -418,6 +418,7 @@ form-item .invalid_reasons p {
   box-sizing: border-box;
   width: 100%;
   padding: 0.8em 1em;
+  font-size: 1.2em;
 }
 #index {
   margin: 0 auto;
