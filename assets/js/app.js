@@ -99,7 +99,7 @@ s.app = new (function () {
       return true 
     else {
       socket.on('connect', t.checkUpdates)
-      navigator.notification.alert(socket.isConnected(), Object.keys(socket))
+      navigator.notification.alert(socket.isConnected(), !!socket._raw)
       // navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
@@ -111,10 +111,11 @@ s.app = new (function () {
     }
     else {
       socket = io.sails.connect()
-      navigator.notification.alert(socket)
+      setTimeout(function () {
+        navigator.notification.alert(socket._raw)
+      }, 500);
       socket.on('update', t.checkUpdates)
     }
-
 
     socket.on('connect', t.checkUpdates)
     off('online', t.connect)
