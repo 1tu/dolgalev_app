@@ -104,15 +104,22 @@
     var z = (date instanceof Date)? date : new Date(date)
     return z.getDate()+' '+f.data.month[ z.getMonth() ]
   }
+
   f.parseDay = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
     return f.data.days[ z.getDay() ]
   }
+
   f.parseTime = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
-      , h = z.getHours()+''
+
+    // поправка на часовой пояс
+    z.setTime( z.getTime() + (z.getTimezoneOffset() * 60000) )
+
+    var h = z.getHours()+''
       , m = z.getMinutes()+''
-    return (h.length ===1? '0'+h : h)+':'+(m.length ===1? '0'+m : m)
+
+    return (h.length === 1? '0'+h : h)+':'+(m.length === 1? '0'+m : m)
   }
 
 
@@ -131,6 +138,7 @@
     }
     return el
   }
+
   f.prepareToForm = function (arr, entity) {
     var tmpArr = [{}]
       , textPattern = {
@@ -154,6 +162,7 @@
     input_stub.style.display = 'block'
     window.scrollTo(0, this.offsetTop - this.scrollHeight*2)
   }
+
   f.onBlur = function () {
     input_stub.style.display = 'none'
   }

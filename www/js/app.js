@@ -104,15 +104,22 @@
     var z = (date instanceof Date)? date : new Date(date)
     return z.getDate()+' '+f.data.month[ z.getMonth() ]
   }
+
   f.parseDay = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
     return f.data.days[ z.getDay() ]
   }
+
   f.parseTime = function (date) {
     var z = (date instanceof Date)? date : new Date(date)
-      , h = z.getHours()+''
+
+    // поправка на часовой пояс
+    z.setTime( z.getTime() + (z.getTimezoneOffset() * 60000) )
+
+    var h = z.getHours()+''
       , m = z.getMinutes()+''
-    return (h.length ===1? '0'+h : h)+':'+(m.length ===1? '0'+m : m)
+
+    return (h.length === 1? '0'+h : h)+':'+(m.length === 1? '0'+m : m)
   }
 
 
@@ -131,6 +138,7 @@
     }
     return el
   }
+
   f.prepareToForm = function (arr, entity) {
     var tmpArr = [{}]
       , textPattern = {
@@ -154,6 +162,7 @@
     input_stub.style.display = 'block'
     window.scrollTo(0, this.offsetTop - this.scrollHeight*2)
   }
+
   f.onBlur = function () {
     input_stub.style.display = 'none'
   }
@@ -172,88 +181,88 @@
 // ______________
 
 s.doctors = new (function () {
-  
-  rt.observable(this)
-  var t = this
-  t._name = 'doctors'
+	
+	rt.observable(this)
+	var t = this
+	t._name = 'doctors'
 
-  t.data = ( ls.doctors && JSON.parse(ls.doctors) ) || []
-  t.currentId = null
+	t.data = ( ls.doctors && JSON.parse(ls.doctors) ) || []
+	t.currentId = null
 
-  t._init = function () { }
+	t._init = function () { }
 
-  t.getFullname = function (id) {
-    return fn.getById.call(t, id, function (doctor) {
-      return doctor.last_name+' '+doctor.first_name+' '+doctor.second_name
-    })
-  }
+	t.getFullname = function (id) {
+		return fn.getById.call(t, id, function (doctor) {
+			return doctor.last_name+' '+doctor.first_name+' '+doctor.second_name
+		})
+	}
 
-  t.getCurrent = function () {
-    return fn.getById.call(t, t.currentId)
-  }
+	t.getCurrent = function () {
+		return fn.getById.call(t, t.currentId)
+	}
 
-  t.setData = fn.syncData
+	t.setData = fn.syncData
 
 })
 
 // ______________
 
 s.receptions = new (function () {
-  
-  rt.observable(this)
-  var t = this
-  t._name = 'receptions'
+	
+	rt.observable(this)
+	var t = this
+	t._name = 'receptions'
 
-  t.data = ( ls.receptions && JSON.parse(ls.receptions) ) || []
-  t.currentId = null
+	t.data = ( ls.receptions && JSON.parse(ls.receptions) ) || []
+	t.currentId = null
 
-  t._init = function () { }
+	t._init = function () { }
 
-  t.getCurrent = function () {
-    return fn.getById.call(t, t.currentId)
-  }
+	t.getCurrent = function () {
+		return fn.getById.call(t, t.currentId)
+	}
 
-  t.setData = fn.syncData
+	t.setData = fn.syncData
 
 })
 
 // ______________
 
 s.requests = new (function () {
-  
-  rt.observable(this)
-  var t = this
-  t._name = 'requests'
-  t.currentId = null
+	
+	rt.observable(this)
+	var t = this
+	t._name = 'requests'
+	t.currentId = null
 
-  t.data = ( ls.requests && JSON.parse(ls.requests) ) || []
+	t.data = ( ls.requests && JSON.parse(ls.requests) ) || []
 
-  t._init = function () {}
-  t.getCurrent = function () {
-    return fn.getById.call(t, t.currentId)
-  }
+	t._init = function () {}
+	t.getCurrent = function () {
+		return fn.getById.call(t, t.currentId)
+	}
 
-  t.setData = fn.syncData
+	t.setData = fn.syncData
 
-  t.create_request = function (query) {
-    socket.post('/request', query, function (data) {
-      if (fn.isError(data)) return
+	t.create_request = function (query) {
+		socket.post('/request', query, function (data) {
+			if (fn.isError(data)) return
 
-      rt.route('/index')
-    })
-  }
+			rt.route('/index')
+		})
+	}
 
-  t.reject_request = function (id) {
-    socket.put('/request/'+id+'/reject', function (data) {
-      if (fn.isError(data)) return
+	t.reject_request = function (id) {
+		socket.put('/request/'+id+'/reject', function (data) {
+			if (fn.isError(data)) return
 
-      rt.route('/index')
-      s.app.checkUpdates()
-    })
-  }
+			rt.route('/index')
+			s.app.checkUpdates()
+		})
+	}
 
-  t.on('create_request', t.create_request)
-  t.on('reject_request', t.reject_request)
+	t.on('create_request', t.create_request)
+	t.on('reject_request', t.reject_request)
 
 })
 
@@ -344,7 +353,7 @@ s.requests = new (function () {
     var z = t.data[name]
     if (!z.is_mounted) return
     z.tag.root.className = ''
-    z.tag.unmount()
+    z.tag.unmount(true)
     z.tag = null 
     z.is_mounted = false
   }
@@ -652,48 +661,61 @@ s.app = new (function () {
 Origami.fastclick.FastClick.attach(document.body);
 
 var $id = document.getElementById.bind(document)
-  , $ = document.querySelectorAll.bind(document)
-  , on = function (eventName, fn) {document.addEventListener(eventName, fn, false)}
-  , off = function (eventName, fn) {document.removeEventListener(eventName, fn,false)}
-  , input_stub = $id('input-stub')
+	, $ = document.querySelectorAll.bind(document)
+	, on = function (eventName, fn) {document.addEventListener(eventName, fn, false)}
+	, off = function (eventName, fn) {document.removeEventListener(eventName, fn,false)}
+	, input_stub = $id('input-stub')
 
-document.body.style.fontSize = window.devicePixelRatio+'em'
+// document.body.style.fontSize = window.devicePixelRatio+'em'
+// для запуска на phone
 on('deviceready', onDeviceReady)
+// для запуска на PC
+// onDeviceReady();
+
 
 function onDeviceReady () {
-  on('backbutton', stores.router.goBack)
-  on('resume', stores.app.clearBadges);
-  on('menubutton', function () {
-    stores.router.trigger('toggle_nav')
-  })
-  document.body.onclick = function () {
-    stores.router.trigger('toggle_nav', 'close')
-  }
-  
+	on('backbutton', stores.router.goBack)
+	on('resume', stores.app.clearBadges);
+	on('menubutton', function () {
+		stores.router.trigger('toggle_nav')
+	})
+	document.body.onclick = function () {
+		stores.router.trigger('toggle_nav', 'close')
+	}
+	
 
-  tags._init()
-  for (var key in stores) {
-    if (stores[key]._init) stores[key]._init();
-    RiotControl.addStore( stores[key] )
-  }
+	tags._init()
+	for (var key in stores) {
+		if (stores[key]._init) stores[key]._init();
+		RiotControl.addStore( stores[key] )
+	}
 
-  riot.mount( $id('header'), 'header')
-  if (stores.user.is_registered) riot.route('/index')
-  else riot.route('/auth/new')
+	riot.mount( $id('header'), 'header')
+	if (stores.user.is_registered) riot.route('/index')
+	else riot.route('/auth/new')
 
-  cordova.plugins.notification.badge.configure({ 
-    autoClear: true,
-    title: 'Новое уведомление!',
-    smallIcon: 'icon'
-  })
+	cordova.plugins.notification.badge.configure({ 
+		autoClear: true,
+		title: 'Новое уведомление!',
+		smallIcon: 'icon'
+	})
 
-  navigator.splashscreen.hide()
+	navigator.splashscreen.hide()
 }
 
+// navigator.notification = {
+// 	alert: function (data) {console.log(data)}
+// }
 
-// onDeviceReady()
-
-
+// var cordova = {
+// 	plugins: {
+// 		notification:{
+// 			badge: {
+// 				set: function () {}
+// 			}
+// 		}
+// 	}
+// }
 ;(function(rt, rc, s) {
 
 // rt.fn.tagStore = function (title) {

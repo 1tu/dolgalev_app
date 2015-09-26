@@ -1,8 +1,9 @@
 <receptions-item>
-  <date>{ fn.parseDate(data.datetime) }</date>
-  <time>{ fn.parseTime(data.datetime) }</time>
-  <p>{ fn.data.rec_types[ data.type ] }</p>
-  <span>Ваш врач: { stores.doctors.getFullname( data.doctor_id ) }</span>
+  <div class="mar-b06">
+    <date class="mar-r1">{ fn.parseDate(data.datetime) }</date>
+    <time>{ fn.parseTime(data.datetime) }</time>
+  </div>
+  <p>Ваш врач: <a class="mar-l1" href="#/doctors/{data.doctor_id}">{ stores.doctors.getFullname( data.doctor_id ) }</a></p>
 
   var t = this
     , rc = RiotControl

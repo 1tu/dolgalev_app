@@ -1,9 +1,9 @@
 <auth-login>
-  <form-item each={ formData.items } src={ 'formData' }></form-item>
-  <div class="tar">
-    <a href="#/auth/reset">Забыли пароль или хотите его сменить?</a>
-  </div>
-  <button class={ 'connect' + (checkFields(formData)? ' ' : ' disabled') } onclick={ submit.bind(this, formData) }>Войти</button>
+  <itu-form data={ formData }>
+    <div class="tar">
+      <a href="#/auth/reset">Забыли пароль или хотите его сменить?</a>
+    </div>
+  </itu-form>
 
   var t = this
     , rc = RiotControl
@@ -11,6 +11,10 @@
 
   t.formData = {
     query: {},
+    submit: {
+      name: 'Войти',
+      event: 'need_login_with'
+    },
     items: [
       {
         name: 'email',
@@ -28,22 +32,6 @@
     ]
   }
 
-  checkFields(form) {
-    for (var i = 0, item; (item = form.items[i]); i++) 
-      if (item.required && !form.query[ item.name ]) return false
-
-    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
-      return false
-
-    return true
-  }
-
-  submit(form) {
-    if (!t.checkFields(form)) return
-    rc.trigger('need_login_with', form.query)
-  }
-
-  
   t.on('mount', function() {
     rc.trigger('set_title','Войти')
     tags.add(t)

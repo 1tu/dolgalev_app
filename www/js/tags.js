@@ -13,7 +13,7 @@ riot.tag('about', '<p class="tm nmt">Созданный в 2005г. на базе
 
 
 });
-riot.tag('auth-login', '<form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div><button class="{ \'connect\' + (checkFields(formData)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">Войти</button>', function(opts) {
+riot.tag('auth-login', '<itu-form data="{ formData }"><div class="tar"><a href="#/auth/reset">Забыли пароль или хотите его сменить?</a></div></itu-form>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -21,6 +21,10 @@ riot.tag('auth-login', '<form-item each="{ formData.items }" src="{ \'formData\'
 
   t.formData = {
     query: {},
+    submit: {
+      name: 'Войти',
+      event: 'need_login_with'
+    },
     items: [
       {
         name: 'email',
@@ -38,24 +42,6 @@ riot.tag('auth-login', '<form-item each="{ formData.items }" src="{ \'formData\'
     ]
   }
 
-  this.checkFields = function(form) {
-    for (var i = 0, item; (item = form.items[i]); i++) 
-      if (item.required && !form.query[ item.name ]) return false
-
-    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
-      return false
-
-    return true
-    this.update()
-  }.bind(this);
-
-  this.submit = function(form) {
-    if (!t.checkFields(form)) return
-    rc.trigger('need_login_with', form.query)
-    this.update()
-  }.bind(this);
-
-  
   t.on('mount', function() {
     rc.trigger('set_title','Войти')
     tags.add(t)
@@ -63,147 +49,118 @@ riot.tag('auth-login', '<form-item each="{ formData.items }" src="{ \'formData\'
 
 
 });
-riot.tag('auth-new', '<form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><div class="tar"><a href="#/auth/login">У меня уже есть аккаунт</a></div><button class="{ \'connect\' + (checkFields(formData)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">Зарегистрироваться</button>', function(opts) {
+riot.tag('auth-new', '<itu-form data="{ formData }"><div class="tar"><a href="#/auth/login">У меня уже есть аккаунт</a></div></itu-form>', function(opts) {
 
-  var t = this
-    , rc = RiotControl
-    , s = stores
+	var t = this
+		, rc = RiotControl
+		, s = stores
 
-  t.formData = {
-    query: {},
-    items: [
-      {
-        name: 'first_name',
-        tag: 'input',
-        title: 'Имя',
-        type: 'text',
-        required: 1
-      },{
-        name: 'last_name',
-        tag: 'input',
-        title: 'Фамилия',
-        type: 'text',
-        required: 1
-      },{
-        name: 'email',
-        tag: 'input',
-        title: 'Email',
-        type: 'email',
-        required: 1
-      },{
-        name: 'password',
-        tag: 'input',
-        title: 'Пароль',
-        type: 'password',
-        required: 1
-      },{
-        name: 'confirmPassword',
-        tag: 'input',
-        title: 'Повторите пароль',
-        type: 'password',
-        required: 1
-      }
-    ],
-    compare: ['password', 'confirmPassword'],
+	t.formData = {
+		query: {},
+		submit: {
+			name: 'Зарегистрироваться',
+			event: 'try_register'
+		},
+		items: [
+			{
+				name: 'first_name',
+				tag: 'input',
+				title: 'Имя',
+				type: 'text',
+				required: 1
+			},{
+				name: 'last_name',
+				tag: 'input',
+				title: 'Фамилия',
+				type: 'text',
+				required: 1
+			},{
+				name: 'email',
+				tag: 'input',
+				title: 'Email',
+				type: 'email',
+				required: 1
+			},{
+				name: 'password',
+				tag: 'input',
+				title: 'Пароль',
+				type: 'password',
+				required: 1
+			},{
+				name: 'confirmPassword',
+				tag: 'input',
+				title: 'Повторите пароль',
+				type: 'password',
+				required: 1
+			}
+		],
+		compare: ['password', 'confirmPassword'],
 
-  }
+	}
 
-  this.checkFields = function(form) {
-    for (var i = 0, item; (item = form.items[i]); i++) 
-      if (item.required && !form.query[ item.name ]) return false
-
-    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
-      return false
-
-    return true
-    this.update()
-  }.bind(this);
-
-  this.submit = function(form) {
-    if (!t.checkFields(form)) return
-    rc.trigger('try_register', form.query)
-    this.update()
-  }.bind(this);
-  
-  t.on('mount', function() {
-    rc.trigger('set_title','Регистрация')
-    tags.add(t)
-  });
+	t.on('mount', function() {
+		rc.trigger('set_title','Регистрация')
+		tags.add(t)
+	});
 
 
 });
-riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p><form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><button class="{ \'connect\' + (checkFields(formData)? \' \' :\' disabled\') }" onclick="{ submit.bind(this, formData) }">Получить ключ</button><p class="tm" style="margin-top: 2em">Если у вас уже есть ключ - вы можете сменить пароль</p><form-item each="{ formPass.items }" src="{ \'formPass\' }"></form-item><button class="{ \'connect\' + (checkFields(formPass)? \' \' :\' disabled\') }" onclick="{ submitPass.bind(this, formPass) }">Сменить пароль</button>', function(opts) {
+riot.tag('auth-reset', '<p class="tm nmt">Ключ для восстановления пароля прийдет на почту на которую зарегистрирован аккаунт</p><itu-form data="{ formData }"></itu-form><p class="tm" style="margin-top: 2em">Если у вас уже есть ключ - вы можете сменить пароль</p><itu-form data="{ formPass }"></itu-form>', function(opts) {
 
-  var t = this
-    , rc = RiotControl
-    , s = stores
+	var t = this
+		, rc = RiotControl
+		, s = stores
 
-  t.formData = {
-    query: {},
-    items: [
-      {
-        name: 'email',
-        tag: 'input',
-        title: 'Ваш email',
-        type: 'email',
-        required: 1
-      }
-    ]
-  }
+	t.formData = {
+		query: {},
+		submit: {
+			name: 'Получить ключ',
+			event: 'password_reset_request'
+		},
+		items: [
+			{
+				name: 'email',
+				tag: 'input',
+				title: 'Ваш email',
+				type: 'email',
+				required: 1
+			}
+		]
+	}
 
-  t.formPass = {
-    query: {},
-    items: [
-      {
-        name: 'resetToken',
-        tag: 'textarea',
-        title: 'Ключ для смены пароля',
-        required: 1
-      },{
-        name: 'password',
-        tag: 'input',
-        title: 'Новый пароль',
-        type: 'password',
-        required: 1
-      },{
-        name: 'confirmPassword',
-        tag: 'input',
-        title: 'Повторите пароль',
-        type: 'password',
-        required: 1
-      }
-    ],
-    compare: ['password', 'confirmPassword'],
-  }
+	t.formPass = {
+		query: {},
+		submit: {
+			name: 'Сменить пароль',
+			event: 'password_reset'
+		},
+		items: [
+			{
+				name: 'resetToken',
+				tag: 'textarea',
+				title: 'Ключ для смены пароля',
+				required: 1
+			},{
+				name: 'password',
+				tag: 'input',
+				title: 'Новый пароль',
+				type: 'password',
+				required: 1
+			},{
+				name: 'confirmPassword',
+				tag: 'input',
+				title: 'Повторите пароль',
+				type: 'password',
+				required: 1
+			}
+		],
+		compare: ['password', 'confirmPassword'],
+	}
 
-  this.checkFields = function(form) {
-    for (var i = 0, item; (item = form.items[i]); i++) 
-      if (item.required && !form.query[ item.name ]) return false
-
-    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
-      return false
-
-    return true
-    this.update()
-  }.bind(this);
-
-  this.submit = function(form) {
-    if (!t.checkFields(form)) return
-    rc.trigger('password_reset_request', form.query)
-    this.update()
-  }.bind(this);
-
-  this.submitPass = function(form) {
-    if (!t.checkFields(form)) return
-    rc.trigger('password_reset', form.query)
-    this.update()
-  }.bind(this);
-
-
-  t.on('mount', function() {
-    rc.trigger('set_title','Смена пароля')
-    tags.add(t)
-  });
+	t.on('mount', function() {
+		rc.trigger('set_title','Смена пароля')
+		tags.add(t)
+	});
 
 
 });
@@ -241,47 +198,69 @@ riot.tag('doctors', '<a href="{ \'#/doctors/\'+id }" class="{ \'isle\' }" each="
 
 
 });
-riot.tag('form-item', '<p>{ parent.title }</p><div if="{ invalids }" class="invalid_reasons"><p each="{ reason in invalids }">{ reason }</p></div>', function(opts) {
+riot.tag('form-item', '<p>{ title }</p><div if="{ invalids }" class="invalid_reasons"><p each="{ reason in invalids }">{ reason }</p></div>', function(opts) {
 
-  var t = this
-    , rc = RiotControl
-    , s = stores
-    , parent = t.parent.parent
+	var t = this
+		, rc = RiotControl
+		, s = stores
 
-  t.src = t.opts.src
+	this.onChange = function() {
+		var val = t.input.value
+		if (val) {
+			if (!t.pattern || (t.pattern && val.search(t.pattern) !== -1 )) {
+				t.parent.data.query[ t.name ] = val
+				t.input.className = 'valid'  
+			}else {
+				delete t.parent.data.query[ t.name ]
+				t.input.className = 'invalid'
+			}
+		}else{
+			delete t.parent.data.query[ t.name ]
+			if (t.required) t.input.className = 'invalid' 
+			else t.input.className = '' 
+		}
+		t.parent.parent.update()
+	}.bind(this);
 
-  this.onChange = function() {
-    var val = t.input.value
-    if (val) {
-      if (!t.parent.pattern || (t.parent.pattern && val.search(t.parent.pattern) !== -1 )) {
-        parent[ t.src ].query[ t.name ] = val
-        t.input.className = 'valid'  
-      }else {
-        delete parent[ t.src ].query[ t.name ]
-        t.input.className = 'invalid'
-      }
-    }else{
-      delete parent[ t.src ].query[ t.name ]
-      if (t.parent.required) t.input.className = 'invalid' 
-      else t.input.className = '' 
-    }
-    parent.update()
-    this.update()
-  }.bind(this);
+	rc.on('form_invalid', function (data) {
+		if (!data[ t.name ]) return
+		t.update({invalids: data[ t.name ]})
+	})
 
-  rc.on('form_invalid', function (data) {
-    if (!data[ t.name ]) return
-    t.update({invalids: data[ t.name ]})
-  })
+	t.on('mount', function() {
+		t.input = fn.createFormItem(t)
+		t.root.insertBefore( t.input, t.root.firstChild.nextSibling )
+		t.input.onchange = t.onChange
+		t.input.onkeyup = t.onChange
+		t.input.onfocus = fn.onFocus
+		t.input.onblur = fn.onBlur
+		t.onChange()
+	});
 
-  t.on('mount', function() {
-    t.input = fn.createFormItem(t.parent)
-    t.root.insertBefore( t.input, t.root.firstChild.nextSibling )
-    t.input.onchange = t.onChange
-    t.input.onfocus = fn.onFocus
-    t.input.onblur = fn.onBlur
-    t.onChange()
-  });
+
+});
+riot.tag('itu-form', '<form-item each="{ data.items }"></form-item><yield></yield><button class="{ \'connect\' + (checkFields(data)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">{ data.submit.name }</button>', function(opts) {
+
+	var t = this
+		, rc = RiotControl
+		, s = stores
+
+	t.data = t.opts.data
+
+	this.checkFields = function() {
+		for (var i = 0, item; (item = t.data.items[i]); i++) 
+			if (item.required && !t.data.query[ item.name ]) return false
+
+		if (t.data.compare && (t.data.query[ t.data.compare[0] ] !== t.data.query[ t.data.compare[1] ]) ) 
+			return false
+
+		return true
+	}.bind(this);
+
+	this.submit = function() {
+		if (!t.checkFields()) return
+		rc.trigger(t.data.submit.event, t.data.query)
+	}.bind(this);
 
 
 });
@@ -306,13 +285,11 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
   this.goBack = function() {
     t.is_nav_opened = false
     s.router.goBack()
-    this.update()
   }.bind(this);
 
   this.toggleNav = function(e) {
     e.stopPropagation()
     t.is_nav_opened = !t.is_nav_opened
-    this.update()
   }.bind(this);
 
   this.changeRoute = function(e) {
@@ -320,7 +297,6 @@ riot.tag('header', '<div class="VA inner"><back class="button" if="{ !is_index }
     t.is_nav_opened = false
     if (e.target.tagName == 'CREATEREQUEST') return riot.route( '/requests/new' )
     riot.route( '/'+e.item.key )
-    this.update()
   }.bind(this);
 
   rc.on('toggle_nav', function (action) {
@@ -357,7 +333,6 @@ riot.tag('index', '<h2 if="{ receptions[0] }" onclick="{ toggleState.bind(this, 
 
   this.toggleState = function(item) {
     t[ item ] = !t[ item ]
-    this.update()
   }.bind(this);
 
   t.on('mount', function() {
@@ -388,7 +363,7 @@ riot.tag('notifications', '', function(opts) {
 
 
 });
-riot.tag('receptions-item', '<date>{ fn.parseDate(data.datetime) }</date><time>{ fn.parseTime(data.datetime) }</time><p>{ fn.data.rec_types[ data.type ] }</p><span>Ваш врач: { stores.doctors.getFullname( data.doctor_id ) }</span>', function(opts) {
+riot.tag('receptions-item', '<div class="mar-b06"><date class="mar-r1">{ fn.parseDate(data.datetime) }</date><time>{ fn.parseTime(data.datetime) }</time></div><p>Ваш врач: <a class="mar-l1" href="#/doctors/{data.doctor_id}">{ stores.doctors.getFullname( data.doctor_id ) }</a></p>', function(opts) {
 
   var t = this
     , rc = RiotControl
@@ -428,7 +403,6 @@ riot.tag('requests-item', '<p>{ fn.parseDate(data.date) }, { fn.parseDay(data.da
 
   this.reject = function() {
     s.requests.trigger('reject_request', t.data.id)
-    this.update()
   }.bind(this);
 
   t.on('mount', function() {
@@ -441,13 +415,17 @@ riot.tag('requests-item', '<p>{ fn.parseDate(data.date) }, { fn.parseDay(data.da
 });
 
 
-riot.tag('requests-new', '<form-item each="{ formData.items }" src="{ \'formData\' }"></form-item><button class="{ \'connect\' + (checkFields(formData)? \' \' : \' disabled\') }" onclick="{ submit.bind(this, formData) }">Записаться</button>', function(opts) {
+riot.tag('requests-new', '<itu-form data="{ formData }"></itu-form>', function(opts) {
   var t = this
     , rc = RiotControl
     , s = stores
 
   t.formData = {
     query: {},
+    submit: {
+      name: 'Записаться',
+      event: 'create_request'
+    },
     items: [
       {
         name: 'date',
@@ -472,26 +450,7 @@ riot.tag('requests-new', '<form-item each="{ formData.items }" src="{ \'formData
         options: fn.prepareToForm(s.doctors.data, 'doctors')
       }
     ]
-    
   }
-
-  this.checkFields = function(form) {
-    for (var i = 0, item; (item = form.items[i]); i++) 
-      if (item.required && !form.query[ item.name ]) return false
-
-    if (form.compare && (form.query[ form.compare[0] ] !== form.query[ form.compare[1] ]) ) 
-      return false
-
-    return true
-    this.update()
-  }.bind(this);
-
-  this.submit = function(form) {
-    if (!t.checkFields(form)) return
-    rc.trigger('create_request', form.query)
-    this.update()
-  }.bind(this);
-
   
   t.on('mount', function() {
     rc.trigger('set_title', 'Форма для записи')

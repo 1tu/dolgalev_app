@@ -10,7 +10,7 @@ var gulp = require('gulp'),
 
 // Собираем Stylus
 gulp.task('stylus', function() {
-  gulp.src(['./assets/css/*.styl','!./assets/css/_*.styl'])
+  gulp.src('./assets/css/importer.styl')
     .pipe(stylus()) 
     .on('error', console.log) // Если есть ошибки, выводим и продолжаем
     .pipe(gulp.dest('./www/css/')) // записываем css

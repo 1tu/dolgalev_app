@@ -82,7 +82,7 @@
     var z = t.data[name]
     if (!z.is_mounted) return
     z.tag.root.className = ''
-    z.tag.unmount()
+    z.tag.unmount(true)
     z.tag = null 
     z.is_mounted = false
   }
