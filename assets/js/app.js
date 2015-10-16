@@ -87,7 +87,6 @@ s.app = new (function () {
   t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
-    // t.connect()
     if (fn.isNetwork()) 
       t.connect()
     else
@@ -99,8 +98,7 @@ s.app = new (function () {
       return true 
     else {
       socket.on('connect', t.checkUpdates)
-      navigator.notification.alert(socket.isConnected(), !!socket._raw)
-      // navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
+      navigator.notification.alert('Отсутствует подключение к интернету, попробуйте позже')
       return false
     }
   }
@@ -111,9 +109,6 @@ s.app = new (function () {
     }
     else {
       socket = io.sails.connect()
-      setTimeout(function () {
-        navigator.notification.alert(socket._raw)
-      }, 500);
       socket.on('update', t.checkUpdates)
     }
 
@@ -136,7 +131,6 @@ s.app = new (function () {
     socket.off('connect', t.checkUpdates)
     socket.get('/api/check_updates', t.mod, function (data) {
       if (fn.isError(data)) return
-      console.log(data);
 
       if (data.doctors) {
         s.doctors.setData(data.doctors)

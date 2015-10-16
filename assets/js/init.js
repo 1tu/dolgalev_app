@@ -8,6 +8,7 @@ var $id = document.getElementById.bind(document)
 
 // для запуска на phone
 on('deviceready', onDeviceReady)
+// -----------------------------
 // для запуска на PC
 
 // navigator = {};

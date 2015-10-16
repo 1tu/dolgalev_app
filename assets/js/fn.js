@@ -10,6 +10,7 @@
       } 
   }
 
+  // advanced error handler
   f.AEH = {
     1: function () {
       s.app.trigger('try_login')

@@ -937,8 +937,8 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
       // (or true to use the default: '/__getcookie')
 
       useCORSRouteToGetCookie: true,
-      // url: 'http://app.implantat-sk.ru', 
-      url: 'http://192.168.1.52:1337', 
+      url: 'http://app.implantat-sk.ru', 
+      // url: 'http://192.168.1.52:1337', 
 
       // The environment we're running in.
       // (logs are not displayed when this is set to 'production')
@@ -947,8 +947,8 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
       // that ends in `*.min.js` or '#production' (may also be manually overridden.)
       // 
 
-      environment: urlThisScriptWasFetchedFrom.match(/(\#production|\.min\.js)/g) ? 'production' : 'development',
-      // environment: 'production',
+      // environment: urlThisScriptWasFetchedFrom.match(/(\#production|\.min\.js)/g) ? 'production' : 'development',
+      environment: 'production',
 
       // The version of this sails.io.js client SDK
       sdk: SDK_INFO,
