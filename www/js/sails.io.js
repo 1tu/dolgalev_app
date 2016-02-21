@@ -141,6 +141,10 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
         console.log
           .bind(console)
           .apply(this, args);
+
+        if (navigator && navigator.notification && navigator.notification.alert) {
+        	navigator.notification.alert(args);
+        }
       };
     }
 
@@ -947,8 +951,8 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
       // that ends in `*.min.js` or '#production' (may also be manually overridden.)
       // 
 
-      // environment: urlThisScriptWasFetchedFrom.match(/(\#production|\.min\.js)/g) ? 'production' : 'development',
-      environment: 'production',
+      environment: urlThisScriptWasFetchedFrom.match(/(\#production|\.min\.js)/g) ? 'production' : 'development',
+      // environment: 'production',
 
       // The version of this sails.io.js client SDK
       sdk: SDK_INFO,

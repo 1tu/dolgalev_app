@@ -534,6 +534,7 @@ s.app = new (function () {
 
   t._init = function () {
     if (fn.isNetwork()) 
+      navigator.notification.alert('init connect. internet OK')
       t.connect()
     else
       on('online', t.connect)
