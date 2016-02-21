@@ -22,8 +22,8 @@
   t.title = ''
   t.nav = {
     'requests/new': 'Записаться',
-    reports: 'Отчеты',
-    settings: 'Настройки',
+    // reports: 'Отчеты',
+    // settings: 'Настройки',
     about: 'О клинике',
     doctors: 'Врачи',
     'auth/reset': 'Восстановить пароль',

@@ -42,7 +42,7 @@
     <!-- <gap:plugin name="org.apache.cordova.file" /> -->
     <!-- <gap:plugin name="org.apache.cordova.file-transfer" /> -->
     <!-- <gap:plugin name="org.apache.cordova.media" /> -->
-    <gap:plugin name="de.appplant.cordova.plugin.badge" version="0.6.2" />
+    <gap:plugin name="de.appplant.cordova.plugin.badge" version="0.6.4" />
     <gap:plugin name="org.apache.cordova.console" />
     <gap:plugin name="org.apache.cordova.dialogs" />
     <gap:plugin name="org.apache.cordova.network-information" />
@@ -79,7 +79,7 @@
     <gap:splash src="res/screen/windows-phone/screen-portrait.jpg"      gap:platform="winphone" />
 
     <gap:config-file platform="ios" parent="CFBundleShortVersionString">
-    <string>100</string>
+        <string>100</string>
     </gap:config-file>
     <content src="index.html" />
     <!--

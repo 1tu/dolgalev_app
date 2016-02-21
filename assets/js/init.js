@@ -7,35 +7,35 @@ var $id = document.getElementById.bind(document)
 	, input_stub = $id('input-stub')
 
 // для запуска на phone
-// on('deviceready', onDeviceReady)
+on('deviceready', onDeviceReady)
 // -----------------------------
 // для запуска на PC
 
-navigator = {};
-navigator.notification = {
-	alert: function (data) {console.log(data)}
-}
+// navigator = {};
+// navigator.notification = {
+// 	alert: function (data) {console.log(data)}
+// }
 
-navigator.connection = {
-	type: 'wifi'
-}
+// navigator.connection = {
+// 	type: 'wifi'
+// }
 
-var cordova = {
-	plugins: {
-		notification:{
-			badge: {
-				set: function () {}
-			}
-		}
-	}
-}
+// var cordova = {
+// 	plugins: {
+// 		notification:{
+// 			badge: {
+// 				set: function () {}
+// 			}
+// 		}
+// 	}
+// }
 
-var Connection = {
-	NONE: 'fsafsaf'
-}
+// var Connection = {
+// 	NONE: 'fsafsaf'
+// }
 
 
-onDeviceReady();
+// onDeviceReady();
 
 
 function onDeviceReady () {
@@ -57,16 +57,17 @@ function onDeviceReady () {
 		RiotControl.addStore( stores[key] )
 	}
 
+	riot.route.start()
 	riot.mount( $id('header'), 'header')
 	if (stores.user.is_registered) riot.route('/index')
 	else riot.route('/auth/new')
 
-	// cordova.plugins.notification.badge.configure({ 
-	// 	autoClear: true,
-	// 	title: 'Новое уведомление!',
-	// 	smallIcon: 'icon'
-	// })
+	cordova.plugins.notification.badge.configure({ 
+		autoClear: true,
+		title: 'Новое уведомление!',
+		smallIcon: 'icon'
+	})
 
-	// navigator.splashscreen.hide()
+	navigator.splashscreen.hide()
 }
 
