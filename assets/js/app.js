@@ -87,10 +87,9 @@ s.app = new (function () {
   t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
-    if (fn.isNetwork()) {
-      navigator.notification.alert('init connect. internet OK')
+    if (fn.isNetwork()) 
       t.connect()
-    } else
+    else
       on('online', t.connect)
   }
 

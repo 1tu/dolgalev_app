@@ -143,7 +143,7 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
           .apply(this, args);
 
         if (navigator && navigator.notification && navigator.notification.alert) {
-        	navigator.notification.alert(args);
+        	navigator.notification.alert(JSON.stringify(args));
         }
       };
     }
@@ -941,7 +941,7 @@ var parts=["source","protocol","authority","userInfo","user","password","host","
       // (or true to use the default: '/__getcookie')
 
       useCORSRouteToGetCookie: true,
-      url: 'http://app.implantat-sk.ru', 
+      url: 'http://app.implantat-sk.ru:80', 
       // url: 'http://192.168.1.34:1337', 
 
       // The environment we're running in.

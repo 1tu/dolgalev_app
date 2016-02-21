@@ -533,10 +533,9 @@ s.app = new (function () {
   t.badges = ( ls.badges && (ls.badges >> 0 )) || 0
 
   t._init = function () {
-    if (fn.isNetwork()) {
-      navigator.notification.alert('init connect. internet OK')
+    if (fn.isNetwork()) 
       t.connect()
-    } else
+    else
       on('online', t.connect)
   }
 
@@ -664,35 +663,35 @@ var $id = document.getElementById.bind(document)
 	, input_stub = $id('input-stub')
 
 // для запуска на phone
-on('deviceready', onDeviceReady)
+// on('deviceready', onDeviceReady)
 // -----------------------------
 // для запуска на PC
 
-// navigator = {};
-// navigator.notification = {
-// 	alert: function (data) {console.log(data)}
-// }
+navigator = {};
+navigator.notification = {
+	alert: function (data) {console.log(data)}
+}
 
-// navigator.connection = {
-// 	type: 'wifi'
-// }
+navigator.connection = {
+	type: 'wifi'
+}
 
-// var cordova = {
-// 	plugins: {
-// 		notification:{
-// 			badge: {
-// 				set: function () {}
-// 			}
-// 		}
-// 	}
-// }
+var cordova = {
+	plugins: {
+		notification:{
+			badge: {
+				set: function () {}
+			}
+		}
+	}
+}
 
-// var Connection = {
-// 	NONE: 'fsafsaf'
-// }
+var Connection = {
+	NONE: 'fsafsaf'
+}
 
 
-// onDeviceReady();
+onDeviceReady();
 
 
 function onDeviceReady () {
