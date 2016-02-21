@@ -59,6 +59,7 @@ function onDeviceReady () {
 
 	riot.route.start()
 	riot.mount( $id('header'), 'header')
+	riot.route('/', 'Клиника Долгалева')
 	if (stores.user.is_registered) riot.route('/index')
 	else riot.route('/auth/new')
 

@@ -92,7 +92,6 @@
     if (z.is_mounted) return
     var el = document.getElementById(name)
     z.className && (el.className = z.className)
-    console.log('mount:', name)
     riot.mount(el, name)
   }
 
@@ -118,7 +117,6 @@ s.router = new (function () {
   }
 
   t.changeViewTo = function (names) {
-    console.log('change view:', names)
     for (var key in tags.data) {
       if ( names.indexOf(key) === -1 && !tags.data[key].is_static ) tags.unmount(key)
       else if (names.indexOf(key) !== -1) tags.mount(key)
@@ -150,7 +148,6 @@ s.router = new (function () {
   t.on('route_changed', function(path) {
     t.current = path
     t.checkIndexUpdate()
-    console.log('route change:', path)
     if (path[2]) {
       fn.setActiveId();
       t.changeViewTo( [path[0]+'-item-'+path[2]] )
